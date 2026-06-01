@@ -314,7 +314,7 @@ function renderApiKeys() {
   content.innerHTML = `
     <section class="page-heading dashboard-heading heading-with-action">
       <h2>API 密钥</h2>
-      <button class="outline-action">＋ 创建 API 密钥</button>
+      <button class="outline-action" data-create-api-key="true">＋ 创建 API 密钥</button>
     </section>
     <section class="key-table-wrap">
       <table class="key-table">
@@ -654,6 +654,22 @@ document.addEventListener("click", (event) => {
     closeSideDrawer();
   }
 
+  if (target.dataset.createApiKey) {
+    showCreateApiKeyDrawer();
+  }
+
+  if (target.dataset.saveApiKey) {
+    closeSideDrawer();
+    showToast("API 密钥已创建");
+  }
+
+  if (target.dataset.expiryPreset) {
+    target
+      .closest(".api-key-expiry-presets")
+      .querySelectorAll("button")
+      .forEach((button) => button.classList.toggle("active", button === target));
+  }
+
   if (target.dataset.rechargeAmount) {
     document
       .querySelectorAll(".amount-option")
@@ -920,6 +936,53 @@ function showModelDetailDrawer(modelName) {
       </div>
     `,
     "model-detail-drawer",
+  );
+}
+
+function showCreateApiKeyDrawer() {
+  showSideDrawer(
+    `
+      <div class="drawer-head">
+        <div><h2>创建 API 密钥</h2><p>通过提供必要信息添加新的 API 密钥。</p></div>
+        <button class="drawer-close" data-close-drawer="true" aria-label="关闭">×</button>
+      </div>
+      <div class="drawer-body api-key-drawer-body">
+        <section class="api-key-form-section">
+          <div class="api-key-form-heading"><span>⚿</span><div><h3>基本信息</h3><p>设置令牌的基本信息</p></div></div>
+          <label class="api-key-field"><strong>名称</strong><input type="text" placeholder="输入名称" /></label>
+          <label class="api-key-field"><strong>分组</strong><select><option>选择一个分组</option><option>default</option><option>开发环境</option></select></label>
+          <div class="api-key-field">
+            <strong>过期时间</strong>
+            <div class="api-key-expiry-row">
+              <select><option>永不过期</option><option>指定日期</option></select>
+              <input type="time" value="00:00" aria-label="过期时间" />
+              <div class="api-key-expiry-presets">
+                <button class="active" data-expiry-preset="forever">永不</button>
+                <button data-expiry-preset="month">1 个月</button>
+                <button data-expiry-preset="day">1 天</button>
+                <button data-expiry-preset="hour">1 小时</button>
+              </div>
+            </div>
+          </div>
+          <label class="api-key-field"><strong>数量</strong><input type="number" min="1" value="1" /><small>一次性创建多个 API 密钥（名称将添加随机后缀）</small></label>
+        </section>
+        <section class="api-key-form-section">
+          <div class="api-key-form-heading"><span>▣</span><div><h3>额度设置</h3><p>设置令牌可用额度和数量</p></div></div>
+          <div class="api-key-toggle-row"><div><strong>无限配额</strong><span>为此 API 密钥启用无限配额</span></div><button class="toggle active" aria-label="无限配额"></button></div>
+        </section>
+        <details class="api-key-advanced">
+          <summary><span>☷</span><div><strong>高级设置</strong><small>设置令牌的访问限制</small></div><b>⌄</b></summary>
+          <div class="api-key-advanced-body">
+            <label class="api-key-field"><strong>IP 限制</strong><input type="text" placeholder="例如：192.168.1.0/24" /></label>
+          </div>
+        </details>
+      </div>
+      <div class="drawer-actions">
+        <button class="ghost-button" data-close-drawer="true">关闭</button>
+        <button class="primary-button" data-save-api-key="true">保存更改</button>
+      </div>
+    `,
+    "api-key-create-drawer",
   );
 }
 

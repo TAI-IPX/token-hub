@@ -2941,11 +2941,6 @@ button {
   border-bottom: 0;
 }
 
-.setting-row-stacked {
-  align-items: flex-start;
-  flex-direction: column;
-}
-
 .setting-row strong,
 .setting-row span {
   display: block;
@@ -2985,44 +2980,6 @@ button {
 
 .toggle.active::after {
   transform: translateX(22px);
-}
-
-.settings-tool-picker {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  padding: 6px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #f8f9fb;
-}
-
-.settings-tool-picker button {
-  height: 38px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 0 13px;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: #69717e;
-  background: transparent;
-  font-size: 13px;
-}
-
-.settings-tool-picker button:hover {
-  background: #ffffff;
-}
-
-.settings-tool-picker button.active {
-  color: #ffffff;
-  background: var(--blue);
-}
-
-.settings-tool-picker b {
-  font-size: 11px;
-  letter-spacing: 0;
 }
 
 .tool-picker-modal {

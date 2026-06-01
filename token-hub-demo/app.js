@@ -28,7 +28,6 @@ const state = {
   },
   walletBalance: 128.5,
   autoMatchModels: false,
-  autoMatchTools: ["openclaw", "claude-code", "codex", "opencode"],
   hasSeenAutoMatchIntro: false,
   providers: [
     {
@@ -570,21 +569,6 @@ function renderSettings() {
           <div class="setting-row"><div><strong>余额预警阈值</strong><span>低于 ¥10.00 时提醒充值</span></div><button class="mini-pill">修改</button></div>
           <div class="setting-row"><div><strong>失败自动切换</strong><span>当前 API Key 不可用时自动切换</span></div><button class="toggle active" aria-label="失败自动切换"></button></div>
           <div class="setting-row"><div><strong>智能模型匹配</strong><span>根据工具特性自动匹配合适的默认模型</span></div><button class="toggle${state.autoMatchModels ? " active" : ""}" data-toggle-auto-match="true" aria-label="智能模型匹配"></button></div>
-          <div class="setting-row setting-row-stacked">
-            <div><strong>支持工具</strong><span>选择启用智能模型匹配的工具</span></div>
-            <div class="settings-tool-picker">
-              ${tools
-                .map(
-                  ([id, label, mark]) => `
-                    <button class="${state.autoMatchTools.includes(id) ? "active" : ""}" data-auto-match-tool="${id}">
-                      <b>${mark}</b>
-                      ${label}
-                    </button>
-                  `,
-                )
-                .join("")}
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -782,14 +766,6 @@ document.addEventListener("click", (event) => {
   if (target.dataset.toggleAutoMatch) {
     state.autoMatchModels = !state.autoMatchModels;
     if (state.autoMatchModels) state.hasSeenAutoMatchIntro = true;
-    render();
-  }
-
-  if (target.dataset.autoMatchTool) {
-    const toolId = target.dataset.autoMatchTool;
-    state.autoMatchTools = state.autoMatchTools.includes(toolId)
-      ? state.autoMatchTools.filter((id) => id !== toolId)
-      : [...state.autoMatchTools, toolId];
     render();
   }
 

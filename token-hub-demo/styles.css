@@ -726,7 +726,7 @@ button {
 .refresh-tools-button::after {
   position: absolute;
   top: calc(100% + 8px);
-  left: 50%;
+  right: 0;
   z-index: 80;
   padding: 7px 10px;
   border-radius: 7px;
@@ -738,7 +738,7 @@ button {
   line-height: 1;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -4px);
+  transform: translateY(-4px);
   transition: opacity 0.16s ease, transform 0.16s ease;
   white-space: nowrap;
 }
@@ -746,7 +746,7 @@ button {
 .refresh-tools-button:hover::after,
 .refresh-tools-button:focus-visible::after {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
 }
 
 .refresh-tools-button:hover {
@@ -775,12 +775,16 @@ button {
 }
 
 .auto-match-group {
+  position: relative;
+  z-index: 50;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .auto-match-row {
+  position: relative;
+  z-index: 52;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -804,6 +808,7 @@ button {
 
 .auto-match-info-wrap {
   position: relative;
+  z-index: 51;
   display: flex;
   align-items: center;
 }
@@ -845,9 +850,9 @@ button {
 .auto-match-popover {
   position: absolute;
   top: calc(100% + 10px);
-  left: -8px;
+  left: 0;
   z-index: 50;
-  width: 280px;
+  width: min(280px, calc(100vw - 48px));
   padding: 16px 18px 14px;
   border: 1px solid var(--line);
   border-radius: 12px;

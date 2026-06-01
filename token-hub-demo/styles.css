@@ -1110,8 +1110,18 @@ button {
   font-weight: 600;
 }
 
-.payment-option span {
+.payment-option-icon {
   color: #ef4444;
+}
+
+.payment-option-label {
+  color: #303744;
+}
+
+.payment-option-check {
+  margin-left: auto;
+  color: #08956c;
+  font-weight: 800;
 }
 
 .recharge-flow-panel {

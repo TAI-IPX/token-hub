@@ -895,10 +895,13 @@ function showRechargeDialog() {
           <div class="pending-amount"><span>待支付金额：</span><strong>¥<b id="pending-amount">50</b></strong></div>
         </div>
         <h3>付款方式</h3>
-        <button type="button" class="payment-option active"><span>◉</span>微信/支付宝</button>
+        <button type="button" class="payment-option active">
+          <span class="payment-option-icon">◉</span>
+          <span class="payment-option-label">微信 / 支付宝</span>
+          <span class="payment-option-check">✓</span>
+        </button>
       </div>
       <div class="dashboard-modal-actions">
-        <button class="ghost-button" value="cancel">取消</button>
         <button type="button" class="primary-button" data-confirm-recharge="true">确认付款</button>
       </div>
     </form>
@@ -961,8 +964,7 @@ function showPaymentConfirmDialog(amount) {
         <div><span>付款方式</span><strong><i>◉</i> 微信/支付宝</strong></div>
       </div>
       <div class="dashboard-modal-actions">
-        <button class="ghost-button" data-close-payment="true">取消</button>
-        <button class="primary-button" data-start-payment="${amount}">确认付款</button>
+        <button class="primary-button" data-start-payment="${amount}">去支付</button>
       </div>
     </section>
   `;

@@ -261,45 +261,86 @@ function renderProviders() {
   `;
 }
 
+function renderApiKeys() {
+  content.innerHTML = `
+    <section class="page-heading dashboard-heading heading-with-action">
+      <h2>API 密钥</h2>
+      <button class="dark-action">＋ 创建 API 密钥</button>
+    </section>
+    <section class="key-toolbar">
+      <input type="search" placeholder="按名称筛选..." />
+      <input type="search" placeholder="按 API 密钥筛选..." />
+      <button class="outline-action">⊕ 状态</button>
+      <button class="outline-action key-view-button">查看</button>
+    </section>
+    <section class="key-table-wrap">
+      <table class="key-table">
+        <thead>
+          <tr><th>○</th><th>名称 ↕</th><th>状态 ↕</th><th>API 密钥</th><th>额度 ↕</th><th>分组 ↕</th><th>模型</th><th>IP 限制</th><th>创建时间 ↕</th><th>最后使用时间 ↕</th><th>过期 ↕</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>○</td><td>02</td><td><span class="key-status">已启用</span></td><td><code>sk-0bDC**********grKN</code> ⧉</td><td>无限制</td><td><span class="key-group">default</span> <span class="key-rate">0.6x</span></td><td>3 model(s)</td><td>无限制</td><td>2026-05-31 23:16:44</td><td>2026-05-31 23:16:44</td><td>永不</td><td>•••</td></tr>
+          <tr><td>○</td><td>01</td><td><span class="key-status">已启用</span></td><td><code>sk-QNsM**********0FDI</code> ⧉</td><td>无限制</td><td><span class="key-group">default</span> <span class="key-rate">0.6x</span></td><td>3 model(s)</td><td>无限制</td><td>2026-05-31 23:16:16</td><td>2026-05-31 23:16:16</td><td>永不</td><td>•••</td></tr>
+        </tbody>
+      </table>
+    </section>
+  `;
+}
+
 function renderMarketplace() {
+  const nested = state.activeView === "providers";
   content.innerHTML = `
     <section class="store-toolbar">
       <div class="title-with-back">
-        <button class="back-button" data-back-providers="true" title="返回 API Key" aria-label="返回 API Key">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </button>
+        ${
+          nested
+            ? `<button class="back-button" data-back-providers="true" title="返回 API Key" aria-label="返回 API Key">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+              </button>`
+            : ""
+        }
         <div>
-          <h2>添加模型</h2>
-          <p>选择模型后，再指定需要添加到的工具。</p>
+          <h2>${nested ? "添加模型" : "模型广场"}</h2>
+          <p>${nested ? "选择模型后，再指定需要添加到的工具。" : "浏览可用模型，按供应商和能力快速筛选。"}</p>
         </div>
       </div>
       <span class="model-count">共 ${models.length} 个模型</span>
     </section>
-    <section class="model-grid">
-      ${models
-        .map(
-          ([name, inputPrice, outputPrice, summary, tags]) => `
-            <article class="model-card">
-              <div class="model-card-head">
-                <span class="model-logo">${name.slice(0, 1).toUpperCase()}</span>
-                <span class="billing-tag">按量计费</span>
-              </div>
-              <h2>${name}</h2>
-              <p>${summary}</p>
-              <div class="model-pricing">
-                <div><span>输入</span><strong>${inputPrice}<small>/1M</small></strong></div>
-                <div><span>输出</span><strong>${outputPrice}<small>/1M</small></strong></div>
-              </div>
-              <div class="model-tags">
-                ${tags.map((tag) => `<span>${tag}</span>`).join("")}
-              </div>
-              <button class="primary-button model-detail-button" data-add-model="${name}">添加</button>
-            </article>
-          `,
-        )
-        .join("")}
+    <section class="marketplace-shell">
+      <aside class="marketplace-filter">
+        <div class="marketplace-filter-head"><div><h3>筛选</h3><p>按供应商、分组、类型和标签细化模型。</p></div><button>↻ 重置</button></div>
+        <div class="filter-block"><h4>分组⌃</h4><div><span class="active">所有分组</span><span>default</span><span>x0.6</span></div></div>
+        <div class="filter-block"><h4>所有供应商⌃</h4><div><span class="active">所有供应商 11</span><span>DeepSeek 2</span><span>阿里巴巴 4</span><span>Moonshot 2</span><span>智谱 2</span><span>MiniMax AI 1</span></div></div>
+        <div class="filter-block"><h4>模型标签⌃</h4><div><span class="active">所有标签 11</span><span>深度思考 9</span><span>视觉理解 5</span><span>文本生成 11</span></div></div>
+        <div class="filter-block"><h4>定价类型⌃</h4><div><span class="active">所有模型 11</span><span>按量计费 11</span></div></div>
+      </aside>
+      <div class="marketplace-main">
+        <div class="marketplace-tools"><strong>${models.length} 个模型</strong><div><span class="active">标准</span><span>充值</span><span class="active">/1M</span><span>/1K</span><span>↕ 名称</span></div></div>
+        <section class="model-grid">
+          ${models
+            .map(
+              ([name, inputPrice, outputPrice, summary, tags]) => `
+                <article class="model-card">
+                  <div class="model-card-head">
+                    <span class="model-logo">${name.slice(0, 1).toUpperCase()}</span>
+                    <span class="billing-tag">按量计费</span>
+                  </div>
+                  <h2>${name}</h2>
+                  <p>${summary}</p>
+                  <div class="model-pricing">
+                    <div><span>输入</span><strong>${inputPrice}<small>/1M</small></strong></div>
+                    <div><span>输出</span><strong>${outputPrice}<small>/1M</small></strong></div>
+                  </div>
+                  <div class="model-tags">
+                    ${tags.map((tag) => `<span>${tag}</span>`).join("")}
+                  </div>
+                  <button class="primary-button model-detail-button" data-add-model="${name}">添加</button>
+                </article>
+              `,
+            )
+            .join("")}
+        </section>
+      </div>
     </section>
   `;
 }
@@ -496,6 +537,8 @@ function render() {
   renderShell();
   if (state.activeView === "dashboard") renderDashboard();
   if (state.activeView === "providers") renderProviders();
+  if (state.activeView === "api-keys") renderApiKeys();
+  if (state.activeView === "marketplace") renderMarketplace();
   if (state.activeView === "settings") renderSettings();
   content.scrollTop = 0;
 }

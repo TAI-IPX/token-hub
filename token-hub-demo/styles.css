@@ -941,12 +941,6 @@ button {
   margin-top: 10px;
 }
 
-.provider-models small {
-  width: 100%;
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .provider-model-tag {
   max-width: 100%;
   padding: 5px 9px;

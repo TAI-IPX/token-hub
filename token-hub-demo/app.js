@@ -246,7 +246,6 @@ function renderProviders() {
           <div class="provider-main">
             <h2>${provider.name}</h2>
             <div class="provider-models">
-              <small>可用模型</small>
               ${provider.models.map(m => `<span class="provider-model-tag">${m}</span>`).join("")}
             </div>
 

@@ -295,7 +295,7 @@ function renderMarketplace() {
         }
         <div>
           <h2>${nested ? "添加模型" : "模型广场"}</h2>
-          <p>${nested ? "选择模型后，再指定需要添加到的工具。" : "浏览可用模型，按供应商和能力快速筛选。"}</p>
+          ${nested ? "<p>选择模型后，再指定需要添加到的工具。</p>" : ""}
         </div>
       </div>
       <span class="model-count">共 ${models.length} 个模型</span>

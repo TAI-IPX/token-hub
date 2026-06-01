@@ -350,6 +350,7 @@ button {
 }
 
 .side-tab {
+  position: relative;
   width: 44px;
   height: 44px;
   display: grid;
@@ -358,6 +359,31 @@ button {
   border-radius: 14px;
   color: var(--muted);
   background: transparent;
+}
+
+.side-tab::after {
+  position: absolute;
+  left: calc(100% + 14px);
+  z-index: 8;
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: #ffffff;
+  background: #303744;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.16);
+  content: attr(data-tooltip);
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  white-space: nowrap;
+}
+
+.side-tab:hover::after,
+.side-tab:focus-visible::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .side-tab.active {

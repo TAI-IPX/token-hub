@@ -157,6 +157,19 @@ function providersForTool(toolId) {
   return state.providers.filter((provider) => provider.tools.includes(toolId));
 }
 
+function tagsForProvider(provider) {
+  const tagsByModel = {
+    "deepseek-chat": ["深度思考", "文本生成"],
+    "claude-sonnet-4.5": ["深度思考", "文本生成"],
+    "gpt-4.1": ["文本生成"],
+    "qwen3.6-flash": ["深度思考", "视觉理解"],
+    "glm-5": ["文本生成", "深度思考"],
+    "kimi-k2.6": ["文本生成", "深度思考"],
+    "MiniMax-M2.5": ["文本生成", "深度思考"],
+  };
+  return tagsByModel[provider.model] ?? ["文本生成"];
+}
+
 function renderTrayMenu() {
   trayMenu.innerHTML = `
     <button class="tray-menu-item" data-tray-action="open">打开主界面</button>
@@ -214,6 +227,11 @@ function renderProviders() {
           <div class="provider-logo">${provider.name.slice(0, 2).toUpperCase()}</div>
           <div class="provider-main">
             <h2>${provider.model}</h2>
+            <div class="provider-tags">
+              ${tagsForProvider(provider)
+                .map((tag) => `<span class="${tag === "深度思考" ? "reasoning" : tag === "文本生成" ? "text" : "vision"}">${tag}</span>`)
+                .join("")}
+            </div>
             <div class="provider-usage">
               <div class="usage-line">
                 <span>总用量 ${tokens(provider.monthTokens)}</span>
@@ -231,7 +249,7 @@ function renderProviders() {
 
   content.innerHTML = `
     <section class="page-heading dashboard-heading heading-with-action">
-      <h2>模型切换</h2>
+      <h2>模型配置</h2>
     </section>
     <section class="tool-filter-bar">
       <div class="tool-filter-tabs">

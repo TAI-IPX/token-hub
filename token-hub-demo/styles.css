@@ -774,6 +774,35 @@ button {
   letter-spacing: 0;
 }
 
+.provider-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.provider-tags span {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.provider-tags .reasoning {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.provider-tags .text {
+  color: #c98200;
+  background: rgba(202, 138, 4, 0.1);
+}
+
+.provider-tags .vision {
+  color: #69717e;
+  background: #f1f3f6;
+}
+
 .provider-main {
   min-width: 0;
 }

@@ -596,7 +596,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.openRecharge) {
-    showRechargeDrawer();
+    showRechargeDialog();
   }
 
   if (target.dataset.closeDrawer) {
@@ -609,6 +609,36 @@ document.addEventListener("click", (event) => {
       .forEach((button) => button.classList.toggle("active", button === target));
     document.querySelector(".custom-amount-input").value = target.dataset.rechargeAmount;
     document.querySelector("#pending-amount").textContent = target.dataset.rechargeAmount;
+  }
+
+  if (target.dataset.confirmRecharge) {
+    const amount = document.querySelector(".custom-amount-input")?.value || "0";
+    document.querySelector(".recharge-modal")?.close();
+    showPaymentConfirmDialog(amount);
+  }
+
+  if (target.dataset.startPayment) {
+    const amount = target.dataset.startPayment;
+    document.querySelector(".payment-confirm-modal")?.close();
+    showPaymentDialog(amount);
+  }
+
+  if (target.dataset.paymentTab) {
+    const dialog = target.closest(".payment-modal");
+    dialog
+      .querySelectorAll("[data-payment-tab]")
+      .forEach((button) => button.classList.toggle("active", button === target));
+    dialog
+      .querySelectorAll("[data-payment-panel]")
+      .forEach((panel) => panel.classList.toggle("active", panel.dataset.paymentPanel === target.dataset.paymentTab));
+  }
+
+  if (target.dataset.copyOrder) {
+    showToast("订单编号已复制");
+  }
+
+  if (target.dataset.closePayment) {
+    target.closest("dialog").close();
   }
 
   if (target.dataset.modelDetail) {
@@ -724,35 +754,6 @@ function showSideDrawer(contentHtml, className = "") {
   });
 }
 
-function showRechargeDrawer() {
-  showSideDrawer(
-    `
-      <div class="drawer-head">
-        <div><h2>充值</h2><p>选择金额和支付方式</p></div>
-        <button class="drawer-close" data-close-drawer="true" aria-label="关闭">×</button>
-      </div>
-      <div class="drawer-body recharge-body">
-        <h3>金额</h3>
-        <div class="amount-grid">
-          ${[10, 20, 50, 100, 200, 500]
-            .map(
-              (amount) => `<button class="amount-option ${amount === 50 ? "active" : ""}" data-recharge-amount="${amount}">${amount}元</button>`,
-            )
-            .join("")}
-        </div>
-        <h3>自定义金额</h3>
-        <div class="custom-amount-row">
-          <input class="custom-amount-input" type="number" min="1" value="50" aria-label="自定义金额" />
-          <div class="pending-amount"><span>待支付金额：</span><strong>¥<b id="pending-amount">50</b></strong></div>
-        </div>
-        <h3>付款方式</h3>
-        <button class="payment-option active"><span>◉</span>微信/支付宝</button>
-      </div>
-    `,
-    "recharge-drawer",
-  );
-}
-
 function showModelDetailDrawer(modelName) {
   const model = models.find(([name]) => name === modelName);
   if (!model) return;
@@ -850,6 +851,103 @@ function showDashboardPreferences() {
     `,
     `<button class="primary-button" value="confirm">保存偏好设置</button>`,
   );
+}
+
+function showRechargeDialog() {
+  const dialog = document.createElement("dialog");
+  dialog.className = "dashboard-modal recharge-modal";
+  dialog.innerHTML = `
+    <form method="dialog" class="dashboard-modal-panel recharge-modal-panel">
+      <div class="dashboard-modal-head">
+        <div><h2>充值</h2><p>选择金额和支付方式</p></div>
+        <button class="picker-close" value="cancel" aria-label="关闭">×</button>
+      </div>
+      <div class="dashboard-modal-body recharge-body">
+        <h3>金额</h3>
+        <div class="amount-grid">
+          ${[10, 20, 50, 100, 200, 500]
+            .map(
+              (amount) => `<button type="button" class="amount-option ${amount === 50 ? "active" : ""}" data-recharge-amount="${amount}">${amount}元</button>`,
+            )
+            .join("")}
+        </div>
+        <h3>自定义金额</h3>
+        <div class="custom-amount-row">
+          <input class="custom-amount-input" type="number" min="1" value="50" aria-label="自定义金额" />
+          <div class="pending-amount"><span>待支付金额：</span><strong>¥<b id="pending-amount">50</b></strong></div>
+        </div>
+        <h3>付款方式</h3>
+        <button type="button" class="payment-option active"><span>◉</span>微信/支付宝</button>
+      </div>
+      <div class="dashboard-modal-actions">
+        <button class="ghost-button" value="cancel">取消</button>
+        <button type="button" class="primary-button" data-confirm-recharge="true">确认付款</button>
+      </div>
+    </form>
+  `;
+  document.body.appendChild(dialog);
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
+}
+
+function showPaymentDialog(amount) {
+  const dialog = document.createElement("dialog");
+  dialog.className = "dashboard-modal payment-modal";
+  dialog.innerHTML = `
+    <section class="dashboard-modal-panel payment-modal-panel">
+      <div class="dashboard-modal-head">
+        <div><h2>扫码支付</h2><p>请使用手机 app 完成支付</p></div>
+        <button class="picker-close" data-close-payment="true" aria-label="关闭">×</button>
+      </div>
+      <div class="payment-tabs">
+        <button class="active" data-payment-tab="qr">▦ 二维码</button>
+        <button data-payment-tab="detail">◷ 详情</button>
+      </div>
+      <div class="payment-panel active" data-payment-panel="qr">
+        <div class="qr-code" aria-label="演示二维码">
+          <span class="qr-finder top-left"></span>
+          <span class="qr-finder top-right"></span>
+          <span class="qr-finder bottom-left"></span>
+        </div>
+        <p class="payment-waiting">◔ 等待支付...</p>
+        <strong>扫描聚合码</strong>
+        <span>到期时间: 2026/6/1 10:46:33</span>
+      </div>
+      <div class="payment-panel payment-detail-panel" data-payment-panel="detail">
+        <div><span>金额</span><strong class="payment-amount">¥${Number(amount).toFixed(2)}</strong></div>
+        <div><span>订单编号</span><strong>dfa029f7_121 <button data-copy-order="true" aria-label="复制订单编号">⧉</button></strong></div>
+        <div><span>付款方式</span><strong>聚合码</strong></div>
+        <div><span>到期时间</span><strong>2026/6/1 10:46:33</strong></div>
+      </div>
+    </section>
+  `;
+  document.body.appendChild(dialog);
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
+}
+
+function showPaymentConfirmDialog(amount) {
+  const dialog = document.createElement("dialog");
+  dialog.className = "dashboard-modal payment-confirm-modal";
+  dialog.innerHTML = `
+    <section class="dashboard-modal-panel payment-confirm-panel">
+      <div class="dashboard-modal-head">
+        <div><h2>确认付款</h2><p>查看您的付款详情</p></div>
+      </div>
+      <div class="payment-confirm-body">
+        <div><span>充值金额</span><strong>¥${Number(amount).toFixed(2)}</strong></div>
+        <div><span>您支付</span><strong>${Number(amount).toFixed(2)}</strong></div>
+        <div><span>付款方式</span><strong><i>◉</i> 微信/支付宝</strong></div>
+      </div>
+      <div class="dashboard-modal-actions">
+        <button class="ghost-button" data-close-payment="true">取消</button>
+        <button class="primary-button" data-start-payment="${amount}">确认付款</button>
+      </div>
+    </section>
+  `;
+  document.body.appendChild(dialog);
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
 }
 
 function showDashboardFilter() {

@@ -757,33 +757,12 @@ button {
   margin-top: 12px;
 }
 
-.usage-line,
-.usage-footer {
+.usage-line {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 20px;
   color: var(--muted);
   font-size: 12px;
-}
-
-.usage-line strong {
-  color: var(--blue);
-}
-
-.usage-track {
-  height: 5px;
-  overflow: hidden;
-  margin: 6px 0;
-  border-radius: 999px;
-  background: #eef0f4;
-}
-
-.usage-track span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--blue);
 }
 
 .card-actions {

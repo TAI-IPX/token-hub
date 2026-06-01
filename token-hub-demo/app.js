@@ -208,10 +208,6 @@ function renderProviders() {
   const rows = filteredProviders
     .map((provider) => {
       const active = provider.id === state.currentProviderId;
-      const usagePercent = Math.min(
-        100,
-        Math.round((provider.monthTokens / 300000) * 100),
-      );
       return `
         <article class="provider-card ${active ? "active" : ""}">
           <div class="drag-handle">⁝</div>
@@ -220,11 +216,7 @@ function renderProviders() {
             <h2>${provider.model}</h2>
             <div class="provider-usage">
               <div class="usage-line">
-                <span>本月用量 ${tokens(provider.monthTokens)}</span>
-                <strong>${usagePercent}%</strong>
-              </div>
-              <div class="usage-track"><span style="width:${usagePercent}%"></span></div>
-              <div class="usage-footer">
+                <span>总用量 ${tokens(provider.monthTokens)}</span>
                 <span>今日 ${tokens(provider.todayTokens)}</span>
               </div>
             </div>

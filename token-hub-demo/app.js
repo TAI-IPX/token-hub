@@ -342,14 +342,26 @@ function renderApiKeys() {
     <section class="key-table-wrap">
       <table class="key-table">
         <thead>
-          <tr><th>○</th><th>名称 ↕</th><th>状态 ↕</th><th>API 密钥</th><th>额度 ↕</th><th>分组 ↕</th><th>模型</th><th>IP 限制</th><th>创建时间 ↕</th><th>最后使用时间 ↕</th><th>过期 ↕</th><th></th></tr>
+          <tr><th>名称 ↕</th><th>状态 ↕</th><th>API 密钥</th><th>额度 ↕</th><th>分组 ↕</th><th>模型</th><th>IP 限制</th><th>创建时间 ↕</th><th>最后使用时间 ↕</th><th>过期 ↕</th><th></th></tr>
         </thead>
         <tbody>
-          <tr><td>○</td><td>02</td><td><span class="key-status">已启用</span></td><td><code>sk-0bDC**********grKN</code> ⧉</td><td>无限制</td><td><span class="key-group">default</span> <span class="key-rate">0.6x</span></td><td>3 model(s)</td><td>无限制</td><td>2026-05-31 23:16:44</td><td>2026-05-31 23:16:44</td><td>永不</td><td>•••</td></tr>
-          <tr><td>○</td><td>01</td><td><span class="key-status">已启用</span></td><td><code>sk-QNsM**********0FDI</code> ⧉</td><td>无限制</td><td><span class="key-group">default</span> <span class="key-rate">0.6x</span></td><td>3 model(s)</td><td>无限制</td><td>2026-05-31 23:16:16</td><td>2026-05-31 23:16:16</td><td>永不</td><td>•••</td></tr>
+          <tr data-api-key-row="02"><td>02</td><td><span class="key-status">已启用</span></td><td><code>sk-0bDC**********grKN</code> ⧉</td><td>无限制</td><td><span class="key-group">default</span> <span class="key-rate">0.6x</span></td><td>3 model(s)</td><td>无限制</td><td>2026-05-31 23:16:44</td><td>2026-05-31 23:16:44</td><td>永不</td><td>${renderApiKeyActions("02")}</td></tr>
+          <tr data-api-key-row="01"><td>01</td><td><span class="key-status">已启用</span></td><td><code>sk-QNsM**********0FDI</code> ⧉</td><td>无限制</td><td><span class="key-group">default</span> <span class="key-rate">0.6x</span></td><td>3 model(s)</td><td>无限制</td><td>2026-05-31 23:16:16</td><td>2026-05-31 23:16:16</td><td>永不</td><td>${renderApiKeyActions("01")}</td></tr>
         </tbody>
       </table>
     </section>
+  `;
+}
+
+function renderApiKeyActions(keyId) {
+  return `
+    <div class="api-key-actions">
+      <button class="api-key-actions-trigger" data-api-key-menu="${keyId}" aria-label="${keyId} API 密钥操作">•••</button>
+      <div class="api-key-actions-menu">
+        <button data-api-key-edit="${keyId}"><span>编辑</span><b>✎</b></button>
+        <button class="danger" data-api-key-delete="${keyId}"><span>删除</span><b>♲</b></button>
+      </div>
+    </div>
   `;
 }
 
@@ -693,6 +705,30 @@ document.addEventListener("click", (event) => {
     showCreateApiKeyDrawer();
   }
 
+  if (target.dataset.apiKeyMenu) {
+    const menu = target.closest(".api-key-actions");
+    document
+      .querySelectorAll(".api-key-actions.open")
+      .forEach((item) => item.classList.toggle("open", item === menu && !menu.classList.contains("open")));
+    if (!menu.classList.contains("open")) {
+      const buttonRect = target.getBoundingClientRect();
+      const popup = menu.querySelector(".api-key-actions-menu");
+      popup.style.top = `${buttonRect.bottom + 6}px`;
+      popup.style.left = `${Math.max(16, buttonRect.right - 148)}px`;
+      menu.classList.add("open");
+    }
+  }
+
+  if (target.dataset.apiKeyEdit) {
+    target.closest(".api-key-actions").classList.remove("open");
+    showToast(`正在编辑 API 密钥 ${target.dataset.apiKeyEdit}`);
+  }
+
+  if (target.dataset.apiKeyDelete) {
+    target.closest("[data-api-key-row]")?.remove();
+    showToast(`已删除 API 密钥 ${target.dataset.apiKeyDelete}`);
+  }
+
   if (target.dataset.saveApiKey) {
     closeSideDrawer();
     showToast("API 密钥已创建");
@@ -1034,6 +1070,12 @@ trayButton.addEventListener("click", () => {
 document.addEventListener("click", (event) => {
   if (!trayMenu.contains(event.target) && event.target !== trayButton) {
     trayMenu.classList.remove("open");
+  }
+
+  if (!event.target.closest(".api-key-actions")) {
+    document
+      .querySelectorAll(".api-key-actions.open")
+      .forEach((item) => item.classList.remove("open"));
   }
 
   const profileMenu = document.querySelector(".profile-menu");

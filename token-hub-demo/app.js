@@ -488,6 +488,9 @@ function renderDashboard() {
 
 function renderSettings() {
   content.innerHTML = `
+    <section class="page-heading">
+      <h2>设置</h2>
+    </section>
     <section class="setting-section">
       <div class="setting-section-head">
         <div>
@@ -510,12 +513,6 @@ function renderSettings() {
     </section>
 
     <section class="setting-section">
-      <div class="setting-section-head">
-        <div>
-          <h3>API Key 偏好</h3>
-          <p>控制余额提醒和服务切换策略。</p>
-        </div>
-      </div>
       <div class="setting-section-body">
         <div class="setting-list">
           <div class="setting-row"><div><strong>余额预警阈值</strong><span>低于 ¥10.00 时提醒充值</span></div><button class="mini-pill">修改</button></div>

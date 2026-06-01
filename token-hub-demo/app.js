@@ -488,9 +488,6 @@ function renderDashboard() {
 
 function renderSettings() {
   content.innerHTML = `
-    <section class="page-heading">
-      <h2>设置</h2>
-    </section>
     <section class="setting-section">
       <div class="setting-section-head">
         <div>
@@ -499,10 +496,15 @@ function renderSettings() {
         </div>
       </div>
       <div class="setting-section-body">
-        <div class="segmented-control compact">
-          <button class="active">浅色</button>
-          <button>深色</button>
-          <button>跟随系统</button>
+        <div class="setting-list">
+          <div class="setting-row">
+            <div><strong>主题模式</strong></div>
+            <div class="segmented-control compact">
+              <button class="active" data-theme-option="light">浅色</button>
+              <button data-theme-option="dark">深色</button>
+              <button data-theme-option="system">跟随系统</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -560,6 +562,12 @@ function render() {
 document.addEventListener("click", (event) => {
   const target = event.target.closest("button");
   if (!target) return;
+
+  if (target.dataset.profileToggle) {
+    const profileMenu = target.closest(".profile-menu");
+    const open = profileMenu.classList.toggle("open");
+    target.setAttribute("aria-expanded", String(open));
+  }
 
   if (target.dataset.view) {
     state.activeView = target.dataset.view;
@@ -734,6 +742,13 @@ document.addEventListener("click", (event) => {
       .forEach((button) => button.classList.toggle("active", button === target));
   }
 
+  if (target.dataset.themeOption) {
+    target
+      .closest(".segmented-control")
+      .querySelectorAll("button")
+      .forEach((button) => button.classList.toggle("active", button === target));
+  }
+
   if (target.matches(".marketplace-filter-modal .filter-block button")) {
     target
       .closest(".filter-block")
@@ -828,6 +843,12 @@ trayButton.addEventListener("click", () => {
 document.addEventListener("click", (event) => {
   if (!trayMenu.contains(event.target) && event.target !== trayButton) {
     trayMenu.classList.remove("open");
+  }
+
+  const profileMenu = document.querySelector(".profile-menu");
+  if (!profileMenu.contains(event.target)) {
+    profileMenu.classList.remove("open");
+    profileMenu.querySelector(".profile-trigger").setAttribute("aria-expanded", "false");
   }
 });
 

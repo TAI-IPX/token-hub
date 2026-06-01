@@ -528,8 +528,7 @@ button {
   z-index: 40;
 }
 
-.profile-menu:hover .profile-dropdown,
-.profile-menu:focus-within .profile-dropdown {
+.profile-menu.open .profile-dropdown {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);

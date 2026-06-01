@@ -783,6 +783,10 @@ document.addEventListener("click", (event) => {
     showToast("演示数据仅有 1 页");
   }
 
+  if (target.dataset.issueInvoice) {
+    showToast(`已发起订单 ${target.dataset.issueInvoice} 的开票申请`);
+  }
+
   if (target.dataset.closePayment) {
     target.closest("dialog").close();
   }
@@ -1278,19 +1282,19 @@ function showMarketplaceFilter() {
 
 function showBillingHistoryDialog() {
   const orders = [
-    ["lenovo_75f4bae6387ef438_121", "2026-06-01 10:41:33", "¥1.00", "1"],
-    ["lenovo_85c9aa0edfa029f7_121", "2026-06-01 10:31:33", "¥1.00", "1"],
-    ["lenovo_0673b98a2e038b0a_121", "2026-06-01 10:31:08", "¥1.00", "1"],
-    ["lenovo_81a9ee6833b0b7ef_121", "2026-06-01 10:29:17", "¥1.00", "1"],
-    ["lenovo_384da29bc61f743c_121", "2026-05-31 22:16:40", "¥50.00", "50"],
-    ["lenovo_b30c78de205a6f91_121", "2026-05-31 18:08:12", "¥20.00", "20"],
+    ["lenovo_75f4bae6387ef438_121", "2026-06-01 10:41:33", "¥1.00", "1", "待确认"],
+    ["lenovo_85c9aa0edfa029f7_121", "2026-06-01 10:31:33", "¥1.00", "1", "待确认"],
+    ["lenovo_0673b98a2e038b0a_121", "2026-06-01 10:31:08", "¥1.00", "1", "支付成功"],
+    ["lenovo_81a9ee6833b0b7ef_121", "2026-06-01 10:29:17", "¥1.00", "1", "支付成功"],
+    ["lenovo_384da29bc61f743c_121", "2026-05-31 22:16:40", "¥50.00", "50", "支付成功"],
+    ["lenovo_b30c78de205a6f91_121", "2026-05-31 18:08:12", "¥20.00", "20", "支付成功"],
   ];
   const dialog = document.createElement("dialog");
   dialog.className = "dashboard-modal billing-modal";
   dialog.innerHTML = `
     <section class="dashboard-modal-panel billing-modal-panel">
       <div class="dashboard-modal-head">
-        <div><h2>计费历史</h2><p>查看您的充值交易记录和付款历史</p></div>
+        <div><h2>账单历史</h2><p>查看您的充值交易记录和付款历史</p></div>
         <button class="picker-close" data-close-payment="true" aria-label="关闭">×</button>
       </div>
       <div class="billing-toolbar">
@@ -1300,11 +1304,14 @@ function showBillingHistoryDialog() {
       <div class="billing-list">
         ${orders
           .map(
-            ([orderId, time, amount, paid]) => `
+            ([orderId, time, amount, paid, status]) => `
               <article class="billing-card">
                 <div class="billing-card-head">
                   <div><strong>${orderId}</strong><button data-billing-copy="${orderId}" aria-label="复制订单编号">⧉</button><span>${time}</span></div>
-                  <em>待确认</em>
+                  <div class="billing-card-actions">
+                    <em class="${status === "支付成功" ? "success" : ""}">${status}</em>
+                    ${status === "支付成功" ? `<button class="invoice-button" data-issue-invoice="${orderId}">开具发票</button>` : ""}
+                  </div>
                 </div>
                 <div class="billing-card-grid">
                   <div><span>付款方式</span><strong>lenovo</strong></div>

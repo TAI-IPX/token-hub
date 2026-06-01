@@ -1536,7 +1536,7 @@ button {
   font-size: 17px;
 }
 
-.billing-modal-panel {
+.dashboard-modal-panel.billing-modal-panel {
   width: min(960px, calc(100vw - 48px));
   height: min(760px, calc(100vh - 64px));
   display: flex;
@@ -1613,7 +1613,7 @@ button {
   gap: 12px;
 }
 
-.billing-card-head > div {
+.billing-card-head > div:first-child {
   min-width: 0;
   flex-wrap: wrap;
   gap: 8px;
@@ -1651,6 +1651,32 @@ button {
   font-size: 12px;
   font-style: normal;
   white-space: nowrap;
+}
+
+.billing-card-head .billing-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.billing-card-head em.success {
+  color: #08956c;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.billing-card-head .invoice-button {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: #1476bb;
+  background: #ffffff;
+  font-size: 12px;
+}
+
+.billing-card-head .invoice-button:hover {
+  background: #f0f9ff;
 }
 
 .billing-card-grid {
@@ -2711,6 +2737,20 @@ button {
 
 .key-table tbody tr:last-child td {
   border-bottom: 0;
+}
+
+.key-table th:last-child,
+.key-table td:last-child {
+  width: 48px;
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  padding: 0 8px;
+  background: #ffffff;
+}
+
+.key-table th:last-child {
+  z-index: 3;
 }
 
 .key-status,

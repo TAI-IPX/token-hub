@@ -1,4 +1,18 @@
 .DS_Store
 *.bak
+*.log
+*.tsbuildinfo
 .playwright-mcp/
 *.png
+screenshot*.png
+
+# cc-switch-main build artifacts (safety net)
+node_modules/
+dist/
+release/
+.env
+.env.local
+.npmrc
+.github
+/.idea
+/.vscode

@@ -146,6 +146,19 @@ function providersForTool(toolId) {
   return state.providers.filter((provider) => provider.tools.includes(toolId));
 }
 
+function configuredProvidersForTool(toolId) {
+  const providers = providersForTool(toolId);
+  if (!isAdditiveTool(toolId)) return providers;
+  return providers.filter((provider) => isInToolConfig(provider.id, toolId));
+}
+
+function selectedProviderForTool(toolId, providers = configuredProvidersForTool(toolId)) {
+  const selectedId = isAdditiveTool(toolId)
+    ? state.defaultModels[toolId] ?? state.toolSelections[toolId]
+    : state.toolSelections[toolId];
+  return providers.find((provider) => provider.id === selectedId) ?? providers[0];
+}
+
 function tagsForProvider(provider) {
   const tagsByModel = {
     "deepseek-chat": ["深度思考", "文本生成"],
@@ -162,37 +175,44 @@ function tagsForProvider(provider) {
 function renderTrayMenu() {
   trayMenu.innerHTML = `
     <button class="tray-menu-item" data-tray-action="open">打开主界面</button>
-    <a class="tray-menu-item" href="https://lai-hub.lenovomm.com/pricing" target="_blank" rel="noreferrer">模型广场</a>
-    <a class="tray-menu-item" href="https://lai-hub.lenovomm.com/keys" target="_blank" rel="noreferrer">我的 API 密钥</a>
     <div class="tray-separator"></div>
     ${tools
       .map(([id, label]) => {
-        const toolProviders = providersForTool(id);
-        const current =
-          toolProviders.find((provider) => provider.id === state.toolSelections[id]) ??
-          toolProviders[0];
+        const toolProviders = configuredProvidersForTool(id);
+        const current = selectedProviderForTool(id, toolProviders);
         return `
           <div class="tray-tool">
             <button class="tray-menu-item" type="button" data-tray-tool-menu="${id}">
               <span>${label}</span>
-              <span class="tray-tool-current">${current?.model ?? "未配置"}</span>
+              <span class="tray-tool-current">${current?.name ?? "未配置"}</span>
               <span class="tray-tool-arrow">›</span>
             </button>
             <div class="tray-submenu">
-              ${toolProviders
-                .map(
-                  (provider) => `
-                    <button class="tray-menu-item tray-model-button ${provider.id === current?.id ? "active" : ""}" data-tray-model="${provider.id}" data-tray-tool="${id}">
-                      <span>${provider.model}</span>
-                    </button>
-                  `,
-                )
-                .join("")}
+              ${
+                toolProviders.length
+                  ? toolProviders
+                      .map(
+                        (provider) => `
+                          <button class="tray-menu-item tray-model-button ${provider.id === current?.id ? "active" : ""}" data-tray-model="${provider.id}" data-tray-tool="${id}">
+                            <span class="tray-model-copy">
+                              <strong>${provider.name}</strong>
+                              <small>${provider.models.join(" · ")}</small>
+                            </span>
+                          </button>
+                        `,
+                      )
+                      .join("")
+                  : `<span class="tray-empty">暂未配置模型</span>`
+              }
             </div>
           </div>
         `;
       })
       .join("")}
+    <div class="tray-separator"></div>
+    <button class="tray-menu-item" data-tray-view="marketplace">模型广场</button>
+    <button class="tray-menu-item" data-tray-view="api-keys">我的 API 密钥</button>
+    <button class="tray-menu-item" data-tray-view="settings">设置</button>
     <div class="tray-separator"></div>
     <button class="tray-menu-item tray-exit" data-tray-action="exit">退出</button>
   `;
@@ -623,6 +643,14 @@ document.addEventListener("click", (event) => {
     trayMenu.classList.remove("open");
   }
 
+  if (target.dataset.trayView) {
+    state.activeView = target.dataset.trayView;
+    state.providerSubView = "list";
+    appShell.classList.remove("hidden");
+    trayMenu.classList.remove("open");
+    render();
+  }
+
   if (target.dataset.trayAction === "exit") {
     appShell.classList.add("hidden");
     trayMenu.classList.remove("open");
@@ -635,6 +663,9 @@ document.addEventListener("click", (event) => {
     state.currentProviderId = providerId;
     state.activeTool = toolId;
     state.toolSelections[toolId] = providerId;
+    if (isAdditiveTool(toolId) && toolId !== "opencode") {
+      state.defaultModels[toolId] = providerId;
+    }
     // 如果是累加模式且 provider 不在配置中，自动添加
     if (isAdditiveTool(toolId)) {
       if (!state.toolConfigs[toolId]) state.toolConfigs[toolId] = [];
@@ -645,7 +676,7 @@ document.addEventListener("click", (event) => {
     render();
     renderTrayMenu();
     trayMenu.classList.remove("open");
-    showToast(`已切换至 ${state.providers.find((provider) => provider.id === state.currentProviderId)?.model}`);
+    showToast(`已切换至 ${state.providers.find((provider) => provider.id === state.currentProviderId)?.name}`);
   }
 
   if (target.dataset.trayToolMenu) {

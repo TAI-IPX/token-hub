@@ -308,7 +308,7 @@ button {
 }
 
 .tray-submenu {
-  width: 230px;
+  width: 310px;
   position: absolute;
   top: -8px;
   right: calc(100% + 8px);
@@ -329,6 +329,34 @@ button {
 .tray-model-button.active::after {
   content: "✓";
   color: #303744;
+}
+
+.tray-model-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.tray-model-copy strong,
+.tray-model-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tray-model-copy strong {
+  font-size: 13px;
+}
+
+.tray-model-copy small,
+.tray-empty {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.tray-empty {
+  display: block;
+  padding: 9px 10px;
 }
 
 .tray-exit {

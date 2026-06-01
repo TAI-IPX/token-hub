@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Token Hub Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section class="windows-desktop" aria-label="Windows 11 桌面">
+      <div class="desktop-icon">
+        <span class="recycle-bin-icon">♲</span>
+        <strong>回收站</strong>
+      </div>
+    </section>
+
+    <main class="app-shell" id="app-shell">
+      <div class="windows-titlebar" aria-label="窗口控制">
+        <div class="windows-app-title">
+          <img
+            src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
+            alt=""
+          />
+          <span>联想 Token Hub</span>
+        </div>
+        <div class="window-controls">
+          <button data-window-action="hide" title="最小化" aria-label="最小化">—</button>
+          <button title="最大化" aria-label="最大化">□</button>
+          <button class="close" data-window-action="hide" title="关闭" aria-label="关闭">×</button>
+        </div>
+      </div>
+
+      <aside class="sidebar" aria-label="功能模块">
+        <nav class="side-nav" id="view-switcher">
+          <button class="side-tab active" data-view="dashboard" title="仪表盘">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="3.5" width="17" height="17" rx="2.5" />
+              <path d="M7 16v-3" />
+              <path d="M12 16V8" />
+              <path d="M17 16v-5" />
+            </svg>
+          </button>
+          <button class="side-tab" data-view="providers" title="API Key">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="8" cy="12" r="4" />
+              <path d="M12 12h8" />
+              <path d="M17 12v3" />
+              <path d="M20 12v2" />
+            </svg>
+          </button>
+          <button class="side-tab" data-view="settings" title="设置">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+              <path d="M19 12a7.7 7.7 0 0 0-.1-1.1l2-1.5-2-3.4-2.4 1a7.5 7.5 0 0 0-1.9-1.1L14.3 3h-4.6l-.3 2.9A7.5 7.5 0 0 0 7.5 7l-2.4-1-2 3.4 2 1.5A7.7 7.7 0 0 0 5 12c0 .4 0 .8.1 1.1l-2 1.5 2 3.4 2.4-1a7.5 7.5 0 0 0 1.9 1.1l.3 2.9h4.6l.3-2.9a7.5 7.5 0 0 0 1.9-1.1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1.1Z" />
+            </svg>
+          </button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div class="brand"></div>
+          <nav class="global-actions" id="global-actions" aria-label="全局功能">
+            <a href="https://lai-hub.lenovomm.com/pricing" target="_blank" rel="noreferrer">模型广场</a>
+            <a href="https://lai-hub.lenovomm.com/keys" target="_blank" rel="noreferrer">我的 API 密钥</a>
+            <div class="profile-menu">
+              <button class="profile-trigger" aria-label="个人账户">
+                <span class="profile-avatar">1</span>
+                <strong>15*******88</strong>
+              </button>
+              <div class="profile-dropdown">
+                <button class="logout-button" data-global-action="logout">
+                  <span>↪</span>
+                  登出
+                </button>
+              </div>
+            </div>
+          </nav>
+        </header>
+
+        <section class="content" id="content"></section>
+      </section>
+    </main>
+
+    <footer class="windows-taskbar" aria-label="Windows 任务栏">
+      <div class="taskbar-center">
+        <button class="windows-start" aria-label="开始">
+          <span></span><span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="system-tray">
+        <span class="tray-caret">⌃</span>
+        <button class="tray-app-button" id="tray-app-button" title="联想 Token Hub" aria-label="联想 Token Hub 托盘菜单">
+          <img
+            src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
+            alt=""
+          />
+        </button>
+        <span class="tray-status">⌁</span>
+        <span class="tray-status">▥</span>
+        <time class="tray-clock">00:20<br /><small>2026/6/1</small></time>
+      </div>
+    </footer>
+
+    <aside class="tray-menu" id="tray-menu" aria-label="联想 Token Hub 托盘菜单"></aside>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

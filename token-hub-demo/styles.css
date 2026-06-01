@@ -141,6 +141,12 @@ button {
   height: 100%;
 }
 
+.titlebar-actions {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .window-controls button {
   width: 46px;
   height: 100%;
@@ -449,10 +455,6 @@ button {
   gap: 8px;
 }
 
-.global-actions.hidden {
-  display: none;
-}
-
 .global-actions > button,
 .global-actions > a,
 .profile-trigger {
@@ -483,22 +485,26 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 8px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 0;
 }
 
 .profile-avatar {
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   color: #ffffff;
   background: var(--blue);
+  font-size: 11px;
   font-weight: 700;
 }
 
 .profile-trigger strong {
   color: var(--text);
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -519,7 +525,7 @@ button {
     opacity 0.15s ease,
     transform 0.15s ease,
     visibility 0.15s ease;
-  z-index: 10;
+  z-index: 40;
 }
 
 .profile-menu:hover .profile-dropdown,
@@ -584,7 +590,7 @@ button {
 .content {
   flex: 1;
   min-height: 0;
-  padding: 0 44px 46px 16px;
+  padding: 76px 44px 46px 16px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -2725,7 +2731,7 @@ input {
 
   .content {
     flex: 1;
-    padding: 0 24px 28px;
+    padding: 76px 24px 28px;
   }
 
   .tool-filter-bar {

@@ -148,9 +148,6 @@ function renderShell() {
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === state.activeView);
   });
-  document
-    .querySelector("#global-actions")
-    .classList.toggle("hidden", state.activeView === "settings");
 }
 
 function providersForTool(toolId) {

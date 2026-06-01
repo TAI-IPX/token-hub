@@ -23,10 +23,30 @@
           />
           <span>联想 Token Hub</span>
         </div>
-        <div class="window-controls">
+        <div class="titlebar-actions">
+          <nav class="global-actions" id="global-actions" aria-label="全局功能">
+            <div class="profile-menu">
+              <button class="profile-trigger" aria-label="个人账户">
+                <span class="profile-avatar">1</span>
+                <strong>15*******88</strong>
+              </button>
+              <div class="profile-dropdown">
+                <button class="profile-menu-button" data-global-action="billing">
+                  <span>▤</span>
+                  账单历史
+                </button>
+                <button class="logout-button" data-global-action="logout">
+                  <span>↪</span>
+                  登出
+                </button>
+              </div>
+            </div>
+          </nav>
+          <div class="window-controls">
           <button data-window-action="hide" title="最小化" aria-label="最小化">—</button>
           <button title="最大化" aria-label="最大化">□</button>
           <button class="close" data-window-action="hide" title="关闭" aria-label="关闭">×</button>
+          </div>
         </div>
       </div>
 
@@ -73,28 +93,6 @@
       </aside>
 
       <section class="workspace">
-        <header class="topbar">
-          <div class="brand"></div>
-          <nav class="global-actions" id="global-actions" aria-label="全局功能">
-            <div class="profile-menu">
-              <button class="profile-trigger" aria-label="个人账户">
-                <span class="profile-avatar">1</span>
-                <strong>15*******88</strong>
-              </button>
-              <div class="profile-dropdown">
-                <button class="profile-menu-button" data-global-action="billing">
-                  <span>▤</span>
-                  账单历史
-                </button>
-                <button class="logout-button" data-global-action="logout">
-                  <span>↪</span>
-                  登出
-                </button>
-              </div>
-            </div>
-          </nav>
-        </header>
-
         <section class="content" id="content"></section>
       </section>
     </main>

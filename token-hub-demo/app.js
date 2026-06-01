@@ -600,7 +600,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.globalAction === "billing") {
-    showToast("账单历史入口");
+    showBillingHistoryDialog();
   }
 
   if (target.dataset.openRecharge) {
@@ -643,6 +643,14 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.copyOrder) {
     showToast("订单编号已复制");
+  }
+
+  if (target.dataset.billingCopy) {
+    showToast("订单编号已复制");
+  }
+
+  if (target.dataset.billingPage) {
+    showToast("演示数据仅有 1 页");
   }
 
   if (target.dataset.closePayment) {
@@ -1026,6 +1034,57 @@ function showMarketplaceFilter() {
     `,
     `<button class="ghost-button" value="reset">重置</button><button class="primary-button" value="confirm">应用筛选器</button>`,
   );
+}
+
+function showBillingHistoryDialog() {
+  const orders = [
+    ["lenovo_75f4bae6387ef438_121", "2026-06-01 10:41:33", "¥1.00", "1"],
+    ["lenovo_85c9aa0edfa029f7_121", "2026-06-01 10:31:33", "¥1.00", "1"],
+    ["lenovo_0673b98a2e038b0a_121", "2026-06-01 10:31:08", "¥1.00", "1"],
+    ["lenovo_81a9ee6833b0b7ef_121", "2026-06-01 10:29:17", "¥1.00", "1"],
+    ["lenovo_384da29bc61f743c_121", "2026-05-31 22:16:40", "¥50.00", "50"],
+    ["lenovo_b30c78de205a6f91_121", "2026-05-31 18:08:12", "¥20.00", "20"],
+  ];
+  const dialog = document.createElement("dialog");
+  dialog.className = "dashboard-modal billing-modal";
+  dialog.innerHTML = `
+    <section class="dashboard-modal-panel billing-modal-panel">
+      <div class="dashboard-modal-head">
+        <div><h2>计费历史</h2><p>查看您的充值交易记录和付款历史</p></div>
+        <button class="picker-close" data-close-payment="true" aria-label="关闭">×</button>
+      </div>
+      <div class="billing-toolbar">
+        <label><span>⌕</span><input type="search" placeholder="按订单号搜索..." aria-label="按订单号搜索" /></label>
+        <select aria-label="每页显示条数"><option>10 条/页</option><option>20 条/页</option></select>
+      </div>
+      <div class="billing-list">
+        ${orders
+          .map(
+            ([orderId, time, amount, paid]) => `
+              <article class="billing-card">
+                <div class="billing-card-head">
+                  <div><strong>${orderId}</strong><button data-billing-copy="${orderId}" aria-label="复制订单编号">⧉</button><span>${time}</span></div>
+                  <em>待确认</em>
+                </div>
+                <div class="billing-card-grid">
+                  <div><span>付款方式</span><strong>lenovo</strong></div>
+                  <div><span>金额</span><strong>${amount}</strong></div>
+                  <div><span>支付</span><strong class="billing-paid">${paid}</strong></div>
+                </div>
+              </article>
+            `,
+          )
+          .join("")}
+      </div>
+      <div class="billing-footer">
+        <span>显示第 1-6 条，共 6</span>
+        <div><button data-billing-page="prev" aria-label="上一页">‹</button><strong>1 / 1</strong><button data-billing-page="next" aria-label="下一页">›</button></div>
+      </div>
+    </section>
+  `;
+  document.body.appendChild(dialog);
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
 }
 
 function showToolPicker(modelName) {

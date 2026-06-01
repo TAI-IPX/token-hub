@@ -265,13 +265,7 @@ function renderApiKeys() {
   content.innerHTML = `
     <section class="page-heading dashboard-heading heading-with-action">
       <h2>API 密钥</h2>
-      <button class="dark-action">＋ 创建 API 密钥</button>
-    </section>
-    <section class="key-toolbar">
-      <input type="search" placeholder="按名称筛选..." />
-      <input type="search" placeholder="按 API 密钥筛选..." />
-      <button class="outline-action">⊕ 状态</button>
-      <button class="outline-action key-view-button">查看</button>
+      <button class="outline-action">＋ 创建 API 密钥</button>
     </section>
     <section class="key-table-wrap">
       <table class="key-table">
@@ -323,18 +317,21 @@ function renderMarketplace() {
                 <article class="model-card">
                   <div class="model-card-head">
                     <span class="model-logo">${name.slice(0, 1).toUpperCase()}</span>
-                    <span class="billing-tag">按量计费</span>
+                    <div class="model-card-title">
+                      <h2>${name}</h2>
+                      <div class="inline-pricing">
+                        <span>输入 <strong>${inputPrice}<small>/1M</small></strong></span>
+                        <span>输出 <strong>${outputPrice}<small>/1M</small></strong></span>
+                      </div>
+                    </div>
+                    <div class="model-card-actions"><button>详情 ›</button><button title="复制模型名称" aria-label="复制模型名称">⧉</button></div>
                   </div>
-                  <h2>${name}</h2>
                   <p>${summary}</p>
-                  <div class="model-pricing">
-                    <div><span>输入</span><strong>${inputPrice}<small>/1M</small></strong></div>
-                    <div><span>输出</span><strong>${outputPrice}<small>/1M</small></strong></div>
-                  </div>
                   <div class="model-tags">
+                    <span>default 分组</span>
+                    <span>按量计费</span>
                     ${tags.map((tag) => `<span>${tag}</span>`).join("")}
                   </div>
-                  <button class="primary-button model-detail-button" data-add-model="${name}">添加</button>
                 </article>
               `,
             )

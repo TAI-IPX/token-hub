@@ -1383,8 +1383,8 @@ button {
 .model-card {
   display: flex;
   flex-direction: column;
-  min-height: 292px;
-  padding: 20px;
+  min-height: 220px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--panel);
@@ -1399,14 +1399,13 @@ button {
 }
 
 .model-card-head,
-.model-pricing,
 .model-tags {
   display: flex;
   align-items: center;
 }
 
 .model-card-head {
-  justify-content: space-between;
+  gap: 12px;
 }
 
 .model-logo {
@@ -1420,92 +1419,84 @@ button {
   font-weight: 700;
 }
 
-.billing-tag,
 .model-tags span {
-  padding: 4px 8px;
-  border-radius: 6px;
-  color: var(--blue);
-  background: rgba(77, 107, 254, 0.08);
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: #737b87;
+  background: #f6f7f9;
   font-size: 11px;
 }
 
+.model-card-title {
+  min-width: 0;
+  flex: 1;
+}
+
 .model-card h2 {
-  margin: 18px 0 0;
+  margin: 0;
   overflow-wrap: anywhere;
-  font-size: 19px;
+  font-size: 17px;
 }
 
 .model-card p {
-  margin: 8px 0 16px;
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 18px 0;
   color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
-.model-pricing {
-  gap: 20px;
-  padding: 13px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+.inline-pricing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
 }
 
-.model-pricing span,
-.model-pricing strong {
-  display: block;
-}
-
-.model-pricing span {
+.inline-pricing span {
   color: var(--muted);
+  font-size: 11px;
+}
+
+.inline-pricing strong {
+  color: var(--text);
   font-size: 12px;
 }
 
-.model-pricing strong {
-  margin-top: 2px;
-  color: var(--text);
-  font-size: 18px;
-}
-
-.model-pricing small {
+.inline-pricing small {
   margin-left: 2px;
   color: var(--muted);
   font-size: 11px;
   font-weight: 500;
 }
 
+.model-card-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.model-card-actions button {
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: #69717e;
+  background: #ffffff;
+  font-size: 12px;
+}
+
+.model-card-actions button:hover {
+  color: #303744;
+  background: #f8f9fb;
+}
+
 .model-tags {
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 14px;
-}
-
-.model-detail-button {
-  width: 100%;
   margin-top: auto;
-}
-
-.dark-action {
-  height: 36px;
-  padding: 0 14px;
-  border: 1px solid #111827;
-  border-radius: 999px;
-  color: #ffffff;
-  background: #111827;
-  font-size: 14px;
-}
-
-.key-toolbar {
-  display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(220px, 1fr) auto auto;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.key-toolbar input {
-  height: 40px;
-  border-radius: 999px;
-  background: #fbfcfd;
-}
-
-.key-view-button {
-  margin-left: auto;
 }
 
 .key-table-wrap {
@@ -1636,9 +1627,10 @@ button {
 
 .filter-block span.active,
 .marketplace-tools span.active {
-  color: #ffffff;
-  border-color: #111827;
-  background: #111827;
+  color: #303744;
+  border-color: var(--line);
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
 }
 
 .marketplace-tools {
@@ -2156,14 +2148,6 @@ input {
   .dashboard-summary {
     grid-template-columns: repeat(5, minmax(148px, 1fr));
     overflow-x: auto;
-  }
-
-  .key-toolbar {
-    grid-template-columns: 1fr;
-  }
-
-  .key-view-button {
-    margin-left: 0;
   }
 
   .marketplace-shell {

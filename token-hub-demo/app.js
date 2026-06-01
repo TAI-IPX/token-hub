@@ -280,8 +280,28 @@ function renderProviders() {
     .join("");
 
   content.innerHTML = `
-    <section class="page-heading dashboard-heading heading-with-action">
+    <section class="page-heading dashboard-heading heading-with-action model-config-heading">
       <h2>模型配置</h2>
+      <div class="auto-match-group auto-match-heading-action">
+        <div class="auto-match-row">
+          <span class="auto-match-icon">⚡</span>
+          <span class="auto-match-label">智能模型匹配</span>
+          <button class="toggle${state.autoMatchModels ? " active" : ""}" data-toggle-auto-match="true" aria-label="智能模型匹配开关"></button>
+        </div>
+        <div class="auto-match-info-wrap${!state.hasSeenAutoMatchIntro ? " auto-match-popover-open" : ""}">
+          <button class="auto-match-info-btn" data-auto-match-info="true" aria-label="智能模型匹配说明">ⓘ</button>
+          ${state.hasSeenAutoMatchIntro ? "" : `<div class="auto-match-guide-backdrop"></div>`}
+          <div class="auto-match-popover">
+            <p>开启后，系统将根据每个工具的特性自动匹配最合适的默认模型，无需手动逐个配置。</p>
+            ${state.hasSeenAutoMatchIntro ? "" : `
+              <div class="auto-match-popover-actions">
+                <button class="primary-button" data-enable-auto-match="true">开启</button>
+                <button class="ghost-button" data-dismiss-auto-match-intro="true">暂不开启</button>
+              </div>
+            `}
+          </div>
+        </div>
+      </div>
     </section>
     <section class="tool-filter-bar">
       <div class="tool-filter-list">
@@ -305,26 +325,6 @@ function renderProviders() {
             <path d="M21 20v-5h-5" />
           </svg>
         </button>
-      </div>
-      <div class="auto-match-group">
-        <div class="auto-match-info-wrap${!state.hasSeenAutoMatchIntro ? " auto-match-popover-open" : ""}">
-          <button class="auto-match-info-btn" data-auto-match-info="true" aria-label="智能模型匹配说明">ⓘ</button>
-          ${state.hasSeenAutoMatchIntro ? "" : `<div class="auto-match-guide-backdrop"></div>`}
-          <div class="auto-match-popover">
-            <p>开启后，系统将根据每个工具的特性自动匹配最合适的默认模型，无需手动逐个配置。</p>
-            ${state.hasSeenAutoMatchIntro ? "" : `
-              <div class="auto-match-popover-actions">
-                <button class="primary-button" data-enable-auto-match="true">开启</button>
-                <button class="ghost-button" data-dismiss-auto-match-intro="true">暂不开启</button>
-              </div>
-            `}
-          </div>
-        </div>
-        <div class="auto-match-row">
-          <span class="auto-match-icon">⚡</span>
-          <span class="auto-match-label">智能模型匹配</span>
-          <button class="toggle${state.autoMatchModels ? " active" : ""}" data-toggle-auto-match="true" aria-label="智能模型匹配开关"></button>
-        </div>
       </div>
     </section>
     <section class="provider-list">

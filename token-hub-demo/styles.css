@@ -650,7 +650,6 @@ button {
 .tool-filter-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   margin-bottom: 18px;
 }
@@ -780,6 +779,11 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.auto-match-heading-action .auto-match-popover {
+  right: 0;
+  left: auto;
 }
 
 .auto-match-row {
@@ -3319,6 +3323,13 @@ input {
   .dashboard-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .model-config-heading {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   .dashboard-summary {

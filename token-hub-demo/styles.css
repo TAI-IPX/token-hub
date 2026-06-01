@@ -1082,7 +1082,7 @@ button {
 }
 
 .side-drawer-layer {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 60;
   display: flex;
@@ -1092,7 +1092,7 @@ button {
 }
 
 .side-drawer {
-  width: min(760px, calc(100vw - 72px));
+  width: min(760px, calc(100% - 72px));
   height: 100%;
   overflow-y: auto;
   border-left: 1px solid var(--line);
@@ -1102,7 +1102,7 @@ button {
 }
 
 .recharge-drawer {
-  width: min(680px, calc(100vw - 72px));
+  width: min(680px, calc(100% - 72px));
 }
 
 @keyframes drawer-enter {
@@ -1964,46 +1964,11 @@ button {
 }
 
 .marketplace-shell {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 16px;
+  display: block;
 }
 
-.marketplace-filter {
-  align-self: start;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.68);
-}
-
-.marketplace-filter-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.marketplace-filter h3,
-.marketplace-filter h4 {
+.marketplace-filter-modal h4 {
   margin: 0;
-}
-
-.marketplace-filter h3 {
-  font-size: 17px;
-}
-
-.marketplace-filter p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.marketplace-filter-head button {
-  border: 0;
-  color: var(--muted);
-  background: transparent;
-  font-size: 12px;
 }
 
 .filter-block {
@@ -2028,6 +1993,7 @@ button {
 }
 
 .filter-block span,
+.filter-block button,
 .marketplace-tools span {
   padding: 5px 9px;
   border: 1px solid var(--line);
@@ -2037,7 +2003,12 @@ button {
   font-size: 12px;
 }
 
+.filter-block button {
+  cursor: pointer;
+}
+
 .filter-block span.active,
+.filter-block button.active,
 .marketplace-tools span.active {
   color: #303744;
   border-color: var(--line);
@@ -2046,21 +2017,26 @@ button {
 }
 
 .marketplace-tools {
-  min-height: 52px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.7);
+  margin-left: auto;
 }
 
 .marketplace-tools div {
   display: flex;
+  align-items: center;
   gap: 6px;
+}
+
+.marketplace-filter-button {
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: #303744;
+  background: #ffffff;
+  font-size: 12px;
 }
 
 .marketplace-main .model-grid {

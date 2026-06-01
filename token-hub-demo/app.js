@@ -298,18 +298,20 @@ function renderMarketplace() {
           ${nested ? "<p>选择模型后，再指定需要添加到的工具。</p>" : ""}
         </div>
       </div>
-      <span class="model-count">共 ${models.length} 个模型</span>
+      <div class="marketplace-tools">
+        <strong>${models.length} 个模型</strong>
+        <div>
+          <span class="active">标准</span>
+          <span>充值</span>
+          <span class="active">/1M</span>
+          <span>/1K</span>
+          <span>↕ 名称</span>
+          <button class="marketplace-filter-button" data-marketplace-filter="true">▽ 筛选</button>
+        </div>
+      </div>
     </section>
     <section class="marketplace-shell">
-      <aside class="marketplace-filter">
-        <div class="marketplace-filter-head"><div><h3>筛选</h3><p>按供应商、分组、类型和标签细化模型。</p></div><button>↻ 重置</button></div>
-        <div class="filter-block"><h4>分组⌃</h4><div><span class="active">所有分组</span><span>default</span><span>x0.6</span></div></div>
-        <div class="filter-block"><h4>所有供应商⌃</h4><div><span class="active">所有供应商 11</span><span>DeepSeek 2</span><span>阿里巴巴 4</span><span>Moonshot 2</span><span>智谱 2</span><span>MiniMax AI 1</span></div></div>
-        <div class="filter-block"><h4>模型标签⌃</h4><div><span class="active">所有标签 11</span><span>深度思考 9</span><span>视觉理解 5</span><span>文本生成 11</span></div></div>
-        <div class="filter-block"><h4>定价类型⌃</h4><div><span class="active">所有模型 11</span><span>按量计费 11</span></div></div>
-      </aside>
       <div class="marketplace-main">
-        <div class="marketplace-tools"><strong>${models.length} 个模型</strong><div><span class="active">标准</span><span>充值</span><span class="active">/1M</span><span>/1K</span><span>↕ 名称</span></div></div>
         <section class="model-grid">
           ${models
             .map(
@@ -676,6 +678,17 @@ document.addEventListener("click", (event) => {
     showDashboardFilter();
   }
 
+  if (target.dataset.marketplaceFilter) {
+    showMarketplaceFilter();
+  }
+
+  if (target.matches(".marketplace-filter-modal .filter-block button")) {
+    target
+      .closest(".filter-block")
+      .querySelectorAll("button")
+      .forEach((button) => button.classList.toggle("active", button === target));
+  }
+
   if (target.dataset.filterRange) {
     target
       .closest(".quick-range")
@@ -705,7 +718,7 @@ function showSideDrawer(contentHtml, className = "") {
   const layer = document.createElement("div");
   layer.className = "side-drawer-layer";
   layer.innerHTML = `<aside class="side-drawer ${className}">${contentHtml}</aside>`;
-  document.body.appendChild(layer);
+  appShell.appendChild(layer);
   layer.addEventListener("click", (event) => {
     if (event.target === layer) closeSideDrawer();
   });
@@ -863,6 +876,22 @@ function showDashboardFilter() {
         </div>
       </section>
       <label class="modal-field"><strong>时间粒度</strong><select><option>小时</option><option>天</option></select></label>
+    `,
+    `<button class="ghost-button" value="reset">重置</button><button class="primary-button" value="confirm">应用筛选器</button>`,
+  );
+}
+
+function showMarketplaceFilter() {
+  createDashboardDialog(
+    "筛选模型",
+    "按供应商、分组、类型和标签细化模型。",
+    `
+      <section class="marketplace-filter-modal">
+        <div class="filter-block"><h4>分组⌃</h4><div><button type="button" class="active">所有分组</button><button type="button">default</button><button type="button">x0.6</button></div></div>
+        <div class="filter-block"><h4>所有供应商⌃</h4><div><button type="button" class="active">所有供应商 11</button><button type="button">DeepSeek 2</button><button type="button">阿里巴巴 4</button><button type="button">Moonshot 2</button><button type="button">智谱 2</button><button type="button">MiniMax AI 1</button></div></div>
+        <div class="filter-block"><h4>模型标签⌃</h4><div><button type="button" class="active">所有标签 11</button><button type="button">深度思考 9</button><button type="button">视觉理解 5</button><button type="button">文本生成 11</button></div></div>
+        <div class="filter-block"><h4>定价类型⌃</h4><div><button type="button" class="active">所有模型 11</button><button type="button">按量计费 11</button></div></div>
+      </section>
     `,
     `<button class="ghost-button" value="reset">重置</button><button class="primary-button" value="confirm">应用筛选器</button>`,
   );

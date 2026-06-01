@@ -382,7 +382,7 @@ function renderDashboard() {
         <span class="summary-label"><b>◎</b>总额度</span>
         <div class="summary-value">
           <strong>¥128.50</strong>
-          <a class="recharge-link" href="https://lai-hub.lenovomm.com/wallet" target="_blank" rel="noreferrer">+ 充值</a>
+          <button class="recharge-link" data-open-recharge="true">+ 充值</button>
         </div>
         <small>统计配额</small>
       </article>
@@ -523,6 +523,41 @@ function renderSettings() {
   `;
 }
 
+function renderRecharge() {
+  content.innerHTML = `
+    <section class="recharge-panel">
+      <div class="recharge-head">
+        <div class="title-with-back">
+          <button class="back-button" data-back-dashboard="true" title="返回" aria-label="返回">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+          </button>
+          <div>
+            <h2>充值</h2>
+            <p>选择金额和支付方式</p>
+          </div>
+        </div>
+      </div>
+      <div class="recharge-body">
+        <h3>金额</h3>
+        <div class="amount-grid">
+          ${[10, 20, 50, 100, 200, 500]
+            .map(
+              (amount) => `<button class="amount-option ${amount === 50 ? "active" : ""}" data-recharge-amount="${amount}">${amount}元</button>`,
+            )
+            .join("")}
+        </div>
+        <h3>自定义金额</h3>
+        <div class="custom-amount-row">
+          <input class="custom-amount-input" type="number" min="1" value="50" aria-label="自定义金额" />
+          <div class="pending-amount"><span>待支付金额：</span><strong>¥<b id="pending-amount">50</b></strong></div>
+        </div>
+        <h3>付款方式</h3>
+        <button class="payment-option active"><span>◉</span>微信/支付宝</button>
+      </div>
+    </section>
+  `;
+}
+
 function activeProviderName() {
   return (
     state.providers.find((provider) => provider.id === state.currentProviderId)
@@ -537,6 +572,7 @@ function render() {
   if (state.activeView === "api-keys") renderApiKeys();
   if (state.activeView === "marketplace") renderMarketplace();
   if (state.activeView === "settings") renderSettings();
+  if (state.activeView === "recharge") renderRecharge();
   content.scrollTop = 0;
 }
 
@@ -587,6 +623,28 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.globalAction === "logout") {
     alert("演示：已退出登录。");
+  }
+
+  if (target.dataset.globalAction === "billing") {
+    showToast("账单历史入口");
+  }
+
+  if (target.dataset.openRecharge) {
+    state.activeView = "recharge";
+    render();
+  }
+
+  if (target.dataset.backDashboard) {
+    state.activeView = "dashboard";
+    render();
+  }
+
+  if (target.dataset.rechargeAmount) {
+    document
+      .querySelectorAll(".amount-option")
+      .forEach((button) => button.classList.toggle("active", button === target));
+    document.querySelector(".custom-amount-input").value = target.dataset.rechargeAmount;
+    document.querySelector("#pending-amount").textContent = target.dataset.rechargeAmount;
   }
 
   if (target.dataset.tool) {
@@ -662,6 +720,14 @@ document.addEventListener("click", (event) => {
   if (target.classList.contains("toggle")) {
     target.classList.toggle("active");
   }
+});
+
+document.addEventListener("input", (event) => {
+  if (!event.target.matches(".custom-amount-input")) return;
+  document.querySelector("#pending-amount").textContent = event.target.value || "0";
+  document.querySelectorAll(".amount-option").forEach((button) => {
+    button.classList.toggle("active", button.dataset.rechargeAmount === event.target.value);
+  });
 });
 
 trayButton.addEventListener("contextmenu", (event) => {

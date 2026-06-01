@@ -499,7 +499,8 @@ button {
   transform: translateY(0);
 }
 
-.logout-button {
+.logout-button,
+.profile-menu-button {
   width: 100%;
   height: 40px;
   display: flex;
@@ -511,6 +512,15 @@ button {
   color: #e5484d;
   background: transparent;
   text-align: left;
+}
+
+.profile-menu-button {
+  color: #303744;
+  background: transparent;
+}
+
+.profile-menu-button:hover {
+  background: #f6f7f9;
 }
 
 .logout-button:hover {
@@ -919,6 +929,7 @@ button {
 }
 
 .recharge-link {
+  border: 0;
   margin-top: 9px;
   padding: 6px 12px;
   border: 1px solid var(--blue);
@@ -930,6 +941,118 @@ button {
   white-space: nowrap;
   text-decoration: none;
   box-shadow: 0 4px 10px rgba(77, 107, 254, 0.2);
+}
+
+.recharge-panel {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.recharge-head {
+  display: flex;
+  align-items: center;
+  min-height: 104px;
+  padding: 0 26px;
+  border-bottom: 1px solid var(--line);
+}
+
+.recharge-head h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.recharge-head p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.recharge-body {
+  padding: 26px;
+}
+
+.recharge-body h3 {
+  margin: 0 0 14px;
+  color: #59606c;
+  font-size: 15px;
+}
+
+.recharge-body h3:not(:first-child) {
+  margin-top: 28px;
+}
+
+.amount-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.amount-option {
+  min-height: 84px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0 18px;
+  color: #202733;
+  background: #f5f6f8;
+  text-align: left;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.amount-option:hover,
+.amount-option.active {
+  border-color: #303744;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+}
+
+.custom-amount-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  gap: 12px;
+}
+
+.custom-amount-input,
+.pending-amount {
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.pending-amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pending-amount strong {
+  color: #303744;
+  font-size: 17px;
+}
+
+.payment-option {
+  width: min(360px, 100%);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 18px;
+  color: #303744;
+  background: #f8f9fb;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.payment-option span {
+  color: #ef4444;
 }
 
 .recharge-link:hover {
@@ -2167,6 +2290,14 @@ input {
   .marketplace-tools div {
     max-width: 100%;
     overflow-x: auto;
+  }
+
+  .amount-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .custom-amount-row {
+    grid-template-columns: 1fr;
   }
 
   .analytics-head {

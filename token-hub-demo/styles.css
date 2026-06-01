@@ -627,6 +627,13 @@ button {
   margin-bottom: 18px;
 }
 
+.tool-filter-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .tool-filter-tabs {
   display: flex;
   align-items: center;

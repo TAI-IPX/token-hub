@@ -266,17 +266,27 @@ function renderProviders() {
       <h2>模型配置</h2>
     </section>
     <section class="tool-filter-bar">
-      <div class="tool-filter-tabs">
-        ${tools
-          .map(
-            ([id, label, mark]) => `
-              <button class="tool-filter ${state.activeTool === id ? "active" : ""}" data-tool="${id}">
-                <span>${mark}</span>
-                ${label}
-              </button>
-            `,
-          )
-          .join("")}
+      <div class="tool-filter-list">
+        <div class="tool-filter-tabs">
+          ${tools
+            .map(
+              ([id, label, mark]) => `
+                <button class="tool-filter ${state.activeTool === id ? "active" : ""}" data-tool="${id}">
+                  <span>${mark}</span>
+                  ${label}
+                </button>
+              `,
+            )
+            .join("")}
+        </div>
+        <button class="refresh-tools-button" data-refresh-tools="true" data-tooltip="重新检测已安装工具" title="重新检测已安装工具" aria-label="重新检测已安装工具">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 11a8.1 8.1 0 0 0-14.9-4.3L3 9" />
+            <path d="M3 4v5h5" />
+            <path d="M4 13a8.1 8.1 0 0 0 14.9 4.3L21 15" />
+            <path d="M21 20v-5h-5" />
+          </svg>
+        </button>
       </div>
       <div class="auto-match-group">
         <div class="auto-match-info-wrap${!state.hasSeenAutoMatchIntro ? " auto-match-popover-open" : ""}">
@@ -297,14 +307,6 @@ function renderProviders() {
           <span class="auto-match-label">智能模型匹配</span>
           <button class="toggle${state.autoMatchModels ? " active" : ""}" data-toggle-auto-match="true" aria-label="智能模型匹配开关"></button>
         </div>
-        <button class="refresh-tools-button" data-refresh-tools="true" data-tooltip="重新检测已安装工具" title="重新检测已安装工具" aria-label="重新检测已安装工具">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20 11a8.1 8.1 0 0 0-14.9-4.3L3 9" />
-            <path d="M3 4v5h5" />
-            <path d="M4 13a8.1 8.1 0 0 0 14.9 4.3L21 15" />
-            <path d="M21 20v-5h-5" />
-          </svg>
-        </button>
       </div>
     </section>
     <section class="provider-list">

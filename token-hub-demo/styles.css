@@ -1086,14 +1086,6 @@ button {
 
 
 /* --- 模型配置按钮色彩 --- */
-.soft-button.add-btn {
-  background: #e8f5e9;
-  border-color: #a5d6a7;
-  color: #2e7d32;
-}
-.soft-button.add-btn:hover {
-  background: #c8e6c9;
-}
 .soft-button.remove-btn {
   background: #fff3e0;
   border-color: #ffcc80;

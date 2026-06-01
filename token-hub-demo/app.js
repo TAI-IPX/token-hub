@@ -245,11 +245,11 @@ function renderProviders() {
           const disabledAttr = isDefault ? 'disabled' : '';
           mainBtnHtml = `<button class="soft-button remove-btn" ${disabledAttr} data-remove="${provider.id}" data-tool="${toolId}">${isDefault ? "默认模型" : "移除"}</button>`;
         } else {
-          mainBtnHtml = `<button class="soft-button add-btn" data-add="${provider.id}" data-tool="${toolId}">添加</button>`;
+          mainBtnHtml = `<button class="soft-button default-btn" data-add="${provider.id}" data-tool="${toolId}">添加</button>`;
         }
       } else {
         // Switch 模式：启用/切换
-        mainBtnHtml = `<button class="soft-button" ${isCurrent ? 'disabled' : `data-switch="${provider.id}" data-tool="${toolId}"`}>${isCurrent ? '已在用' : '启用'}</button>`;
+        mainBtnHtml = `<button class="soft-button${isCurrent ? "" : " default-btn"}" ${isCurrent ? 'disabled' : `data-switch="${provider.id}" data-tool="${toolId}"`}>${isCurrent ? '已在用' : '启用'}</button>`;
       }
 
       // OpenClaw/Hermes: 设为默认按钮

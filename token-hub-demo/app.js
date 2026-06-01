@@ -319,10 +319,10 @@ function renderMarketplace() {
       <div class="marketplace-tools">
         <strong>${models.length} 个模型</strong>
         <div>
-          <span class="active">标准</span>
-          <span>充值</span>
-          <span class="active">/1M</span>
-          <span>/1K</span>
+          <div class="pricing-unit-switch" aria-label="计价单位">
+            <button class="active" data-pricing-unit="1M">/1M</button>
+            <button data-pricing-unit="1K">/1K</button>
+          </div>
           <span>↕ 名称</span>
           <button class="marketplace-filter-button" data-marketplace-filter="true">▽ 筛选</button>
         </div>
@@ -344,7 +344,7 @@ function renderMarketplace() {
                         <span>输出 <strong>${outputPrice}<small>/1M</small></strong></span>
                       </div>
                     </div>
-                    <div class="model-card-actions"><button data-model-detail="${name}">详情 ›</button><button title="复制模型名称" aria-label="复制模型名称">⧉</button></div>
+                    <div class="model-card-actions"><button data-model-detail="${name}">详情 ›</button></div>
                   </div>
                   <p>${summary}</p>
                   <div class="model-tags">
@@ -728,6 +728,13 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.marketplaceFilter) {
     showMarketplaceFilter();
+  }
+
+  if (target.dataset.pricingUnit) {
+    target
+      .closest(".pricing-unit-switch")
+      .querySelectorAll("button")
+      .forEach((button) => button.classList.toggle("active", button === target));
   }
 
   if (target.matches(".marketplace-filter-modal .filter-block button")) {

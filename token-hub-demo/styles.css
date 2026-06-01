@@ -2245,6 +2245,30 @@ button {
   gap: 6px;
 }
 
+.pricing-unit-switch {
+  display: flex;
+  gap: 2px !important;
+  padding: 3px;
+  border-radius: 999px;
+  background: #f1f3f6;
+}
+
+.pricing-unit-switch button {
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 9px;
+  color: #69717e;
+  background: transparent;
+  font-size: 12px;
+}
+
+.pricing-unit-switch button.active {
+  color: #303744;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+}
+
 .marketplace-filter-button {
   height: 30px;
   padding: 0 11px;

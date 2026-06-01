@@ -1114,24 +1114,30 @@ button {
   color: #ef4444;
 }
 
-.recharge-modal-panel {
-  width: min(720px, calc(100vw - 32px));
+.recharge-flow-panel {
+  width: min(680px, calc(100vw - 32px));
+  height: min(620px, calc(100vh - 64px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recharge-flow-content {
+  min-height: 0;
+  flex: 1;
 }
 
 .recharge-modal .amount-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.payment-modal-panel {
-  width: min(680px, calc(100vw - 32px));
-}
-
-.payment-confirm-panel {
-  width: min(520px, calc(100vw - 32px));
-}
-
 .payment-confirm-body {
   padding: 10px 20px 18px;
+}
+
+.payment-flow-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .payment-confirm-body > div {
@@ -1186,6 +1192,8 @@ button {
 
 .payment-panel {
   display: none;
+  min-height: 0;
+  flex: 1;
   margin: 16px 20px 20px;
   border: 1px solid var(--line);
   border-radius: 16px;

@@ -793,6 +793,14 @@ button {
   background: rgba(77, 107, 254, 0.08);
 }
 
+.auto-match-guide-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(3px);
+}
+
 .auto-match-label {
   color: var(--muted);
   font-size: 13px;

@@ -280,6 +280,7 @@ function renderProviders() {
       <div class="auto-match-group">
         <div class="auto-match-info-wrap${!state.hasSeenAutoMatchIntro ? " auto-match-popover-open" : ""}">
           <button class="auto-match-info-btn" data-auto-match-info="true" aria-label="智能模型匹配说明">ⓘ</button>
+          ${state.hasSeenAutoMatchIntro ? "" : `<div class="auto-match-guide-backdrop"></div>`}
           <div class="auto-match-popover">
             <p>开启后，系统将根据每个工具的特性自动匹配最合适的默认模型，无需手动逐个配置。</p>
             ${state.hasSeenAutoMatchIntro ? "" : `

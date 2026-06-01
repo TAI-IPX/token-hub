@@ -492,16 +492,10 @@ function renderSettings() {
       <h2>设置</h2>
     </section>
     <section class="setting-section">
-      <div class="setting-section-head">
-        <div>
-          <h3>外观主题</h3>
-          <p>选择应用的外观主题，立即生效。</p>
-        </div>
-      </div>
       <div class="setting-section-body">
         <div class="setting-list">
           <div class="setting-row">
-            <div><strong>主题模式</strong></div>
+            <div><strong>主题模式</strong><span>选择应用的外观主题，立即生效。</span></div>
             <div class="segmented-control compact">
               <button class="active" data-theme-option="light">浅色</button>
               <button data-theme-option="dark">深色</button>
@@ -522,12 +516,6 @@ function renderSettings() {
     </section>
 
     <section class="setting-section">
-      <div class="setting-section-head">
-        <div>
-          <h3>应用行为</h3>
-          <p>管理应用启动、托盘和更新策略。</p>
-        </div>
-      </div>
       <div class="setting-section-body">
         <div class="setting-list">
           <div class="setting-row"><div><strong>开机自启</strong><span>随系统启动自动运行联想Token Hub</span></div><button class="toggle" aria-label="开机自启"></button></div>

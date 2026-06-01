@@ -101,17 +101,17 @@ const state = {
 };
 
 const models = [
-  ["deepseek-v4-flash", "¥0.6", "¥1.2", "轻量高速", ["文本生成", "深度思考", "1M"]],
-  ["deepseek-v4-pro", "¥7.2", "¥14.4", "旗舰推理", ["文本生成", "深度思考", "1M"]],
-  ["glm-5", "¥2.4", "¥10.8", "Coding 与 Agent", ["文本生成", "1M"]],
-  ["glm-5.1", "¥3.6", "¥14.4", "长程任务", ["文本生成", "1M"]],
-  ["kimi-k2.5", "¥2.4", "¥12.6", "多模态 Agent", ["文本生成", "深度思考", "1M"]],
-  ["kimi-k2.6", "¥3.9", "¥16.2", "通用 Agent", ["文本生成", "深度思考", "1M"]],
-  ["MiniMax-M2.5", "¥1.26", "¥5.04", "生产力场景", ["文本生成", "深度思考", "1M"]],
-  ["qwen3.5-plus", "¥0.48", "¥2.88", "视觉语言", ["文本生成", "深度思考", "1M"]],
-  ["qwen3.6-flash", "¥0.72", "¥4.32", "高效多模态", ["深度思考", "视觉理解", "1M"]],
-  ["qwen3.6-max-preview", "¥5.4", "¥32.4", "最强 Max 预览", ["文本生成", "深度思考", "1M"]],
-  ["qwen3.6-plus", "¥1.2", "¥7.2", "增强多模态", ["深度思考", "视觉理解", "1M"]],
+  ["deepseek-v4-flash", "¥0.6", "¥1.2", "高效轻量化 MoE 模型，总参 284B，激活 13B，原生支持百万超长上下文能力。推理速度快、延迟低、调用成本低廉，适合日常对话、内容创作、基础 RAG 与批量文本处理。", ["文本生成", "深度思考", "1M"]],
+  ["deepseek-v4-pro", "¥7.2", "¥14.4", "旗舰级 MoE 大模型，总参 1.6T，激活 49B，原生支持百万级超长上下文。依托海量高质量训练数据，具备顶尖的复杂推理、代码生成和专业写作能力。", ["文本生成", "深度思考", "1M"]],
+  ["glm-5", "¥2.4", "¥10.8", "GLM-5 是面向 Coding 与 Agent 场景的新一代大模型，在复杂系统工程与长程任务中达到开源 SOTA，拥有扎实的编程、工具调用和逻辑推理能力。", ["文本生成", "Agent", "1M"]],
+  ["glm-5.1", "¥3.6", "¥14.4", "GLM-5.1 是智谱 AI 推出的面向长程任务模型，支持 200K 超长上下文和最大 128K tokens 输出，适合复杂分析、代码工程和持续性工作流。", ["文本生成", "深度思考", "1M"]],
+  ["kimi-k2.5", "¥2.4", "¥12.6", "Kimi K2.5 是面向 Agent、代码与视觉理解的智能模型，在通用智能任务上取得优秀表现，适合多步骤规划、工具使用和多模态内容处理。", ["文本生成", "深度思考", "1M"]],
+  ["kimi-k2.6", "¥3.9", "¥16.2", "Kimi K2.6 的通用 Agent、代码和视觉理解等综合能力得到全面提升，在高难度推理和复杂工具协作场景中表现稳定。", ["文本生成", "深度思考", "1M"]],
+  ["MiniMax-M2.5", "¥1.26", "¥5.04", "MiniMax-M2.5 是旗舰级开源大模型，经过复杂真实环境中的大规模强化学习训练，在编程、工具调用、搜索和办公等生产力场景中表现出色。", ["文本生成", "深度思考", "1M"]],
+  ["qwen3.5-plus", "¥0.48", "¥2.88", "Qwen3.5 原生视觉语言系列 Plus 模型，融合线性注意力机制与稀疏混合专家架构，在多项任务评测中展现出更高的推理效率。", ["文本生成", "深度思考", "1M"]],
+  ["qwen3.6-flash", "¥0.72", "¥4.32", "Qwen3.6 原生视觉语言系列 Flash 模型，重点提升 Agentic Coding、视觉理解与高吞吐调用体验，适合强调速度和性价比的应用。", ["深度思考", "视觉理解", "1M"]],
+  ["qwen3.6-max-preview", "¥5.4", "¥32.4", "Qwen3.6 系列中规模最大、综合能力最强的 Max Preview 模型，为复杂推理、代码生成和多模态理解提供旗舰体验。", ["文本生成", "深度思考", "1M"]],
+  ["qwen3.6-plus", "¥1.2", "¥7.2", "Qwen3.6 原生视觉语言系列 Plus 模型，展现出均衡的卓越性能，在通用问答、视觉理解、深度思考与工具协作中保持良好表现。", ["深度思考", "视觉理解", "1M"]],
 ];
 
 const tools = [
@@ -324,7 +324,7 @@ function renderMarketplace() {
                         <span>输出 <strong>${outputPrice}<small>/1M</small></strong></span>
                       </div>
                     </div>
-                    <div class="model-card-actions"><button>详情 ›</button><button title="复制模型名称" aria-label="复制模型名称">⧉</button></div>
+                    <div class="model-card-actions"><button data-model-detail="${name}">详情 ›</button><button title="复制模型名称" aria-label="复制模型名称">⧉</button></div>
                   </div>
                   <p>${summary}</p>
                   <div class="model-tags">
@@ -523,41 +523,6 @@ function renderSettings() {
   `;
 }
 
-function renderRecharge() {
-  content.innerHTML = `
-    <section class="recharge-panel">
-      <div class="recharge-head">
-        <div class="title-with-back">
-          <button class="back-button" data-back-dashboard="true" title="返回" aria-label="返回">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
-          </button>
-          <div>
-            <h2>充值</h2>
-            <p>选择金额和支付方式</p>
-          </div>
-        </div>
-      </div>
-      <div class="recharge-body">
-        <h3>金额</h3>
-        <div class="amount-grid">
-          ${[10, 20, 50, 100, 200, 500]
-            .map(
-              (amount) => `<button class="amount-option ${amount === 50 ? "active" : ""}" data-recharge-amount="${amount}">${amount}元</button>`,
-            )
-            .join("")}
-        </div>
-        <h3>自定义金额</h3>
-        <div class="custom-amount-row">
-          <input class="custom-amount-input" type="number" min="1" value="50" aria-label="自定义金额" />
-          <div class="pending-amount"><span>待支付金额：</span><strong>¥<b id="pending-amount">50</b></strong></div>
-        </div>
-        <h3>付款方式</h3>
-        <button class="payment-option active"><span>◉</span>微信/支付宝</button>
-      </div>
-    </section>
-  `;
-}
-
 function activeProviderName() {
   return (
     state.providers.find((provider) => provider.id === state.currentProviderId)
@@ -572,7 +537,6 @@ function render() {
   if (state.activeView === "api-keys") renderApiKeys();
   if (state.activeView === "marketplace") renderMarketplace();
   if (state.activeView === "settings") renderSettings();
-  if (state.activeView === "recharge") renderRecharge();
   content.scrollTop = 0;
 }
 
@@ -630,13 +594,11 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.openRecharge) {
-    state.activeView = "recharge";
-    render();
+    showRechargeDrawer();
   }
 
-  if (target.dataset.backDashboard) {
-    state.activeView = "dashboard";
-    render();
+  if (target.dataset.closeDrawer) {
+    closeSideDrawer();
   }
 
   if (target.dataset.rechargeAmount) {
@@ -645,6 +607,10 @@ document.addEventListener("click", (event) => {
       .forEach((button) => button.classList.toggle("active", button === target));
     document.querySelector(".custom-amount-input").value = target.dataset.rechargeAmount;
     document.querySelector("#pending-amount").textContent = target.dataset.rechargeAmount;
+  }
+
+  if (target.dataset.modelDetail) {
+    showModelDetailDrawer(target.dataset.modelDetail);
   }
 
   if (target.dataset.tool) {
@@ -729,6 +695,89 @@ document.addEventListener("input", (event) => {
     button.classList.toggle("active", button.dataset.rechargeAmount === event.target.value);
   });
 });
+
+function closeSideDrawer() {
+  document.querySelector(".side-drawer-layer")?.remove();
+}
+
+function showSideDrawer(contentHtml, className = "") {
+  closeSideDrawer();
+  const layer = document.createElement("div");
+  layer.className = "side-drawer-layer";
+  layer.innerHTML = `<aside class="side-drawer ${className}">${contentHtml}</aside>`;
+  document.body.appendChild(layer);
+  layer.addEventListener("click", (event) => {
+    if (event.target === layer) closeSideDrawer();
+  });
+}
+
+function showRechargeDrawer() {
+  showSideDrawer(
+    `
+      <div class="drawer-head">
+        <div><h2>充值</h2><p>选择金额和支付方式</p></div>
+        <button class="drawer-close" data-close-drawer="true" aria-label="关闭">×</button>
+      </div>
+      <div class="drawer-body recharge-body">
+        <h3>金额</h3>
+        <div class="amount-grid">
+          ${[10, 20, 50, 100, 200, 500]
+            .map(
+              (amount) => `<button class="amount-option ${amount === 50 ? "active" : ""}" data-recharge-amount="${amount}">${amount}元</button>`,
+            )
+            .join("")}
+        </div>
+        <h3>自定义金额</h3>
+        <div class="custom-amount-row">
+          <input class="custom-amount-input" type="number" min="1" value="50" aria-label="自定义金额" />
+          <div class="pending-amount"><span>待支付金额：</span><strong>¥<b id="pending-amount">50</b></strong></div>
+        </div>
+        <h3>付款方式</h3>
+        <button class="payment-option active"><span>◉</span>微信/支付宝</button>
+      </div>
+    `,
+    "recharge-drawer",
+  );
+}
+
+function showModelDetailDrawer(modelName) {
+  const model = models.find(([name]) => name === modelName);
+  if (!model) return;
+  const [name, inputPrice, outputPrice, description, tags] = model;
+  showSideDrawer(
+    `
+      <div class="drawer-head model-drawer-head">
+        <div>
+          <h2><span class="drawer-model-logo">${name.slice(0, 1).toUpperCase()}</span>${name}</h2>
+          <div class="drawer-subtitle">default 分组 · 按量计费 · <b>动态计费</b></div>
+        </div>
+        <button class="drawer-close" data-close-drawer="true" aria-label="关闭">×</button>
+      </div>
+      <div class="drawer-body model-detail-body">
+        <p class="drawer-description">${description}</p>
+        <div class="drawer-tag-row">${tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
+        <div class="detail-tabs"><span class="active">ⓘ 概览</span><span>♡ 性能</span><span>‹/› API</span></div>
+        <section class="performance-strip">
+          <div><small>TPS</small><strong>108.3 t/s</strong></div>
+          <div><small>平均延迟</small><strong>42.82s</strong></div>
+          <div><small>成功率</small><strong class="success">100.00%</strong></div>
+        </section>
+        <section class="detail-section">
+          <h3>模型价格</h3>
+          <p>基础价格</p>
+          <div class="price-cards"><div><span>输入</span><strong>${inputPrice}<small> / 1M</small></strong></div><div><span>输出</span><strong>${outputPrice}<small> / 1M</small></strong></div></div>
+          <div class="cache-price"><span>缓存读取</span><strong>¥0.2 / 1M</strong></div>
+          <h3>动态计费</h3>
+          <p>价格根据用量档位和请求条件动态调整</p>
+          <table class="detail-table"><thead><tr><th>档位</th><th>输入</th><th>输出</th><th>缓存读取</th></tr></thead><tbody><tr><td><span>base</span></td><td>${inputPrice}</td><td>${outputPrice}</td><td>¥0.20</td></tr></tbody></table>
+        </section>
+        <section class="spec-strip"><div><small>上下文</small><strong>1M</strong></div><div><small>最大输出</small><strong>128K</strong></div><div><small>模态</small><strong>T → T</strong></div><div><small>知识截止</small><strong>2025年3月</strong></div></section>
+        <section class="detail-section"><h3>能力 / 支持的模态</h3><div class="drawer-tag-row"><span>流式输出</span><span>系统提示词</span><span>函数调用</span><span>工具</span><span>JSON 模式</span><span>结构化输出</span></div></section>
+      </div>
+    `,
+    "model-detail-drawer",
+  );
+}
 
 trayButton.addEventListener("contextmenu", (event) => {
   event.preventDefault();

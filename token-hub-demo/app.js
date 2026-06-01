@@ -978,7 +978,6 @@ function showCreateApiKeyDrawer() {
         </details>
       </div>
       <div class="drawer-actions">
-        <button class="ghost-button" data-close-drawer="true">关闭</button>
         <button class="primary-button" data-save-api-key="true">保存更改</button>
       </div>
     `,

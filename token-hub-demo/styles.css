@@ -330,6 +330,8 @@ button {
 }
 
 .sidebar {
+  position: relative;
+  z-index: 15;
   min-height: 0;
   display: flex;
   align-items: center;
@@ -338,6 +340,8 @@ button {
 }
 
 .side-nav {
+  position: relative;
+  z-index: 15;
   width: 64px;
   display: grid;
   gap: 14px;
@@ -364,7 +368,7 @@ button {
 .side-tab::after {
   position: absolute;
   left: calc(100% + 14px);
-  z-index: 8;
+  z-index: 80;
   padding: 7px 10px;
   border-radius: 7px;
   color: #ffffff;
@@ -1880,6 +1884,7 @@ button {
 .model-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  align-items: start;
   gap: 18px;
 }
 
@@ -1960,7 +1965,6 @@ button {
 .model-card {
   display: flex;
   flex-direction: column;
-  min-height: 220px;
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -2018,7 +2022,7 @@ button {
 .model-card p {
   display: -webkit-box;
   overflow: hidden;
-  margin: 18px 0;
+  margin: 12px 0;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.65;
@@ -2073,7 +2077,7 @@ button {
 .model-tags {
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: auto;
+  margin-top: 4px;
 }
 
 .key-table-wrap {
@@ -2210,7 +2214,6 @@ button {
 }
 
 .marketplace-main .model-card {
-  min-height: 276px;
   padding: 16px;
 }
 

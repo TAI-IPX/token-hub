@@ -8,10 +8,13 @@
   </head>
   <body>
     <section class="windows-desktop" aria-label="Windows 11 桌面">
-      <div class="desktop-icon">
-        <span class="recycle-bin-icon">♲</span>
-        <strong>回收站</strong>
-      </div>
+      <button class="desktop-icon" id="desktop-app-shortcut" type="button" aria-label="打开联想 Token Hub">
+        <img
+          src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
+          alt=""
+        />
+        <strong>Token Hub</strong>
+      </button>
     </section>
 
     <main class="app-shell" id="app-shell">
@@ -118,6 +121,30 @@
     </footer>
 
     <aside class="tray-menu" id="tray-menu" aria-label="联想 Token Hub 托盘菜单"></aside>
+
+    <aside class="desktop-notification" id="tool-detected-notification" aria-live="polite" aria-label="新工具检测通知">
+      <div class="desktop-notification-head">
+        <div class="desktop-notification-app">
+          <img
+            src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
+            alt=""
+          />
+          <span>联想 Token Hub</span>
+        </div>
+        <button type="button" data-notification-dismiss="true" aria-label="关闭通知">×</button>
+      </div>
+      <div class="desktop-notification-body">
+        <span class="desktop-notification-mark">QC</span>
+        <div>
+          <h2>检测到新工具：QClaw</h2>
+          <p>为 QClaw 选择合适的模型，即可开始使用并随时快速切换。</p>
+        </div>
+      </div>
+      <div class="desktop-notification-actions">
+        <button type="button" class="notification-later" data-notification-dismiss="true">稍后处理</button>
+        <button type="button" class="notification-primary" data-notification-configure="qclaw">去配置</button>
+      </div>
+    </aside>
 
     <script src="./app.js"></script>
   </body>

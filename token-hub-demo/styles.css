@@ -50,24 +50,26 @@ body {
   display: grid;
   justify-items: center;
   gap: 4px;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
   color: #ffffff;
+  background: transparent;
   text-align: center;
   text-shadow: 0 1px 3px rgba(15, 23, 42, 0.6);
   font-size: 12px;
 }
 
-.recycle-bin-icon {
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  border-color: rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.desktop-icon img {
   width: 46px;
   height: 46px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 6px;
-  color: #1d8bea;
-  background: rgba(255, 255, 255, 0.78);
-  text-shadow: none;
-  font-size: 34px;
-  line-height: 1;
+  object-fit: contain;
 }
 
 button,
@@ -262,6 +264,127 @@ button {
 
 .tray-menu.open {
   display: block;
+}
+
+.desktop-notification {
+  width: min(360px, calc(100vw - 24px));
+  position: fixed;
+  right: 12px;
+  bottom: 60px;
+  z-index: 45;
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(14px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.desktop-notification.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.desktop-notification-head,
+.desktop-notification-app,
+.desktop-notification-body,
+.desktop-notification-actions {
+  display: flex;
+  align-items: center;
+}
+
+.desktop-notification-head {
+  justify-content: space-between;
+}
+
+.desktop-notification-app {
+  gap: 8px;
+  color: #596473;
+  font-size: 12px;
+}
+
+.desktop-notification-app img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.desktop-notification-head button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 4px;
+  color: #596473;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.desktop-notification-head button:hover {
+  background: #f1f3f6;
+}
+
+.desktop-notification-body {
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.desktop-notification-mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #3157dd;
+  background: #eef2ff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.desktop-notification h2 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.desktop-notification p {
+  margin: 7px 0 0;
+  color: #687181;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.desktop-notification-actions {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.desktop-notification-actions button {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.notification-later {
+  color: #596473;
+  background: #ffffff;
+}
+
+.notification-primary {
+  border-color: #171717 !important;
+  color: #ffffff;
+  background: #171717;
 }
 
 .tray-menu-item {
@@ -903,8 +1026,8 @@ button {
 
 .app-toast {
   position: absolute;
+  top: 52px;
   left: 50%;
-  bottom: 12px;
   z-index: 100;
   padding: 10px 16px;
   border-radius: 999px;
@@ -945,6 +1068,15 @@ button {
 
 .provider-card:hover {
   border-color: rgba(77, 107, 254, 0.42);
+}
+
+.model-config-card {
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+}
+
+.model-config-card .card-actions {
+  opacity: 1;
+  transform: none;
 }
 
 .drag-handle {
@@ -3403,6 +3535,10 @@ input {
     grid-template-columns: 24px 52px minmax(0, 1fr);
     gap: 12px;
     padding: 18px;
+  }
+
+  .model-config-card {
+    grid-template-columns: 52px minmax(0, 1fr);
   }
 
   .card-actions {

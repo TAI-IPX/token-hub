@@ -8,22 +8,32 @@ const state = {
     openclaw: "deepseek",
     "tianxi-claw": "qwen",
     "claude-code": "deepseek",
-    codex: "deepseek",
     gemini: "deepseek",
-    opencode: "deepseek",
+    qclaw: "deepseek",
+    workbuddy: "deepseek",
     hermes: "deepseek",
   },
-  // 累加模式工具（OpenCode/OpenClaw/Hermes）：已添加到该工具配置中的 provider ID 列表
+  toolModelSelections: {
+    openclaw: "deepseek-v4-flash",
+    "tianxi-claw": "qwen3.5-plus",
+    "claude-code": "deepseek-v4-flash",
+    gemini: "qwen3.5-plus",
+    qclaw: "deepseek-v4-flash",
+    workbuddy: "deepseek-v4-flash",
+    hermes: "deepseek-v4-flash",
+  },
+  // 累加模式工具：已添加到该工具配置中的 provider ID 列表
   toolConfigs: {
     openclaw: ["deepseek", "qwen", "kimi"],
     "tianxi-claw": ["qwen", "minimax"],
-    opencode: ["deepseek", "glm", "minimax"],
+    qclaw: ["deepseek", "qwen", "kimi"],
     hermes: ["deepseek", "qwen", "kimi", "minimax"],
   },
   // 默认模型（OpenClaw/Hermes）：该工具当前默认使用的 provider ID
   defaultModels: {
     openclaw: "deepseek",
     "tianxi-claw": "qwen",
+    qclaw: "deepseek",
     hermes: "deepseek",
   },
   walletBalance: 128.5,
@@ -35,35 +45,35 @@ const state = {
       name: "DeepSeek",
       url: "https://platform.deepseek.com",
       models: ["deepseek-v4-flash", "deepseek-v4-pro"],
-      tools: ["openclaw", "claude-code", "codex", "opencode", "hermes"],
+      tools: ["openclaw", "claude-code", "qclaw", "workbuddy", "hermes"],
     },
     {
       id: "qwen",
       name: "Qwen",
       url: "https://dashscope.aliyuncs.com",
       models: ["qwen3.5-plus", "qwen3.6-flash", "qwen3.6-max-preview", "qwen3.6-plus"],
-      tools: ["openclaw", "tianxi-claw", "gemini", "hermes"],
+      tools: ["openclaw", "tianxi-claw", "gemini", "qclaw", "workbuddy", "hermes"],
     },
     {
       id: "glm",
       name: "GLM",
       url: "https://open.bigmodel.cn",
       models: ["glm-5", "glm-5.1"],
-      tools: ["claude-code", "codex", "opencode"],
+      tools: ["claude-code", "workbuddy"],
     },
     {
       id: "kimi",
       name: "Kimi",
       url: "https://api.moonshot.cn",
       models: ["kimi-k2.5", "kimi-k2.6"],
-      tools: ["openclaw", "claude-code", "gemini", "hermes"],
+      tools: ["openclaw", "claude-code", "gemini", "qclaw", "hermes"],
     },
     {
       id: "minimax",
       name: "MiniMax",
       url: "https://api.minimax.chat",
       models: ["MiniMax-M2.5"],
-      tools: ["tianxi-claw", "codex", "opencode", "hermes"],
+      tools: ["tianxi-claw", "workbuddy", "hermes"],
     },
   ],
   bills: [
@@ -91,14 +101,16 @@ const tools = [
   ["openclaw", "OpenClaw", "OC"],
   ["tianxi-claw", "天禧Claw", "TC"],
   ["claude-code", "Claude Code", "CC"],
-  ["codex", "Codex", "CX"],
   ["gemini", "Gemini", "GM"],
-  ["opencode", "OpenCode", "OP"],
+  ["qclaw", "QClaw", "QC"],
+  ["workbuddy", "WorkBuddy", "WB"],
   ["hermes", "Hermes", "HM"],
 ];
 
 const content = document.querySelector("#content");
 const appShell = document.querySelector("#app-shell");
+const desktopAppShortcut = document.querySelector("#desktop-app-shortcut");
+const toolDetectedNotification = document.querySelector("#tool-detected-notification");
 const trayButton = document.querySelector("#tray-app-button");
 const trayMenu = document.querySelector("#tray-menu");
 const ranges = [
@@ -119,7 +131,7 @@ function tokens(value) {
 
 // 判断工具是否为累加模式（添加/移除，而非切换/启用）
 function isAdditiveTool(toolId) {
-  return toolId === "opencode" || toolId === "openclaw" || toolId === "tianxi-claw" || toolId === "hermes";
+  return toolId === "qclaw" || toolId === "openclaw" || toolId === "tianxi-claw" || toolId === "hermes";
 }
 // 判断 provider 是否已添加到指定工具的配置中
 function isInToolConfig(providerId, toolId) {
@@ -171,31 +183,57 @@ function tagsForProvider(provider) {
   return tagsByModel[provider.model] ?? ["文本生成"];
 }
 
+function providerForModel(modelName) {
+  return state.providers.find((provider) => provider.models.includes(modelName));
+}
+
+function modelOptionsForTool(toolId, configuredOnly = false) {
+  const providers = configuredOnly ? configuredProvidersForTool(toolId) : providersForTool(toolId);
+  return providers.flatMap((provider) =>
+    provider.models.map((model) => ({ model, provider })),
+  );
+}
+
+function selectedModelForTool(toolId, options = modelOptionsForTool(toolId)) {
+  const selectedModel = state.toolModelSelections[toolId];
+  return options.find((option) => option.model === selectedModel) ?? options[0];
+}
+
+function tagsForModel(modelName) {
+  return models.find(([name]) => name === modelName)?.[4]?.filter((tag) => tag !== "1M") ?? ["文本生成"];
+}
+
+function modelTagClass(tag) {
+  if (tag === "深度思考") return "reasoning";
+  if (tag === "视觉理解") return "vision";
+  return "text";
+}
+
 function renderTrayMenu() {
   trayMenu.innerHTML = `
     <button class="tray-menu-item" data-tray-action="open">打开主界面</button>
     <div class="tray-separator"></div>
     ${tools
       .map(([id, label]) => {
-        const toolProviders = configuredProvidersForTool(id);
-        const current = selectedProviderForTool(id, toolProviders);
+        const toolModels = modelOptionsForTool(id, true);
+        const current = selectedModelForTool(id, toolModels);
         return `
           <div class="tray-tool">
             <button class="tray-menu-item" type="button" data-tray-tool-menu="${id}">
               <span>${label}</span>
-              <span class="tray-tool-current">${current?.name ?? "未配置"}</span>
+              <span class="tray-tool-current">${current?.model ?? "未配置"}</span>
               <span class="tray-tool-arrow">›</span>
             </button>
             <div class="tray-submenu">
               ${
-                toolProviders.length
-                  ? toolProviders
+                toolModels.length
+                  ? toolModels
                       .map(
-                        (provider) => `
-                          <button class="tray-menu-item tray-model-button ${provider.id === current?.id ? "active" : ""}" data-tray-model="${provider.id}" data-tray-tool="${id}">
+                        ({ model, provider }) => `
+                          <button class="tray-menu-item tray-model-button ${model === current?.model ? "active" : ""}" data-tray-model="${model}" data-tray-tool="${id}">
                             <span class="tray-model-copy">
-                              <strong>${provider.name}</strong>
-                              <small>${provider.models.join(" · ")}</small>
+                              <strong>${model}</strong>
+                              <small>${provider.name}</small>
                             </span>
                           </button>
                         `,
@@ -224,55 +262,23 @@ function renderProviders() {
   }
 
   const toolId = state.activeTool;
-  const additive = isAdditiveTool(toolId);
-  const currentProviderId = getToolCurrentProviderId(toolId);
-  const defaultModelId = getToolDefaultModelId(toolId);
-
-  const filteredProviders = state.providers.filter(
-    (provider) => provider.tools.includes(toolId) && !provider.url?.startsWith("Key "),
-  );
-  const rows = filteredProviders
-    .map((provider) => {
-      const inConfig = isInToolConfig(provider.id, toolId);
-      const isCurrent = provider.id === currentProviderId;
-      const isDefault = provider.id === defaultModelId;
-
-      let mainBtnHtml = "";
-      if (additive) {
-        // 累加模式：添加/移除
-        if (inConfig) {
-          const disabledAttr = isDefault ? 'disabled' : '';
-          mainBtnHtml = `<button class="soft-button remove-btn" ${disabledAttr} data-remove="${provider.id}" data-tool="${toolId}">${isDefault ? "默认模型" : "移除"}</button>`;
-        } else {
-          mainBtnHtml = `<button class="soft-button default-btn" data-add="${provider.id}" data-tool="${toolId}">添加</button>`;
-        }
-      } else {
-        // Switch 模式：启用/切换
-        mainBtnHtml = `<button class="soft-button${isCurrent ? "" : " default-btn"}" ${isCurrent ? 'disabled' : `data-switch="${provider.id}" data-tool="${toolId}"`}>${isCurrent ? '已在用' : '启用'}</button>`;
-      }
-
-      // OpenClaw/Hermes: 设为默认按钮
-      let defaultBtnHtml = "";
-      if ((toolId === "openclaw" || toolId === "tianxi-claw" || toolId === "hermes") && inConfig && !isDefault) {
-        defaultBtnHtml = `<button class="soft-button default-btn" data-set-default="${provider.id}" data-tool="${toolId}">设为默认</button>`;
-      }
-
-      const cardActive = additive ? (inConfig && isDefault) : isCurrent;
+  const toolModels = modelOptionsForTool(toolId);
+  const selectedModel = selectedModelForTool(toolId, toolModels);
+  const rows = toolModels
+    .map(({ model, provider }) => {
+      const isCurrent = model === selectedModel?.model;
       return `
-        <article class="provider-card${cardActive ? " active" : ""}">
-          <div class="drag-handle">⁝</div>
+        <article class="provider-card model-config-card${isCurrent ? " active" : ""}">
           <div class="provider-logo">${provider.name.slice(0, 2).toUpperCase()}</div>
           <div class="provider-main">
-            <h2>${provider.name}</h2>
-            <div class="provider-models">
-              ${provider.models.map(m => `<span class="provider-model-tag">${m}</span>`).join("")}
+            <h2>${model}</h2>
+            <div class="provider-tags">
+              ${tagsForModel(model).map((tag) => `<span class="${modelTagClass(tag)}">${tag}</span>`).join("")}
             </div>
-
-
+            <span class="provider-note">${provider.name}</span>
           </div>
           <div class="card-actions">
-            ${defaultBtnHtml}
-            ${mainBtnHtml}
+            <button class="soft-button${isCurrent ? "" : " default-btn"}" ${isCurrent ? "disabled" : `data-switch-model="${model}" data-tool="${toolId}"`}>${isCurrent ? "当前使用" : "切换"}</button>
           </div>
         </article>
       `;
@@ -614,6 +620,19 @@ function render() {
   content.scrollTop = 0;
 }
 
+function hideToolDetectedNotification() {
+  toolDetectedNotification.classList.remove("show");
+}
+
+function showToolDetectedNotification() {
+  toolDetectedNotification.classList.add("show");
+}
+
+desktopAppShortcut.addEventListener("dblclick", () => {
+  appShell.classList.remove("hidden");
+  trayMenu.classList.remove("open");
+});
+
 document.addEventListener("click", (event) => {
   const target = event.target.closest("button");
   if (!target) return;
@@ -622,6 +641,25 @@ document.addEventListener("click", (event) => {
     const profileMenu = target.closest(".profile-menu");
     const open = profileMenu.classList.toggle("open");
     target.setAttribute("aria-expanded", String(open));
+  }
+
+  if (target.dataset.notificationDismiss) {
+    hideToolDetectedNotification();
+  }
+
+  if (target.dataset.notificationConfigure) {
+    const toolId = target.dataset.notificationConfigure;
+    state.activeView = "providers";
+    state.providerSubView = "list";
+    state.activeTool = toolId;
+    state.hasSeenAutoMatchIntro = true;
+    state.currentProviderId =
+      state.toolSelections[toolId] ?? providersForTool(toolId)[0]?.id ?? "";
+    hideToolDetectedNotification();
+    trayMenu.classList.remove("open");
+    appShell.classList.remove("hidden");
+    render();
+    showToast("已定位到 QClaw 模型配置");
   }
 
   if (target.dataset.view) {
@@ -655,11 +693,14 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.trayModel) {
     const toolId = target.dataset.trayTool;
-    const providerId = target.dataset.trayModel;
+    const modelName = target.dataset.trayModel;
+    const provider = providerForModel(modelName);
+    const providerId = provider?.id ?? "";
     state.currentProviderId = providerId;
     state.activeTool = toolId;
     state.toolSelections[toolId] = providerId;
-    if (isAdditiveTool(toolId) && toolId !== "opencode") {
+    state.toolModelSelections[toolId] = modelName;
+    if (isAdditiveTool(toolId)) {
       state.defaultModels[toolId] = providerId;
     }
     // 如果是累加模式且 provider 不在配置中，自动添加
@@ -672,7 +713,7 @@ document.addEventListener("click", (event) => {
     render();
     renderTrayMenu();
     trayMenu.classList.remove("open");
-    showToast(`已切换至 ${state.providers.find((provider) => provider.id === state.currentProviderId)?.name}`);
+    showToast(`已切换至 ${modelName}`);
   }
 
   if (target.dataset.trayToolMenu) {
@@ -888,6 +929,18 @@ document.addEventListener("click", (event) => {
     state.toolSelections[toolId] = target.dataset.switch;
     renderTrayMenu();
     render();
+  }
+
+  if (target.dataset.switchModel) {
+    const toolId = target.dataset.tool || state.activeTool;
+    const modelName = target.dataset.switchModel;
+    const provider = providerForModel(modelName);
+    state.toolModelSelections[toolId] = modelName;
+    state.currentProviderId = provider?.id ?? "";
+    state.toolSelections[toolId] = provider?.id ?? "";
+    renderTrayMenu();
+    render();
+    showToast(`已切换至 ${modelName}`);
   }
 
   if (target.dataset.recharge) {
@@ -1373,3 +1426,4 @@ function showToolPicker(modelName) {
 
 renderTrayMenu();
 render();
+window.setTimeout(showToolDetectedNotification, 900);

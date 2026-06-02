@@ -14,6 +14,8 @@ token-hub-demo/      原型 Demo（纯前端 HTML/CSS/JS）
 
 项目仅维护 `main` 分支。
 
+实验性原型可使用独立分支开发。例如 `codex/tray-only-prototype` 用于验证仅托盘交互方案，不影响 `main` 中的完整桌面版。
+
 ---
 
 ## 运行 token-hub-demo

@@ -1,5 +1,4 @@
 const state = {
-  prototypeVariant: window.localStorage.getItem("token-hub-prototype-variant") || "b",
   activeView: "dashboard",
   activeTool: "openclaw",
   activeRange: "24h",
@@ -151,13 +150,6 @@ function getToolDefaultModelId(toolId) {
 function renderShell() {
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === state.activeView);
-  });
-}
-
-function applyPrototypeVariant() {
-  document.body.dataset.prototypeVariant = state.prototypeVariant;
-  document.querySelectorAll("[data-prototype-variant]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.prototypeVariant === state.prototypeVariant);
   });
 }
 
@@ -649,12 +641,6 @@ document.addEventListener("click", (event) => {
     const profileMenu = target.closest(".profile-menu");
     const open = profileMenu.classList.toggle("open");
     target.setAttribute("aria-expanded", String(open));
-  }
-
-  if (target.dataset.prototypeVariant) {
-    state.prototypeVariant = target.dataset.prototypeVariant;
-    window.localStorage.setItem("token-hub-prototype-variant", state.prototypeVariant);
-    applyPrototypeVariant();
   }
 
   if (target.dataset.notificationDismiss) {
@@ -1439,6 +1425,5 @@ function showToolPicker(modelName) {
 }
 
 renderTrayMenu();
-applyPrototypeVariant();
 render();
 window.setTimeout(showToolDetectedNotification, 900);

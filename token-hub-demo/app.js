@@ -2,8 +2,12 @@ const state = {
   smartMode: true,
   activeTool: null,
   panelOpen: true,
-  loggedIn: true,
+  loggedIn: false,
+  onboardingStarted: false,
+  authPending: false,
+  configuring: false,
   balance: 128.5,
+  apiReady: false,
   selections: {
     openclaw: "deepseek-v4-flash",
     "claude-code": "deepseek-v4-pro",
@@ -34,9 +38,9 @@ const models = {
 };
 
 const webLinks = {
+  auth: "https://lai-hub.lenovomm.com/login?source=token-hub-desktop",
   dashboard: "https://lai-hub.lenovomm.com/",
-  marketplace: "https://lai-hub.lenovomm.com/pricing",
-  keys: "https://lai-hub.lenovomm.com/keys",
+  logs: "https://lai-hub.lenovomm.com/logs",
 };
 
 const panel = document.querySelector("#tray-panel");
@@ -44,8 +48,12 @@ const trayButton = document.querySelector("#tray-app-button");
 const toolList = document.querySelector("#tool-list");
 const modelList = document.querySelector("#model-list");
 const accountBar = document.querySelector("#account-bar");
+const onboardingCard = document.querySelector("#onboarding-card");
+const readyContent = document.querySelector("#ready-content");
+const settingsButton = document.querySelector(".settings-button");
 const notification = document.querySelector("#tool-notification");
 const toast = document.querySelector("#app-toast");
+const authWindow = document.querySelector("#auth-window");
 
 function renderTools() {
   toolList.innerHTML = tools.map((tool) => {
@@ -63,6 +71,98 @@ function renderTools() {
   }).join("");
 }
 
+function renderOnboarding() {
+  onboardingCard.hidden = state.apiReady;
+  readyContent.hidden = !state.apiReady;
+  settingsButton.hidden = !state.apiReady;
+  if (state.apiReady) return;
+  onboardingCard.innerHTML = state.configuring
+    ? `
+      <span class="setup-icon progress">↻</span>
+      <div class="onboarding-copy">
+        <h2>正在完成服务配置</h2>
+        <p>正在创建 Token Hub 访问凭证并接入本机服务，请稍候。</p>
+        <div class="progress-track"><i></i></div>
+        <div class="onboarding-notes">
+          <span>✓ 联想账号认证完成</span>
+          <span>✓ 正在创建访问凭证</span>
+          <span>· 正在启用多模型服务</span>
+        </div>
+      </div>
+    `
+    : state.authPending
+      ? `
+        <span class="setup-icon progress">↻</span>
+        <div class="onboarding-copy">
+          <h2>等待登录确认</h2>
+          <p>请在联想账号登录窗口中完成认证。登录成功后，将自动继续配置。</p>
+          <div class="onboarding-notes">
+            <span>✓ 已打开联想账号登录窗口</span>
+            <span>· 等待完成登录认证</span>
+          </div>
+        </div>
+        <div class="onboarding-actions">
+          <button class="setup-primary" data-login="true">重新打开登录窗口</button>
+        </div>
+      `
+      : !state.onboardingStarted
+        ? `
+          <span class="setup-icon">✦</span>
+          <div class="onboarding-copy">
+            <h2>自动完成服务配置</h2>
+            <p>只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。</p>
+            <div class="onboarding-notes">
+              <span>✓ 自动完成必要设置</span>
+              <span>✓ 自动为应用选择合适的模型</span>
+              <span>✓ 配置完成后即可使用</span>
+            </div>
+          </div>
+          <button class="setup-primary" data-start-onboarding="true">开始配置</button>
+        `
+      : state.loggedIn
+    ? `
+      <span class="setup-icon">✦</span>
+      <div class="onboarding-copy">
+        <h2>自动完成服务配置</h2>
+        <p>Token Hub 将自动创建访问凭证并完成本机接入。所有应用共用一套多模型服务，无需手动复制或修改密钥。</p>
+        <div class="onboarding-notes">
+          <span>✓ 一套凭证，全局接入</span>
+          <span>✓ 自动匹配推荐模型</span>
+          <span>✓ 初始化完成后立即可用</span>
+        </div>
+      </div>
+      <button class="setup-primary" data-configure-hub="true">自动配置</button>
+    `
+    : `
+      <span class="setup-icon">♙</span>
+      <div class="onboarding-copy">
+        <h2>登录联想账号</h2>
+        <p>接下来将打开联想账号登录窗口。完成登录后，将自动继续配置。</p>
+      </div>
+      <button class="setup-primary" data-login="true">打开登录窗口</button>
+    `;
+}
+
+function openWebLogin() {
+  state.authPending = true;
+  authWindow.hidden = false;
+  renderAccount();
+  renderOnboarding();
+  showToast("已打开联想账号登录窗口");
+}
+
+function startConfiguration() {
+  state.configuring = true;
+  renderOnboarding();
+  setTimeout(() => {
+    state.configuring = false;
+    state.apiReady = true;
+    renderTools();
+    renderOnboarding();
+    showToast("配置完成，所有应用已接入模型服务");
+  }, 1200);
+}
+
 function renderAccount() {
   accountBar.innerHTML = state.loggedIn
     ? `
@@ -73,7 +173,16 @@ function renderAccount() {
         <button class="account-action secondary" data-logout="true">登出</button>
       </div>
     `
-    : `
+    : state.authPending
+      ? `
+        <div class="account-row">
+          <span class="account-avatar">1</span>
+          <span class="account-copy"><strong>等待登录窗口确认</strong><small>完成联想账号认证后继续</small></span>
+          <button class="account-action secondary" data-login="true">重试</button>
+          <button class="account-action" data-complete-login="true">完成认证</button>
+        </div>
+      `
+      : `
       <div class="account-row">
         <span class="account-avatar">1</span>
         <span class="account-copy"><strong>登录联想账户</strong><small>同步额度并使用模型服务</small></span>
@@ -92,7 +201,7 @@ function closePanel() {
   panel.classList.remove("open");
   trayButton.classList.remove("active");
   state.panelOpen = false;
-  setTimeout(() => notification.classList.add("show"), 450);
+  if (state.apiReady) setTimeout(() => notification.classList.add("show"), 450);
 }
 
 function showPage(page) {
@@ -104,6 +213,13 @@ function showPage(page) {
 function openTool(toolId) {
   const tool = tools.find((item) => item.id === toolId);
   if (!tool) return;
+  if (!state.apiReady) {
+    showPage("home");
+    onboardingCard.classList.add("attention");
+    setTimeout(() => onboardingCard.classList.remove("attention"), 700);
+    showToast("请先完成首次初始化");
+    return;
+  }
   state.activeTool = toolId;
   document.querySelector("#detail-tool-name").textContent = tool.name;
   modelList.innerHTML = tool.models.map((modelId) => {
@@ -163,11 +279,24 @@ document.addEventListener("click", (event) => {
     showToast(`已切换至 ${models[modelId].name}`);
   }
 
-  if (target.dataset.refreshTools) {
+  if (target.dataset.configureHub) {
+    startConfiguration();
+  }
+
+  if (target.dataset.startOnboarding) {
+    state.onboardingStarted = true;
+    if (state.loggedIn) {
+      renderOnboarding();
+    } else {
+      openWebLogin();
+    }
+  }
+
+  if (target.dataset.refreshApps) {
     target.classList.add("spinning");
     setTimeout(() => {
       target.classList.remove("spinning");
-      showToast("检测完成，已发现 5 个工具");
+      showToast("检测完成，已发现 5 个应用");
     }, 650);
   }
 
@@ -178,14 +307,25 @@ document.addEventListener("click", (event) => {
   if (target.dataset.dismissNotification) notification.classList.remove("show");
   if (target.dataset.settings) showPage("settings");
   if (target.dataset.login) {
+    openWebLogin();
+  }
+  if (target.dataset.completeLogin) {
     state.loggedIn = true;
+    state.authPending = false;
+    authWindow.hidden = true;
     renderAccount();
-    showToast("登录成功");
+    startConfiguration();
   }
   if (target.dataset.logout) {
     state.loggedIn = false;
+    state.authPending = false;
     renderAccount();
+    renderOnboarding();
     showToast("已退出登录");
+  }
+  if (target.dataset.closeAuth) {
+    authWindow.hidden = true;
+    showToast("登录窗口已关闭，可随时重新打开");
   }
   if (target.dataset.recharge) {
     state.balance += 50;
@@ -200,6 +340,7 @@ document.addEventListener("click", (event) => {
 
 renderTools();
 renderAccount();
+renderOnboarding();
 setTimeout(() => {
-  if (!state.panelOpen) notification.classList.add("show");
+  if (!state.panelOpen && state.apiReady) notification.classList.add("show");
 }, 900);

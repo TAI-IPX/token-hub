@@ -2,6 +2,7 @@ const state = {
   smartMode: true,
   activeTool: null,
   panelOpen: true,
+  manualTools: new Set(),
   selections: {
     openclaw: "deepseek-v4-flash",
     "claude-code": "deepseek-v4-pro",
@@ -54,7 +55,7 @@ function renderTools() {
           <strong>${tool.name}${tool.isNew ? `<em>新发现</em>` : ""}</strong>
           <small>${model.name}</small>
         </span>
-        <span class="tool-status">${state.smartMode ? "智能匹配" : "手动选择"}</span>
+        ${state.manualTools.has(tool.id) ? `<span class="tool-status manual">手动</span>` : ""}
         <span class="chevron">›</span>
       </button>
     `;
@@ -124,6 +125,8 @@ document.addEventListener("click", (event) => {
   if (target.dataset.smartToggle) {
     state.smartMode = !state.smartMode;
     target.classList.toggle("active", state.smartMode);
+    if (!state.smartMode) state.manualTools = new Set(tools.map((tool) => tool.id));
+    if (state.smartMode) state.manualTools.clear();
     renderTools();
     showToast(state.smartMode ? "已开启智能模型匹配" : "已切换为手动选择");
   }
@@ -135,11 +138,16 @@ document.addEventListener("click", (event) => {
   if (target.dataset.selectModel) {
     const modelId = target.dataset.selectModel;
     state.selections[state.activeTool] = modelId;
-    state.smartMode = false;
-    document.querySelector("[data-smart-toggle]").classList.remove("active");
+    state.manualTools.add(state.activeTool);
     renderTools();
     openTool(state.activeTool);
     showToast(`已切换至 ${models[modelId].name}`);
+  }
+
+  if (target.dataset.restoreAuto) {
+    state.manualTools.delete(state.activeTool);
+    renderTools();
+    showToast("已恢复自动匹配");
   }
 
   if (target.dataset.refreshTools) {
@@ -155,8 +163,11 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.dismissNotification) notification.classList.remove("show");
-  if (target.dataset.settings) showToast("设置功能可在后续版本中扩展");
-  if (target.dataset.exit) closePanel();
+  if (target.dataset.settings) showPage("settings");
+
+  if (target.matches(".settings-list .toggle")) {
+    target.classList.toggle("active");
+  }
 });
 
 renderTools();

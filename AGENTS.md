@@ -12,11 +12,7 @@ token-hub-demo/      原型 Demo（纯前端 HTML/CSS/JS）
 
 ## 分支说明
 
-| 分支 | 内容 |
-|---|---|
-| `main` | token-hub-demo 原型 |
-| `prototype/desktop-a` | token-hub-demo 原型（含 .gitignore） |
-| `prototype/desktop-b` | token-hub-demo（当前） |
+项目仅维护 `main` 分支。桌面左下角提供 `A / B` 原型方案切换，选择会保存在浏览器本地存储中。
 
 ---
 
@@ -37,3 +33,4 @@ npx serve token-hub-demo -l 3456
 ## 开发注意事项
 
 - token-hub-demo 是纯静态页面，修改 `app.js` / `styles.css` / `index.html` 后刷新即可
+- `A / B` 方案共享同一份功能、数据和交互逻辑，仅通过样式变体控制展示密度

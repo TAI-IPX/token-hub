@@ -3,148 +3,176 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Token Hub Prototype</title>
+    <title>联想 Token Hub · 托盘版原型</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <section class="windows-desktop" aria-label="Windows 11 桌面">
-      <button class="desktop-icon" id="desktop-app-shortcut" type="button" aria-label="打开联想 Token Hub">
-        <img
-          src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
-          alt=""
-        />
-        <strong>Token Hub</strong>
+    <main class="desktop" aria-label="Windows 11 桌面">
+      <div class="desktop-copy">
+        <span>Windows 11</span>
+        <strong>专注于此刻</strong>
+      </div>
+      <button class="desktop-app-icon" id="desktop-app-icon" aria-label="打开联想 Token Hub">
+        <span>
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+        </span>
+        <strong>联想 Token Hub</strong>
       </button>
-    </section>
-
-    <main class="app-shell" id="app-shell">
-      <div class="windows-titlebar" aria-label="窗口控制">
-        <div class="windows-app-title">
-          <img
-            src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
-            alt=""
-          />
-          <span>联想 Token Hub</span>
-        </div>
-        <div class="titlebar-actions">
-          <nav class="global-actions" id="global-actions" aria-label="全局功能">
-            <div class="profile-menu">
-              <button class="profile-trigger" data-profile-toggle="true" aria-label="个人账户" aria-expanded="false">
-                <span class="profile-avatar">1</span>
-                <strong>15*******88</strong>
-              </button>
-              <div class="profile-dropdown">
-                <button class="profile-menu-button" data-global-action="billing">
-                  <span>▤</span>
-                  账单历史
-                </button>
-                <button class="logout-button" data-global-action="logout">
-                  <span>↪</span>
-                  登出
-                </button>
-              </div>
-            </div>
-          </nav>
-          <div class="window-controls">
-          <button data-window-action="hide" title="最小化" aria-label="最小化">—</button>
-          <button title="最大化" aria-label="最大化">□</button>
-          <button class="close" data-window-action="hide" title="关闭" aria-label="关闭">×</button>
-          </div>
+      <div class="desktop-demo-controls">
+        <div class="demo-control-buttons">
+          <button data-demo-state="onboard">Onboard - 首次配置</button>
+          <button data-demo-state="ready">正常使用 - 已完成配置</button>
+          <button data-demo-state="auto-discovery">通知状态 - 智能匹配开，发现新应用</button>
+          <button data-demo-state="manual-discovery">通知状态 - 智能匹配关，发现新应用</button>
         </div>
       </div>
-
-      <aside class="sidebar" aria-label="功能模块">
-        <nav class="side-nav" id="view-switcher">
-          <button class="side-tab active" data-view="dashboard" data-tooltip="仪表盘" title="仪表盘">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="3.5" y="3.5" width="17" height="17" rx="2.5" />
-              <path d="M7 16v-3" />
-              <path d="M12 16V8" />
-              <path d="M17 16v-5" />
-            </svg>
-          </button>
-          <button class="side-tab" data-view="providers" data-tooltip="模型配置" title="模型配置">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M7 7h11" />
-              <path d="m15 4 3 3-3 3" />
-              <path d="M17 17H6" />
-              <path d="m9 14-3 3 3 3" />
-            </svg>
-          </button>
-          <button class="side-tab" data-view="api-keys" data-tooltip="API密钥" title="API密钥">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="8" cy="12" r="4" />
-              <path d="M12 12h8" />
-              <path d="M17 12v3" />
-              <path d="M20 12v2" />
-            </svg>
-          </button>
-          <button class="side-tab" data-view="marketplace" data-tooltip="模型广场" title="模型广场">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 7.5 12 3l8 4.5-8 4.5-8-4.5Z" />
-              <path d="m4 12 8 4.5 8-4.5" />
-              <path d="m4 16.5 8 4.5 8-4.5" />
-            </svg>
-          </button>
-          <button class="side-tab" data-view="settings" data-tooltip="设置" title="设置">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
-              <path d="M19 12a7.7 7.7 0 0 0-.1-1.1l2-1.5-2-3.4-2.4 1a7.5 7.5 0 0 0-1.9-1.1L14.3 3h-4.6l-.3 2.9A7.5 7.5 0 0 0 7.5 7l-2.4-1-2 3.4 2 1.5A7.7 7.7 0 0 0 5 12c0 .4 0 .8.1 1.1l-2 1.5 2 3.4 2.4-1a7.5 7.5 0 0 0 1.9 1.1l.3 2.9h4.6l.3-2.9a7.5 7.5 0 0 0 1.9-1.1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1.1Z" />
-            </svg>
-          </button>
-        </nav>
-      </aside>
-
-      <section class="workspace">
-        <section class="content" id="content"></section>
-      </section>
     </main>
 
-    <footer class="windows-taskbar" aria-label="Windows 任务栏">
+    <section class="tray-panel open" id="tray-panel" aria-label="联想 Token Hub">
+      <div class="panel-page active" data-panel-page="home">
+        <header class="panel-header">
+          <div class="app-menu-wrap">
+            <div class="app-brand app-menu-button locked" data-app-menu="true" role="button" tabindex="0" aria-expanded="false" aria-controls="app-menu">
+              <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+              <h1>联想 Token Hub</h1>
+              <span class="menu-chevron" aria-hidden="true"></span>
+            </div>
+            <nav class="app-menu" id="app-menu" hidden aria-label="联想 Token Hub 菜单">
+              <button data-web-link="dashboard"><span class="menu-item-main"><i>▥</i>数据看板</span><span>↗</span></button>
+              <button data-web-link="logs"><span class="menu-item-main"><i>≋</i>使用日志</span><span>↗</span></button>
+              <button data-web-link="keys"><span class="menu-item-main"><i>⚿</i>密钥管理</span><span>↗</span></button>
+              <button data-web-link="marketplace"><span class="menu-item-main"><i>◇</i>模型广场</span><span>↗</span></button>
+            </nav>
+          </div>
+          <div class="panel-actions">
+            <button class="icon-button settings-button" data-settings="true" aria-label="设置" title="设置">⚙</button>
+            <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
+          </div>
+        </header>
+
+        <section class="onboarding-card" id="onboarding-card"></section>
+
+        <div class="ready-content" id="ready-content">
+          <section class="smart-mode">
+            <div class="smart-mode-copy">
+              <span class="feature-icon compact">✦</span>
+              <div>
+                <strong>智能模型匹配</strong>
+                <p>按应用特性自动选择模型</p>
+              </div>
+            </div>
+            <button class="toggle active" data-smart-toggle="true" aria-label="智能模型匹配"></button>
+          </section>
+
+          <section class="section-block">
+            <div class="section-heading">
+              <h2>应用列表</h2>
+              <button class="icon-button refresh" data-refresh-apps="true" aria-label="重新检测应用" title="重新检测应用">↻</button>
+            </div>
+            <div class="tool-list" id="tool-list"></div>
+          </section>
+
+          <section class="account-list" id="account-bar"></section>
+        </div>
+      </div>
+
+      <div class="panel-page" data-panel-page="models">
+        <header class="detail-header">
+          <button class="back-button" data-back-home="true" aria-label="返回">←</button>
+          <div>
+            <h1 id="detail-tool-name"></h1>
+            <p>选择此应用使用的模型</p>
+          </div>
+          <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
+        </header>
+        <div class="detail-accent"></div>
+        <section class="model-list" id="model-list"></section>
+      </div>
+
+      <div class="panel-page" data-panel-page="settings">
+        <header class="detail-header">
+          <button class="back-button" data-back-home="true" aria-label="返回">←</button>
+          <div>
+            <h1>设置</h1>
+          </div>
+          <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
+        </header>
+        <div class="detail-accent"></div>
+        <section class="settings-list">
+          <div class="setting-row"><div><strong>开机自启</strong><small>登录 Windows 后自动运行</small></div><button class="toggle active" aria-label="开机自启"></button></div>
+          <div class="setting-row"><div><strong>系统通知</strong><small>发现新应用和切换异常时提醒</small></div><button class="toggle active" aria-label="系统通知"></button></div>
+          <div class="setting-row"><div><strong>自动检测新应用</strong><small>安装应用后自动加入列表</small></div><button class="toggle active" aria-label="自动检测新应用"></button></div>
+          <div class="setting-row"><div><strong>默认开启智能匹配</strong><small>新应用优先使用推荐模型</small></div><button class="toggle active" aria-label="默认开启智能匹配"></button></div>
+        </section>
+      </div>
+
+      <div class="app-toast" id="app-toast" aria-live="polite"></div>
+    </section>
+
+    <aside class="desktop-notification" id="tool-notification" aria-live="polite"></aside>
+
+    <section class="auth-window" id="auth-window" hidden aria-label="联想账号登录">
+      <header class="auth-titlebar">
+        <div>
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <strong>联想账号登录</strong>
+        </div>
+        <button class="window-close" data-close-auth="true" aria-label="关闭">×</button>
+      </header>
+      <main class="auth-webview">
+        <div class="auth-brand">
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <strong>联想账号</strong>
+        </div>
+        <section class="auth-card">
+          <h2>登录联想账号</h2>
+          <p>登录后继续使用联想 Token Hub</p>
+          <label>手机号</label>
+          <input value="15*******88" aria-label="手机号" />
+          <label>验证码</label>
+          <div class="auth-code">
+            <input value="2688" aria-label="验证码" />
+            <button>获取验证码</button>
+          </div>
+          <button class="auth-submit" data-complete-login="true">登录并授权</button>
+          <small>登录即表示您同意联想账号服务协议与隐私政策</small>
+        </section>
+      </main>
+    </section>
+
+    <section class="auth-window recharge-window" id="recharge-window" hidden aria-label="充值">
+      <header class="auth-titlebar">
+        <div>
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <strong>充值</strong>
+        </div>
+        <button class="window-close" data-close-recharge="true" aria-label="关闭">×</button>
+      </header>
+      <main class="recharge-webview" id="recharge-content"></main>
+    </section>
+
+    <footer class="taskbar" aria-label="Windows 任务栏">
       <div class="taskbar-center">
-        <button class="windows-start" aria-label="开始">
-          <span></span><span></span><span></span><span></span>
-        </button>
+        <button class="windows-start" aria-label="开始"><span></span><span></span><span></span><span></span></button>
+        <button class="taskbar-app" aria-label="文件资源管理器">▰</button>
+        <button class="taskbar-app" aria-label="Microsoft Teams">T</button>
+        <button class="taskbar-app" aria-label="Windows 安全中心">♢</button>
       </div>
       <div class="system-tray">
-        <span class="tray-caret">⌃</span>
-        <button class="tray-app-button" id="tray-app-button" title="联想 Token Hub" aria-label="联想 Token Hub 托盘菜单">
-          <img
-            src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
-            alt=""
-          />
+        <span>⌃</span>
+        <button class="tray-app-button active" id="tray-app-button" aria-label="联想 Token Hub 托盘菜单">
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
         </button>
-        <span class="tray-status">⌁</span>
-        <span class="tray-status">▥</span>
-        <time class="tray-clock">00:20<br /><small>2026/6/1</small></time>
+        <span>⌁</span>
+        <span>▥</span>
+        <time>10:01<br /><small>2026/6/2</small></time>
+        <span>☾</span>
       </div>
     </footer>
 
-    <aside class="tray-menu" id="tray-menu" aria-label="联想 Token Hub 托盘菜单"></aside>
-
-    <aside class="desktop-notification" id="tool-detected-notification" aria-live="polite" aria-label="新工具检测通知">
-      <div class="desktop-notification-head">
-        <div class="desktop-notification-app">
-          <img
-            src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png"
-            alt=""
-          />
-          <span>联想 Token Hub</span>
-        </div>
-        <button type="button" data-notification-dismiss="true" aria-label="关闭通知">×</button>
-      </div>
-      <div class="desktop-notification-body">
-        <span class="desktop-notification-mark">QC</span>
-        <div>
-          <h2>检测到新工具：QClaw</h2>
-          <p>为 QClaw 选择合适的模型，即可开始使用并随时快速切换。</p>
-        </div>
-      </div>
-      <div class="desktop-notification-actions">
-        <button type="button" class="notification-later" data-notification-dismiss="true">稍后处理</button>
-        <button type="button" class="notification-primary" data-notification-configure="qclaw">去配置</button>
-      </div>
-    </aside>
+    <div class="tray-context-menu" id="tray-context-menu" hidden role="menu" aria-label="联想 Token Hub 托盘菜单">
+      <button data-exit-app="true" role="menuitem">退出应用</button>
+    </div>
 
     <script src="./app.js"></script>
   </body>

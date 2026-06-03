@@ -1,13 +1,26 @@
+const savedSession = (() => {
+  try {
+    return JSON.parse(localStorage.getItem("tokenHubTraySession")) || {};
+  } catch {
+    return {};
+  }
+})();
+
 const state = {
   smartMode: true,
   activeTool: null,
   panelOpen: true,
-  loggedIn: false,
-  onboardingStarted: false,
+  appExited: false,
+  loggedIn: savedSession.loggedIn || false,
+  onboardingStarted: savedSession.onboardingStarted || false,
   authPending: false,
   configuring: false,
+  discoveryNotice: null,
   balance: 128.5,
-  apiReady: false,
+  rechargeAmount: 50,
+  rechargeView: "amount",
+  rechargeOrderId: "lenovo_75f4bae6_121",
+  apiReady: savedSession.apiReady || false,
   selections: {
     openclaw: "deepseek-v4-flash",
     "claude-code": "deepseek-v4-pro",
@@ -41,10 +54,14 @@ const webLinks = {
   auth: "https://lai-hub.lenovomm.com/login?source=token-hub-desktop",
   dashboard: "https://lai-hub.lenovomm.com/",
   logs: "https://lai-hub.lenovomm.com/logs",
+  marketplace: "https://lai-hub.lenovomm.com/pricing",
+  keys: "https://lai-hub.lenovomm.com/keys",
+  account: "https://lai-hub.lenovomm.com/account",
 };
 
 const panel = document.querySelector("#tray-panel");
 const trayButton = document.querySelector("#tray-app-button");
+const desktopAppIcon = document.querySelector("#desktop-app-icon");
 const toolList = document.querySelector("#tool-list");
 const modelList = document.querySelector("#model-list");
 const accountBar = document.querySelector("#account-bar");
@@ -52,8 +69,22 @@ const onboardingCard = document.querySelector("#onboarding-card");
 const readyContent = document.querySelector("#ready-content");
 const settingsButton = document.querySelector(".settings-button");
 const notification = document.querySelector("#tool-notification");
+const demoButtons = document.querySelectorAll("[data-demo-state]");
 const toast = document.querySelector("#app-toast");
 const authWindow = document.querySelector("#auth-window");
+const rechargeWindow = document.querySelector("#recharge-window");
+const rechargeContent = document.querySelector("#recharge-content");
+const appMenuButton = document.querySelector(".app-menu-button");
+const appMenu = document.querySelector("#app-menu");
+const trayContextMenu = document.querySelector("#tray-context-menu");
+
+function saveSession() {
+  localStorage.setItem("tokenHubTraySession", JSON.stringify({
+    loggedIn: state.loggedIn,
+    onboardingStarted: state.onboardingStarted,
+    apiReady: state.apiReady,
+  }));
+}
 
 function renderTools() {
   toolList.innerHTML = tools.map((tool) => {
@@ -151,14 +182,134 @@ function openWebLogin() {
   showToast("已打开联想账号登录窗口");
 }
 
+function renderRecharge() {
+  const amount = Number(state.rechargeAmount || 1);
+  const orderId = state.rechargeOrderId;
+  if (state.rechargeView === "confirm") {
+    rechargeContent.innerHTML = `
+      <section class="recharge-head">
+        <div class="recharge-title">
+          <i>▣</i>
+          <div>
+            <h2>确认付款</h2>
+            <p>查看您的付款详情</p>
+          </div>
+        </div>
+      </section>
+      <section class="confirm-list">
+        <div><span>充值金额</span><strong>¥${amount.toFixed(2)}</strong></div>
+        <div><span>您支付</span><strong>${amount.toFixed(2)}</strong></div>
+        <div><span>付款方式</span><strong><span class="pay-icon">▢</span> 微信/支付宝</strong></div>
+      </section>
+      <footer class="recharge-footer">
+        <button class="primary" data-recharge-view="pay">去支付</button>
+      </footer>
+    `;
+    return;
+  }
+
+  if (state.rechargeView === "pay" || state.rechargeView === "detail") {
+    const detail = state.rechargeView === "detail";
+    rechargeContent.innerHTML = `
+      <section class="recharge-head">
+        <div class="recharge-title">
+          <i>▣</i>
+          <div>
+            <h2>扫码支付</h2>
+            <p>请使用手机 app 完成支付</p>
+          </div>
+        </div>
+      </section>
+      <div class="pay-tabs">
+        <button class="${detail ? "" : "active"}" data-recharge-view="pay">▦ 二维码</button>
+        <button class="${detail ? "active" : ""}" data-recharge-view="detail">◷ 详情</button>
+      </div>
+      <section class="qr-box">
+        ${detail ? `
+          <div class="payment-detail">
+            <div><span>金额</span><strong class="red">¥${amount.toFixed(2)}</strong></div>
+            <div><span>订单编号</span><strong>${orderId}</strong></div>
+            <div><span>付款方式</span><strong>聚合码</strong></div>
+            <div><span>到期时间</span><strong>2026/6/1 10:46:33</strong></div>
+          </div>
+        ` : `
+          <div>
+            <div class="fake-qr"></div>
+            <div class="qr-copy">
+              <strong>等待支付...</strong>
+              <span>扫描 聚合码</span>
+              <span>到期时间：2026/6/1 10:46:33</span>
+            </div>
+          </div>
+        `}
+      </section>
+      <footer class="recharge-footer">
+        <button class="primary" data-complete-recharge="true">模拟支付完成</button>
+      </footer>
+    `;
+    return;
+  }
+
+  const amounts = [10, 20, 50, 100, 200, 500];
+  rechargeContent.innerHTML = `
+    <section class="recharge-head">
+      <div class="recharge-title">
+        <i>▣</i>
+        <div>
+          <h2>充值</h2>
+          <p>选择金额和支付方式</p>
+        </div>
+      </div>
+      <button class="recharge-history" data-web-link="account">订单历史</button>
+    </section>
+    <section class="recharge-section">
+      <strong>金额</strong>
+      <div class="amount-grid">
+        ${amounts.map((item) => `<button class="amount-card${amount === item ? " active" : ""}" data-recharge-amount="${item}">${item}元</button>`).join("")}
+      </div>
+    </section>
+    <section class="recharge-section">
+      <strong>自定义金额</strong>
+      <div class="recharge-input-row">
+        <input id="custom-recharge-amount" value="${amount}" inputmode="decimal" aria-label="自定义金额" />
+        <div class="recharge-total"><span>待支付金额：</span><strong>¥${amount.toFixed(2)}</strong></div>
+      </div>
+    </section>
+    <section class="recharge-section">
+      <strong>付款方式</strong>
+      <button class="payment-method"><span class="pay-icon">▢</span> 微信/支付宝</button>
+    </section>
+    <footer class="recharge-footer">
+      <button class="primary" data-recharge-view="confirm">确认付款</button>
+    </footer>
+  `;
+}
+
+function openRechargeWindow() {
+  state.rechargeView = "amount";
+  state.rechargeOrderId = `lenovo_${String(Math.random()).slice(2, 10)}_121`;
+  rechargeWindow.hidden = false;
+  renderRecharge();
+}
+
+function closeRechargeWindow() {
+  rechargeWindow.hidden = true;
+}
+
 function startConfiguration() {
   state.configuring = true;
+  state.onboardingStarted = true;
+  saveSession();
   renderOnboarding();
   setTimeout(() => {
     state.configuring = false;
     state.apiReady = true;
+    saveSession();
     renderTools();
+    renderAccount();
     renderOnboarding();
+    syncAppMenuState();
+    setActiveDemoState("ready");
     showToast("配置完成，所有应用已接入模型服务");
   }, 1200);
 }
@@ -169,8 +320,14 @@ function renderAccount() {
       <div class="account-row">
         <span class="account-avatar">1</span>
         <span class="account-copy"><strong>15*******88</strong><small>可用额度 ¥${state.balance.toFixed(2)}</small></span>
-        <button class="account-action" data-recharge="true">充值</button>
-        <button class="account-action secondary" data-logout="true">登出</button>
+        <button class="account-action account-recharge" data-recharge="true">充值</button>
+        <div class="account-more-wrap">
+          <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false">⋮</button>
+          <div class="account-menu" hidden>
+            <button data-web-link="account">我的账户</button>
+            <button class="danger" data-logout="true">登出</button>
+          </div>
+        </div>
       </div>
     `
     : state.authPending
@@ -192,16 +349,33 @@ function renderAccount() {
 }
 
 function openPanel() {
+  state.appExited = false;
+  trayButton.hidden = false;
   panel.classList.add("open");
   trayButton.classList.add("active");
   state.panelOpen = true;
+  trayContextMenu.hidden = true;
 }
 
 function closePanel() {
   panel.classList.remove("open");
   trayButton.classList.remove("active");
   state.panelOpen = false;
-  if (state.apiReady) setTimeout(() => notification.classList.add("show"), 450);
+}
+
+function exitApp() {
+  closePanel();
+  notification.classList.remove("show");
+  trayContextMenu.hidden = true;
+  trayButton.hidden = true;
+  state.appExited = true;
+}
+
+function launchApp() {
+  state.appExited = false;
+  trayButton.hidden = false;
+  openPanel();
+  showPage("home");
 }
 
 function showPage(page) {
@@ -243,6 +417,130 @@ function openTool(toolId) {
   showPage("models");
 }
 
+function openAppFromNotification() {
+  notification.classList.remove("show");
+  openPanel();
+  showPage("home");
+}
+
+function renderNotification() {
+  const matchedModel = models[state.selections.qclaw];
+  const isAuto = state.discoveryNotice === "auto";
+  notification.classList.toggle("clickable", isAuto);
+  notification.innerHTML = isAuto
+    ? `
+      <header>
+        <div class="notification-brand">
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <span>联想 Token Hub</span>
+        </div>
+        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
+      </header>
+      <div class="notification-content">
+        <span class="tool-mark">QC</span>
+        <div>
+          <strong>QClaw 已完成模型匹配</strong>
+          <p>已根据应用特性自动选择 ${matchedModel.name}，现在可以直接使用。</p>
+          <div class="notification-result">
+            ${matchedModel.tags.map((tag) => `<span>${tag}</span>`).join("")}
+            <span>${matchedModel.vendor}</span>
+          </div>
+        </div>
+      </div>
+    `
+    : `
+      <header>
+        <div class="notification-brand">
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <span>联想 Token Hub</span>
+        </div>
+        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
+      </header>
+      <div class="notification-content">
+        <span class="tool-mark">QC</span>
+        <div>
+          <strong>发现新应用 QClaw</strong>
+          <p>为 QClaw 选择一个模型后即可使用。</p>
+        </div>
+      </div>
+      <div class="notification-actions">
+        <button class="primary" data-open-tool="qclaw">去选择模型</button>
+      </div>
+    `;
+}
+
+function setDiscoveryNotice(mode) {
+  state.discoveryNotice = mode === "clear" ? null : mode;
+  if (!state.discoveryNotice) {
+    notification.classList.remove("show");
+    return;
+  }
+  state.smartMode = state.discoveryNotice === "auto";
+  document.querySelector("[data-smart-toggle]")?.classList.toggle("active", state.smartMode);
+  renderTools();
+  renderNotification();
+  notification.classList.add("show");
+}
+
+function renderAll() {
+  renderTools();
+  renderAccount();
+  renderOnboarding();
+  syncAppMenuState();
+}
+
+function setActiveDemoState(mode) {
+  demoButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.demoState === mode);
+  });
+}
+
+function setDemoState(mode) {
+  state.authPending = false;
+  state.configuring = false;
+  authWindow.hidden = true;
+  notification.classList.remove("show");
+  setDiscoveryNotice("clear");
+
+  if (mode === "onboard") {
+    state.loggedIn = false;
+    state.onboardingStarted = false;
+    state.apiReady = false;
+    state.smartMode = true;
+    localStorage.removeItem("tokenHubTraySession");
+    showPage("home");
+    openPanel();
+    renderAll();
+    setActiveDemoState(mode);
+    return;
+  }
+
+  state.loggedIn = true;
+  state.onboardingStarted = true;
+  state.apiReady = true;
+  state.smartMode = mode !== "manual-discovery";
+  saveSession();
+  showPage("home");
+  renderAll();
+  document.querySelector("[data-smart-toggle]")?.classList.toggle("active", state.smartMode);
+  setActiveDemoState(mode);
+
+  if (mode === "auto-discovery") {
+    closePanel();
+    setDiscoveryNotice("auto");
+    return;
+  }
+
+  if (mode === "manual-discovery") {
+    closePanel();
+    setDiscoveryNotice("manual");
+    return;
+  }
+
+  openPanel();
+  showToast("已切换到正常使用状态");
+}
+
 function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
@@ -250,24 +548,84 @@ function showToast(message) {
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
+function setAppMenu(open) {
+  const canOpen = state.loggedIn;
+  const nextOpen = canOpen && open;
+  appMenu.hidden = !nextOpen;
+  appMenuButton.classList.toggle("active", nextOpen);
+  appMenuButton.classList.toggle("locked", !canOpen);
+  appMenuButton.querySelector(".menu-chevron").textContent = canOpen ? "▾" : "";
+  appMenuButton.setAttribute("aria-expanded", String(nextOpen));
+}
+
+function setAccountMenu(open) {
+  const menu = accountBar.querySelector(".account-menu");
+  const button = accountBar.querySelector(".account-more");
+  if (!menu || !button) return;
+  menu.hidden = !open;
+  button.classList.toggle("active", open);
+  button.setAttribute("aria-expanded", String(open));
+}
+
+function syncAppMenuState() {
+  setAppMenu(!appMenu.hidden);
+}
+
 document.addEventListener("click", (event) => {
+  const menuTarget = event.target.closest("[data-app-menu]");
+  if (menuTarget) {
+    if (!state.loggedIn) {
+      setAppMenu(false);
+      return;
+    }
+    setAppMenu(appMenu.hidden);
+    return;
+  }
+
   const target = event.target.closest("button");
-  if (!target) return;
+  if (!target) {
+    if (event.target.closest("#tool-notification") && state.discoveryNotice === "auto") {
+      openAppFromNotification();
+      return;
+    }
+    if (!event.target.closest(".account-more-wrap")) setAccountMenu(false);
+    if (!event.target.closest(".app-menu-wrap")) setAppMenu(false);
+    if (!event.target.closest("#tray-context-menu")) trayContextMenu.hidden = true;
+    return;
+  }
 
   if (target === trayButton) {
+    trayContextMenu.hidden = true;
     state.panelOpen ? closePanel() : openPanel();
   }
 
+  if (!target.closest(".app-menu-wrap")) setAppMenu(false);
+  if (!target.closest(".account-more-wrap")) setAccountMenu(false);
+  if (!target.closest("#tray-context-menu") && target !== trayButton) trayContextMenu.hidden = true;
+
+  if (target.dataset.accountMenu) {
+    setAccountMenu(accountBar.querySelector(".account-menu")?.hidden);
+    return;
+  }
+
   if (target.dataset.closePanel) closePanel();
+  if (target.dataset.exitApp) exitApp();
 
   if (target.dataset.smartToggle) {
     state.smartMode = !state.smartMode;
     target.classList.toggle("active", state.smartMode);
     renderTools();
+    if (state.discoveryNotice) {
+      state.discoveryNotice = state.smartMode ? "auto" : "manual";
+      renderNotification();
+    }
     showToast(state.smartMode ? "已开启智能模型匹配" : "已切换为手动选择");
   }
 
-  if (target.dataset.openTool) openTool(target.dataset.openTool);
+  if (target.dataset.openTool) {
+    if (target.closest("#tool-notification")) setDiscoveryNotice("clear");
+    openTool(target.dataset.openTool);
+  }
 
   if (target.dataset.backHome) showPage("home");
 
@@ -285,6 +643,7 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.startOnboarding) {
     state.onboardingStarted = true;
+    saveSession();
     if (state.loggedIn) {
       renderOnboarding();
     } else {
@@ -300,11 +659,17 @@ document.addEventListener("click", (event) => {
     }, 650);
   }
 
-  if (target.dataset.webLink) {
-    window.open(webLinks[target.dataset.webLink], "_blank", "noopener,noreferrer");
+  if (target.dataset.demoState) {
+    setDemoState(target.dataset.demoState);
   }
 
-  if (target.dataset.dismissNotification) notification.classList.remove("show");
+  if (target.dataset.webLink) {
+    window.open(webLinks[target.dataset.webLink], "_blank", "noopener,noreferrer");
+    setAppMenu(false);
+    setAccountMenu(false);
+  }
+
+  if (target.dataset.dismissNotification) setDiscoveryNotice("clear");
   if (target.dataset.settings) showPage("settings");
   if (target.dataset.login) {
     openWebLogin();
@@ -313,24 +678,45 @@ document.addEventListener("click", (event) => {
     state.loggedIn = true;
     state.authPending = false;
     authWindow.hidden = true;
+    saveSession();
     renderAccount();
     startConfiguration();
   }
   if (target.dataset.logout) {
     state.loggedIn = false;
     state.authPending = false;
+    state.apiReady = false;
+    state.onboardingStarted = false;
+    saveSession();
+    syncAppMenuState();
     renderAccount();
     renderOnboarding();
+    setActiveDemoState("onboard");
     showToast("已退出登录");
   }
   if (target.dataset.closeAuth) {
     authWindow.hidden = true;
     showToast("登录窗口已关闭，可随时重新打开");
   }
+  if (target.dataset.closeRecharge) {
+    closeRechargeWindow();
+  }
   if (target.dataset.recharge) {
-    state.balance += 50;
+    openRechargeWindow();
+  }
+  if (target.dataset.rechargeAmount) {
+    state.rechargeAmount = Number(target.dataset.rechargeAmount);
+    renderRecharge();
+  }
+  if (target.dataset.rechargeView) {
+    state.rechargeView = target.dataset.rechargeView;
+    renderRecharge();
+  }
+  if (target.dataset.completeRecharge) {
+    state.balance += Number(state.rechargeAmount || 0);
+    closeRechargeWindow();
     renderAccount();
-    showToast("充值成功，额度已增加 ¥50.00");
+    showToast(`充值成功，额度已增加 ¥${Number(state.rechargeAmount || 0).toFixed(2)}`);
   }
 
   if (target.matches(".settings-list .toggle")) {
@@ -338,9 +724,28 @@ document.addEventListener("click", (event) => {
   }
 });
 
-renderTools();
-renderAccount();
-renderOnboarding();
-setTimeout(() => {
-  if (!state.panelOpen && state.apiReady) notification.classList.add("show");
-}, 900);
+document.addEventListener("input", (event) => {
+  if (event.target.id !== "custom-recharge-amount") return;
+  const value = Math.max(1, Number(event.target.value || 1));
+  state.rechargeAmount = value;
+  const total = rechargeContent.querySelector(".recharge-total strong");
+  if (total) total.textContent = `¥${value.toFixed(2)}`;
+});
+
+trayButton.addEventListener("contextmenu", (event) => {
+  event.preventDefault();
+  if (state.appExited) return;
+  setAppMenu(false);
+  setAccountMenu(false);
+  const rect = trayButton.getBoundingClientRect();
+  trayContextMenu.style.right = `${Math.max(window.innerWidth - rect.right - 6, 8)}px`;
+  trayContextMenu.style.bottom = `${Math.max(window.innerHeight - rect.top + 4, 54)}px`;
+  trayContextMenu.hidden = false;
+});
+
+desktopAppIcon.addEventListener("dblclick", () => {
+  launchApp();
+});
+
+renderAll();
+setActiveDemoState(state.apiReady ? "ready" : "onboard");

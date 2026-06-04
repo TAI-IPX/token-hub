@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>联想 Token Hub · 托盘版原型</title>
-    <link rel="stylesheet" href="./styles.css?v=tray-states-20260604" />
+    <link rel="stylesheet" href="./styles.css?v=demo-menu-20260604" />
   </head>
   <body>
     <main class="desktop" aria-label="Windows 11 桌面">
@@ -19,7 +19,11 @@
         <strong>联想 Token Hub</strong>
       </button>
       <div class="desktop-demo-controls">
-        <div class="demo-control-buttons">
+        <button class="demo-menu-trigger" data-demo-menu="true" aria-label="选择演示场景" aria-expanded="false">
+          <span class="hamburger" aria-hidden="true">☰</span>
+          <strong id="demo-current-label" hidden>正常使用 - 智能匹配关</strong>
+        </button>
+        <div class="demo-control-buttons" id="demo-menu" hidden>
           <button data-demo-state="login-required">首次使用 - 未登录</button>
           <button data-demo-state="configuring">首次使用 - 配置中</button>
           <button data-demo-state="smart-off">正常使用 - 智能匹配关</button>
@@ -189,6 +193,6 @@
       <button data-exit-app="true" role="menuitem">退出应用</button>
     </div>
 
-    <script src="./app.js?v=tray-states-20260604"></script>
+    <script src="./app.js?v=demo-menu-20260604"></script>
   </body>
 </html>

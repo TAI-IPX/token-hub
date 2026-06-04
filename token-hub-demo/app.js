@@ -78,6 +78,9 @@ const readyContent = document.querySelector("#ready-content");
 const settingsButton = document.querySelector(".settings-button");
 const notification = document.querySelector("#tool-notification");
 const demoButtons = document.querySelectorAll("[data-demo-state]");
+const demoMenuButton = document.querySelector("[data-demo-menu]");
+const demoMenu = document.querySelector("#demo-menu");
+const demoCurrentLabel = document.querySelector("#demo-current-label");
 const toast = document.querySelector("#app-toast");
 const authWindow = document.querySelector("#auth-window");
 const rechargeWindow = document.querySelector("#recharge-window");
@@ -547,8 +550,16 @@ function renderAll() {
 
 function setActiveDemoState(mode) {
   demoButtons.forEach((button) => {
-    button.classList.toggle("active", button.dataset.demoState === mode);
+    const active = button.dataset.demoState === mode;
+    button.classList.toggle("active", active);
+    if (active) demoCurrentLabel.textContent = button.textContent.trim();
   });
+}
+
+function setDemoMenu(open) {
+  demoMenu.hidden = !open;
+  demoMenuButton.classList.toggle("active", open);
+  demoMenuButton.setAttribute("aria-expanded", String(open));
 }
 
 function setAllManagement(status) {
@@ -604,7 +615,6 @@ function enableSmartMatchAndAdoptAll() {
   syncSmartToggle();
   renderTools();
   if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
-  showToast("已开启智能匹配，所有应用由 Token Hub 管理");
 }
 
 function setDemoState(mode) {
@@ -735,6 +745,12 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const demoMenuTarget = event.target.closest("[data-demo-menu]");
+  if (demoMenuTarget) {
+    setDemoMenu(demoMenu.hidden);
+    return;
+  }
+
   const target = event.target.closest("button");
   if (!target) {
     if (event.target.closest("#tool-notification") && state.discoveryNotice === "auto") {
@@ -743,6 +759,7 @@ document.addEventListener("click", (event) => {
     }
     if (!event.target.closest(".account-more-wrap")) setAccountMenu(false);
     if (!event.target.closest(".app-menu-wrap")) setAppMenu(false);
+    if (!event.target.closest(".desktop-demo-controls")) setDemoMenu(false);
     if (!event.target.closest("#tray-context-menu")) trayContextMenu.hidden = true;
     return;
   }
@@ -754,6 +771,7 @@ document.addEventListener("click", (event) => {
 
   if (!target.closest(".app-menu-wrap")) setAppMenu(false);
   if (!target.closest(".account-more-wrap")) setAccountMenu(false);
+  if (!target.closest(".desktop-demo-controls")) setDemoMenu(false);
   if (!target.closest("#tray-context-menu") && target !== trayButton) trayContextMenu.hidden = true;
 
   if (target.dataset.accountMenu) {
@@ -774,7 +792,6 @@ document.addEventListener("click", (event) => {
         state.discoveryNotice = "manual";
         renderNotification();
       }
-      showToast("已关闭智能模型匹配");
       return;
     }
     smartConfirm.hidden = false;
@@ -850,6 +867,7 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.demoState) {
     setDemoState(target.dataset.demoState);
+    setDemoMenu(false);
   }
 
   if (target.dataset.webLink) {

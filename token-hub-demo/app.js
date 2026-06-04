@@ -418,15 +418,16 @@ function openTool(toolId) {
   document.querySelector("#detail-tool-name").textContent = tool.name;
   const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
-  const externalItem = external
+  const hasExternalConfig = Boolean(tool.externalModel);
+  const externalItem = hasExternalConfig
     ? `
-      <div class="model-row external-current selected">
+      <div class="model-row external-current${external ? " selected" : ""}">
         <span class="radio"><i></i></span>
         <span class="model-copy">
           <strong class="model-title-line">${tool.externalModel} <i><span>⚠</span>外部配置</i></strong>
           <small>不由 Token Hub 管理</small>
         </span>
-        <button class="inline-action" data-adopt-token-hub="${toolId}">切换到 Token Hub</button>
+        <button class="inline-action" ${external ? `data-adopt-token-hub="${toolId}"` : `data-use-external-config="${toolId}"`}>${external ? "切换到 Token Hub" : "切换到外部配置"}</button>
       </div>
     `
     : "";
@@ -826,6 +827,13 @@ document.addEventListener("click", (event) => {
     const tool = tools.find((item) => item.id === toolId);
     state.management[toolId] = "token-hub";
     state.selections[toolId] = tool.models[0];
+    renderTools();
+    openTool(toolId);
+  }
+
+  if (target.dataset.useExternalConfig) {
+    const toolId = target.dataset.useExternalConfig;
+    state.management[toolId] = "external";
     renderTools();
     openTool(toolId);
   }

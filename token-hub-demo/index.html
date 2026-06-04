@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>联想 Token Hub · 托盘版原型</title>
-    <link rel="stylesheet" href="./styles.css?v=demo-menu-20260604" />
+    <link rel="stylesheet" href="./styles.css?v=smart-direct-20260604" />
   </head>
   <body>
     <main class="desktop" aria-label="Windows 11 桌面">
@@ -25,7 +25,6 @@
         </button>
         <div class="demo-control-buttons" id="demo-menu" hidden>
           <button data-demo-state="login-required">首次使用 - 未登录</button>
-          <button data-demo-state="configuring">首次使用 - 配置中</button>
           <button data-demo-state="smart-off">正常使用 - 智能匹配关</button>
           <button data-demo-state="smart-on">正常使用 - 智能匹配开</button>
           <button data-demo-state="unconfigured">待选择模型 - 多应用未配置</button>
@@ -69,17 +68,10 @@
                 <span class="feature-icon compact">✦</span>
                 <div>
                   <strong>智能模型匹配</strong>
-                  <p>接管应用配置，并自动选择推荐模型</p>
+                  <p>开启后，应用将使用 Token Hub 提供的推荐模型。</p>
                 </div>
               </div>
               <button class="toggle" data-smart-toggle="true" aria-label="智能模型匹配"></button>
-            </div>
-            <div class="smart-inline-confirm" id="smart-confirm" hidden>
-              <p>开启后，所有应用将改用 Token Hub 推荐模型。</p>
-              <div>
-                <button data-cancel-smart-confirm="true">取消</button>
-                <button class="primary" data-confirm-smart-match="true">开启</button>
-              </div>
             </div>
           </section>
 
@@ -121,9 +113,9 @@
           <div class="setting-row"><div><strong>开机自启</strong><small>登录 Windows 后自动运行</small></div><button class="toggle active" aria-label="开机自启"></button></div>
           <div class="setting-row"><div><strong>系统通知</strong><small>发现新应用和切换异常时提醒</small></div><button class="toggle active" aria-label="系统通知"></button></div>
           <div class="setting-row"><div><strong>自动检测新应用</strong><small>安装应用后自动加入列表</small></div><button class="toggle active" aria-label="自动检测新应用"></button></div>
-          <div class="setting-row"><div><strong>接管前二次确认</strong><small>开启智能匹配前确认是否由 Token Hub 管理应用配置</small></div><button class="toggle active" aria-label="接管前二次确认"></button></div>
         </section>
       </div>
+      <div class="refresh-toast" id="refresh-toast" aria-live="polite"></div>
     </section>
 
     <aside class="desktop-notification" id="tool-notification" aria-live="polite"></aside>
@@ -191,6 +183,6 @@
       <button data-exit-app="true" role="menuitem">退出应用</button>
     </div>
 
-    <script src="./app.js?v=demo-menu-20260604"></script>
+    <script src="./app.js?v=smart-direct-20260604"></script>
   </body>
 </html>

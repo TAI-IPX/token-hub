@@ -60,11 +60,12 @@ const models = {
 
 const webLinks = {
   auth: "https://lai-hub.lenovomm.com/login?source=token-hub-desktop",
-  dashboard: "https://lai-hub.lenovomm.com/",
-  logs: "https://lai-hub.lenovomm.com/logs",
+  dashboard: "https://lai-hub.lenovomm.com/dashboard/models",
+  logs: "https://lai-hub.lenovomm.com/usage-logs/common",
   marketplace: "https://lai-hub.lenovomm.com/pricing",
   keys: "https://lai-hub.lenovomm.com/keys",
-  account: "https://lai-hub.lenovomm.com/account",
+  account: "https://lai-hub.lenovomm.com/wallet",
+  orders: "https://lai-hub.lenovomm.com/wallet",
 };
 
 const panel = document.querySelector("#tray-panel");
@@ -81,13 +82,13 @@ const demoButtons = document.querySelectorAll("[data-demo-state]");
 const demoMenuButton = document.querySelector("[data-demo-menu]");
 const demoMenu = document.querySelector("#demo-menu");
 const demoCurrentLabel = document.querySelector("#demo-current-label");
+const refreshToast = document.querySelector("#refresh-toast");
 const authWindow = document.querySelector("#auth-window");
 const rechargeWindow = document.querySelector("#recharge-window");
 const rechargeContent = document.querySelector("#recharge-content");
 const appMenuButton = document.querySelector(".app-menu-button");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
-const smartConfirm = document.querySelector("#smart-confirm");
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -272,7 +273,6 @@ function renderRecharge() {
           <p>选择金额和支付方式</p>
         </div>
       </div>
-      <button class="recharge-history" data-web-link="account">订单历史</button>
     </section>
     <section class="recharge-section">
       <strong>金额</strong>
@@ -342,6 +342,7 @@ function renderAccount() {
           <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false">⋮</button>
           <div class="account-menu" hidden>
             <button data-web-link="account">我的账户</button>
+            <button data-web-link="orders">订单历史</button>
             <button class="danger" data-logout="true">登出</button>
           </div>
         </div>
@@ -419,15 +420,19 @@ function openTool(toolId) {
   const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
   const hasExternalConfig = Boolean(tool.externalModel);
+  const externalLocked = state.smartMode && !external;
+  const externalRadio = !external && !externalLocked
+    ? `<button class="radio radio-action" data-use-external-config="${toolId}" aria-label="切换到外部配置"><i></i></button>`
+    : `<span class="radio"><i></i></span>`;
   const externalItem = hasExternalConfig
     ? `
-      <div class="model-row external-current${external ? " selected" : ""}">
-        <span class="radio"><i></i></span>
+      <div class="model-row external-current${external ? " selected" : ""}${externalLocked ? " external-muted" : ""}">
+        ${externalRadio}
         <span class="model-copy">
           <strong class="model-title-line">${tool.externalModel} <i><span>⚠</span>外部配置</i></strong>
           <small>不由 Token Hub 管理</small>
         </span>
-        <button class="inline-action" ${external ? `data-adopt-token-hub="${toolId}"` : `data-use-external-config="${toolId}"`}>${external ? "切换到 Token Hub" : "切换到外部配置"}</button>
+        ${externalLocked ? `<span class="external-info" tabindex="0" aria-label="智能匹配开启中，关闭后可切回外部配置。" data-tip="智能匹配开启中，关闭后可切回外部配置。">i</span>` : `<button class="inline-action" ${external ? `data-adopt-token-hub="${toolId}"` : `data-use-external-config="${toolId}"`}>${external ? "切换到 Token Hub" : "切换到外部配置"}</button>`}
       </div>
     `
     : "";
@@ -559,6 +564,13 @@ function setDemoMenu(open) {
   demoMenuButton.setAttribute("aria-expanded", String(open));
 }
 
+function showRefreshToast(message) {
+  refreshToast.textContent = message;
+  refreshToast.classList.add("show");
+  clearTimeout(showRefreshToast.timer);
+  showRefreshToast.timer = setTimeout(() => refreshToast.classList.remove("show"), 1500);
+}
+
 function setAllManagement(status) {
   tools.forEach((tool) => {
     state.management[tool.id] = status;
@@ -578,7 +590,6 @@ function resetDemoBaseline() {
   state.discoveryNotice = null;
   authWindow.hidden = true;
   rechargeWindow.hidden = true;
-  smartConfirm.hidden = true;
   notification.classList.remove("show");
   setAllManagement("token-hub");
   tools.forEach((tool) => {
@@ -608,7 +619,6 @@ function enableSmartMatchAndAdoptAll() {
     tool.isNew = false;
   });
   state.smartMode = true;
-  smartConfirm.hidden = true;
   syncSmartToggle();
   renderTools();
   if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
@@ -619,7 +629,7 @@ function setDemoState(mode) {
 
   if (mode === "login-required") {
     state.loggedIn = false;
-    state.onboardingStarted = true;
+    state.onboardingStarted = false;
     state.apiReady = false;
     state.smartMode = false;
     localStorage.removeItem("tokenHubTraySession");
@@ -784,18 +794,6 @@ document.addEventListener("click", (event) => {
       }
       return;
     }
-    smartConfirm.hidden = false;
-    syncSmartToggle();
-    return;
-  }
-
-  if (target.dataset.cancelSmartConfirm) {
-    smartConfirm.hidden = true;
-    syncSmartToggle();
-    return;
-  }
-
-  if (target.dataset.confirmSmartMatch) {
     enableSmartMatchAndAdoptAll();
     if (state.discoveryNotice) {
       state.discoveryNotice = "auto";
@@ -856,6 +854,7 @@ document.addEventListener("click", (event) => {
     target.classList.add("spinning");
     setTimeout(() => {
       target.classList.remove("spinning");
+      showRefreshToast("应用列表已刷新");
     }, 650);
   }
 

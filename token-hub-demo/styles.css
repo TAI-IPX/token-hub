@@ -278,15 +278,50 @@ h1 { font-size: 16px; font-weight: 600; }
 .panel-actions { gap: 2px; }
 .settings-button { font-size: 17px; }
 .smart-mode {
-  display: flex; align-items: center; justify-content: space-between;
+  position: relative;
+  display: grid;
+  gap: 0;
   min-height: 76px; margin: 0; padding: 10px 16px;
   border-top: 1px solid rgba(120, 124, 132, .12); border-bottom: 1px solid rgba(120, 124, 132, .16); background: rgba(242, 244, 252, .76);
 }
+.smart-mode-main { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .smart-mode-copy { gap: 11px; }
 .feature-icon { color: #e09b00; font-size: 22px; }
 .feature-icon.compact { width: 42px; height: 42px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 50%; color: #0871c9; background: #e3f2ff; font-size: 20px; }
 .smart-mode strong { font-size: 14px; }
 .smart-mode p { margin-top: 3px; color: var(--muted); font-size: 12px; }
+.smart-inline-confirm {
+  position: absolute;
+  top: 58px;
+  right: 16px;
+  left: 69px;
+  z-index: 25;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(170, 177, 188, .42);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .16);
+  backdrop-filter: blur(18px);
+}
+.smart-inline-confirm[hidden] { display: none; }
+.smart-inline-confirm p { margin: 0; color: #555d67; line-height: 1.45; }
+.smart-inline-confirm div { display: flex; align-items: center; gap: 6px; }
+.smart-inline-confirm button {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: #303640;
+  background: rgba(239, 242, 247, .9);
+  font-size: 12px;
+}
+.smart-inline-confirm button:hover { background: rgba(226, 230, 237, .96); }
+.smart-inline-confirm .primary { color: white; background: #050505; }
+.smart-inline-confirm .primary:hover { background: #1b1f26; }
 .toggle { width: 42px; height: 22px; position: relative; border-radius: 999px; background: #aeb4bc; transition: background .16s; }
 .toggle::after { content: ""; width: 16px; height: 16px; position: absolute; top: 3px; left: 3px; border-radius: 50%; background: white; transition: transform .16s; }
 .toggle.active { background: var(--blue); }
@@ -310,14 +345,26 @@ h1 { font-size: 16px; font-weight: 600; }
 .tool-copy, .model-copy { min-width: 0; flex: 1; display: grid; gap: 3px; }
 .tool-copy strong, .model-copy strong { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .tool-copy small, .model-copy small { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.tool-copy em { margin-left: 7px; padding: 2px 5px; border-radius: 999px; color: #9d6100; background: #fff1cc; font-size: 10px; font-style: normal; font-weight: 500; }
+.tool-copy em { margin-left: 7px; padding: 2px 5px; border-radius: 999px; font-size: 10px; font-style: normal; font-weight: 500; }
+.tool-copy em span, .model-title-line i span { margin-right: 3px; font-size: 9px; line-height: 1; }
+.tool-copy em.new { color: #08783d; background: #dff7e9; }
+.tool-copy em.external { color: #8a5700; background: #fff0c2; }
 .chevron { color: #51565e; font-size: 23px; }
 .account-list { padding: 5px 10px; border-top: 1px solid var(--line); }
 .account-row { display: flex; align-items: center; gap: 7px; min-height: 46px; padding: 4px 8px; border-radius: 4px; }
 .account-row:hover { background: rgba(225, 228, 234, .76); }
 .account-copy { min-width: 0; flex: 1; display: grid; gap: 2px; }
-.account-copy strong { font-size: 12px; }
+.account-copy strong { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
 .account-copy small { color: var(--muted); font-size: 11px; }
+.account-status {
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+}
+.account-status.low { color: #8a5700; background: #fff0c2; }
+.account-status.empty { color: #b42318; background: #ffe4e1; }
 .account-avatar { width: 30px; height: 30px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 50%; color: white; background: #5676df; font-size: 12px; font-weight: 700; }
 .account-action { height: 28px; padding: 0 9px; border-radius: 4px; color: #5d646d; background: rgba(255,255,255,.56); font-size: 11px; }
 .account-action:hover { background: rgba(225, 228, 234, .84); }
@@ -366,6 +413,13 @@ h1 { font-size: 16px; font-weight: 600; }
 .detail-accent { width: 112px; height: 3px; background: var(--blue); }
 .model-list { min-height: 310px; padding: 8px 10px; }
 .model-row { min-height: 96px; border-bottom: 1px solid var(--line); border-radius: 0; }
+.model-row.preview { opacity: .72; }
+.model-row.external-current {
+  margin-top: 4px;
+  border-bottom-color: rgba(224, 175, 44, .28);
+  background: transparent;
+}
+.model-row.external-current:hover { background: rgba(225, 228, 234, .76); }
 .model-row:disabled { cursor: default; }
 .model-row:disabled:hover { background: transparent; }
 .radio { width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid #717780; border-radius: 50%; }
@@ -374,6 +428,10 @@ h1 { font-size: 16px; font-weight: 600; }
 .model-row:disabled .radio { border-color: #b3b8bf; background: rgba(217, 220, 225, .5); }
 .model-row:disabled.selected .radio i { background: #a6acb4; }
 .model-row em { color: var(--blue); font-size: 12px; font-style: normal; }
+.model-title-line { display: inline-flex; align-items: center; gap: 6px; }
+.model-title-line i { display: inline-flex; align-items: center; padding: 1px 5px; border-radius: 999px; color: #8a5700; background: #fff0c2; font-size: 10px; font-style: normal; font-weight: 500; }
+.inline-action { height: 30px; padding: 0 10px; border-radius: 5px; color: white; background: var(--blue); font-size: 12px; white-space: nowrap; }
+.inline-action:hover { background: #075ea7; }
 .model-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .model-tags i { padding: 1px 5px; border-radius: 999px; color: #a56500; background: #fff1d6; font-size: 10px; font-style: normal; }
 .model-tags i:first-child { color: #c02735; background: #ffe4e7; }
@@ -501,7 +559,6 @@ h1 { font-size: 16px; font-weight: 600; }
   white-space: nowrap;
 }
 .app-toast.show { opacity: 1; transform: translate(-50%, 0); }
-
 @media (max-height: 720px) {
   .tool-list { max-height: 224px; }
   .model-list { min-height: 270px; }

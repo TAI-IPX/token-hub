@@ -7,7 +7,7 @@ const savedSession = (() => {
 })();
 
 const state = {
-  smartMode: true,
+  smartMode: false,
   activeTool: null,
   panelOpen: true,
   appExited: false,
@@ -17,6 +17,7 @@ const state = {
   configuring: false,
   discoveryNotice: null,
   balance: 128.5,
+  balanceStatus: "normal",
   rechargeAmount: 50,
   rechargeView: "amount",
   rechargeOrderId: "lenovo_75f4bae6_121",
@@ -28,10 +29,17 @@ const state = {
     workbuddy: "qwen3.6-plus",
     hermes: "kimi-k2.6",
   },
+  management: {
+    openclaw: "external",
+    "claude-code": "token-hub",
+    qclaw: "token-hub",
+    workbuddy: "token-hub",
+    hermes: "token-hub",
+  },
 };
 
 const tools = [
-  { id: "openclaw", name: "OpenClaw", mark: "OC", models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
+  { id: "openclaw", name: "OpenClaw", mark: "OC", externalModel: "gpt-4.1", externalVendor: "OpenAI Compatible", externalPrices: ["¥18.00", "¥72.00", "¥4.50"], externalTags: ["文本生成", "OpenAI 兼容"], models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
   { id: "claude-code", name: "Claude Code", mark: "CC", models: ["deepseek-v4-pro", "glm-5.1", "qwen3.6-max-preview"] },
   { id: "qclaw", name: "QClaw", mark: "QC", isNew: true, models: ["deepseek-v4-flash", "qwen3.6-flash", "kimi-k2.6"] },
   { id: "workbuddy", name: "WorkBuddy", mark: "WB", models: ["qwen3.6-plus", "kimi-k2.6", "MiniMax-M2.5"] },
@@ -77,6 +85,7 @@ const rechargeContent = document.querySelector("#recharge-content");
 const appMenuButton = document.querySelector(".app-menu-button");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
+const smartConfirm = document.querySelector("#smart-confirm");
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -89,12 +98,14 @@ function saveSession() {
 function renderTools() {
   toolList.innerHTML = tools.map((tool) => {
     const model = models[state.selections[tool.id]];
+    const external = state.management[tool.id] === "external";
+    const unconfigured = state.management[tool.id] === "unconfigured";
     return `
       <button class="tool-row" data-open-tool="${tool.id}">
         <span class="tool-mark">${tool.mark}</span>
         <span class="tool-copy">
-          <strong>${tool.name}${tool.isNew ? `<em>新发现</em>` : ""}</strong>
-          <small>${model.name}</small>
+          <strong>${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}${external ? `<em class="external"><span>⚠</span>外部配置</em>` : ""}</strong>
+          <small>${external ? tool.externalModel : unconfigured ? "待选择模型" : model.name}</small>
         </span>
         <span class="chevron">›</span>
       </button>
@@ -304,22 +315,28 @@ function startConfiguration() {
   setTimeout(() => {
     state.configuring = false;
     state.apiReady = true;
+    state.smartMode = false;
     saveSession();
     renderTools();
     renderAccount();
     renderOnboarding();
+    syncSmartToggle();
     syncAppMenuState();
-    setActiveDemoState("ready");
+    setActiveDemoState("smart-off");
     showToast("配置完成，所有应用已接入模型服务");
   }, 1200);
 }
 
 function renderAccount() {
+  const balanceTag = {
+    low: `<em class="account-status low">额度较低</em>`,
+    empty: `<em class="account-status empty">余额不足</em>`,
+  }[state.balanceStatus] || "";
   accountBar.innerHTML = state.loggedIn
     ? `
       <div class="account-row">
         <span class="account-avatar">1</span>
-        <span class="account-copy"><strong>15*******88</strong><small>可用额度 ¥${state.balance.toFixed(2)}</small></span>
+        <span class="account-copy"><strong>15*******88${balanceTag}</strong><small>可用额度 ¥${state.balance.toFixed(2)}</small></span>
         <button class="account-action account-recharge" data-recharge="true">充值</button>
         <div class="account-more-wrap">
           <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false">⋮</button>
@@ -395,23 +412,40 @@ function openTool(toolId) {
     return;
   }
   state.activeTool = toolId;
+  if (tool.isNew) {
+    tool.isNew = false;
+    renderTools();
+  }
   document.querySelector("#detail-tool-name").textContent = tool.name;
-  modelList.innerHTML = tool.models.map((modelId) => {
+  const external = state.management[toolId] === "external";
+  const unconfigured = state.management[toolId] === "unconfigured";
+  const externalItem = external
+    ? `
+      <div class="model-row external-current selected">
+        <span class="radio"><i></i></span>
+        <span class="model-copy">
+          <strong class="model-title-line">${tool.externalModel} <i><span>⚠</span>外部配置</i></strong>
+          <small>不由 Token Hub 管理</small>
+        </span>
+        <button class="inline-action" data-adopt-token-hub="${toolId}">切换到 Token Hub</button>
+      </div>
+    `
+    : "";
+  modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {
     const model = models[modelId];
-    const active = state.selections[toolId] === modelId;
+    const active = !external && !unconfigured && state.selections[toolId] === modelId;
     return `
-      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode ? "disabled" : ""}>
+      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !external && !unconfigured ? "disabled" : ""}>
         <span class="radio"><i></i></span>
         <span class="model-copy">
           <strong>${model.name}</strong>
-          <small>${model.vendor}</small>
           <span class="model-tags">${model.tags.map((tag) => `<i>${tag}</i>`).join("")}</span>
           <span class="model-prices"><b>输入 ${model.prices[0]}</b><b>输出 ${model.prices[1]}</b><b>缓存读取 ${model.prices[2]}</b><i>/1M</i></span>
         </span>
         ${active ? `<em>使用中</em>` : ""}
       </button>
     `;
-  }).join("");
+  }).join("")}`;
   notification.classList.remove("show");
   openPanel();
   showPage("models");
@@ -426,8 +460,29 @@ function openAppFromNotification() {
 function renderNotification() {
   const matchedModel = models[state.selections.qclaw];
   const isAuto = state.discoveryNotice === "auto";
+  const externalOpenClaw = state.discoveryNotice === "external";
   notification.classList.toggle("clickable", isAuto);
-  notification.innerHTML = isAuto
+  notification.innerHTML = externalOpenClaw
+    ? `
+      <header>
+        <div class="notification-brand">
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <span>联想 Token Hub</span>
+        </div>
+        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
+      </header>
+      <div class="notification-content">
+        <span class="tool-mark">OC</span>
+        <div>
+          <strong>OpenClaw 正在使用外部模型</strong>
+          <p>Token Hub 不会自动修改现有配置。切换后可使用智能模型匹配。</p>
+        </div>
+      </div>
+      <div class="notification-actions">
+        <button class="primary" data-open-tool="openclaw">查看配置</button>
+      </div>
+    `
+    : isAuto
     ? `
       <header>
         <div class="notification-brand">
@@ -475,8 +530,8 @@ function setDiscoveryNotice(mode) {
     notification.classList.remove("show");
     return;
   }
-  state.smartMode = state.discoveryNotice === "auto";
-  document.querySelector("[data-smart-toggle]")?.classList.toggle("active", state.smartMode);
+  state.smartMode = state.discoveryNotice !== "manual";
+  syncSmartToggle();
   renderTools();
   renderNotification();
   notification.classList.add("show");
@@ -487,6 +542,7 @@ function renderAll() {
   renderAccount();
   renderOnboarding();
   syncAppMenuState();
+  syncSmartToggle();
 }
 
 function setActiveDemoState(mode) {
@@ -495,19 +551,72 @@ function setActiveDemoState(mode) {
   });
 }
 
-function setDemoState(mode) {
+function setAllManagement(status) {
+  tools.forEach((tool) => {
+    state.management[tool.id] = status;
+  });
+}
+
+function resetDemoBaseline() {
   state.authPending = false;
   state.configuring = false;
+  state.loggedIn = true;
+  state.onboardingStarted = true;
+  state.apiReady = true;
+  state.smartMode = false;
+  state.balance = 128.5;
+  state.balanceStatus = "normal";
+  state.activeTool = null;
+  state.discoveryNotice = null;
   authWindow.hidden = true;
+  rechargeWindow.hidden = true;
+  smartConfirm.hidden = true;
   notification.classList.remove("show");
-  setDiscoveryNotice("clear");
+  setAllManagement("token-hub");
+  tools.forEach((tool) => {
+    tool.isNew = false;
+  });
+  state.selections = {
+    openclaw: "deepseek-v4-flash",
+    "claude-code": "deepseek-v4-pro",
+    qclaw: "deepseek-v4-flash",
+    workbuddy: "qwen3.6-plus",
+    hermes: "kimi-k2.6",
+  };
+}
 
-  if (mode === "onboard") {
+function syncSmartToggle() {
+  document.querySelector("[data-smart-toggle]")?.classList.toggle("active", state.smartMode);
+}
+
+function isPageActive(page) {
+  return document.querySelector(`[data-panel-page="${page}"]`)?.classList.contains("active");
+}
+
+function enableSmartMatchAndAdoptAll() {
+  tools.forEach((tool) => {
+    state.management[tool.id] = "token-hub";
+    state.selections[tool.id] = tool.models[0];
+    tool.isNew = false;
+  });
+  state.smartMode = true;
+  smartConfirm.hidden = true;
+  syncSmartToggle();
+  renderTools();
+  if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
+  showToast("已开启智能匹配，所有应用由 Token Hub 管理");
+}
+
+function setDemoState(mode) {
+  resetDemoBaseline();
+
+  if (mode === "login-required") {
     state.loggedIn = false;
-    state.onboardingStarted = false;
+    state.onboardingStarted = true;
     state.apiReady = false;
-    state.smartMode = true;
+    state.smartMode = false;
     localStorage.removeItem("tokenHubTraySession");
+    saveSession();
     showPage("home");
     openPanel();
     renderAll();
@@ -515,30 +624,74 @@ function setDemoState(mode) {
     return;
   }
 
-  state.loggedIn = true;
-  state.onboardingStarted = true;
-  state.apiReady = true;
-  state.smartMode = mode !== "manual-discovery";
+  if (mode === "configuring") {
+    state.loggedIn = true;
+    state.onboardingStarted = true;
+    state.apiReady = false;
+    state.configuring = true;
+    state.smartMode = false;
+    saveSession();
+    showPage("home");
+    openPanel();
+    renderAll();
+    setActiveDemoState(mode);
+    return;
+  }
+
+  if (mode === "smart-on" || mode === "auto-discovery") {
+    state.smartMode = true;
+    tools.forEach((tool) => {
+      tool.isNew = false;
+    });
+  }
+
+  if (mode === "external-config" || mode === "external-discovery") {
+    state.management.openclaw = "external";
+    tools.forEach((tool) => {
+      tool.isNew = false;
+    });
+  }
+
+  if (mode === "low-balance") {
+    state.balance = 0.8;
+    state.balanceStatus = "empty";
+    tools.forEach((tool) => {
+      tool.isNew = false;
+    });
+  }
+
+  if (mode === "unconfigured") {
+    setAllManagement("unconfigured");
+    state.smartMode = false;
+  }
+
   saveSession();
   showPage("home");
   renderAll();
-  document.querySelector("[data-smart-toggle]")?.classList.toggle("active", state.smartMode);
+  syncSmartToggle();
   setActiveDemoState(mode);
 
   if (mode === "auto-discovery") {
+    tools.find((tool) => tool.id === "qclaw").isNew = true;
     closePanel();
     setDiscoveryNotice("auto");
     return;
   }
 
+  if (mode === "external-discovery") {
+    closePanel();
+    setDiscoveryNotice("external");
+    return;
+  }
+
   if (mode === "manual-discovery") {
+    tools.find((tool) => tool.id === "qclaw").isNew = true;
     closePanel();
     setDiscoveryNotice("manual");
     return;
   }
 
   openPanel();
-  showToast("已切换到正常使用状态");
 }
 
 function showToast(message) {
@@ -612,14 +765,36 @@ document.addEventListener("click", (event) => {
   if (target.dataset.exitApp) exitApp();
 
   if (target.dataset.smartToggle) {
-    state.smartMode = !state.smartMode;
-    target.classList.toggle("active", state.smartMode);
-    renderTools();
+    if (state.smartMode) {
+      state.smartMode = false;
+      syncSmartToggle();
+      renderTools();
+      if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
+      if (state.discoveryNotice) {
+        state.discoveryNotice = "manual";
+        renderNotification();
+      }
+      showToast("已关闭智能模型匹配");
+      return;
+    }
+    smartConfirm.hidden = false;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.cancelSmartConfirm) {
+    smartConfirm.hidden = true;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.confirmSmartMatch) {
+    enableSmartMatchAndAdoptAll();
     if (state.discoveryNotice) {
-      state.discoveryNotice = state.smartMode ? "auto" : "manual";
+      state.discoveryNotice = "auto";
       renderNotification();
     }
-    showToast(state.smartMode ? "已开启智能模型匹配" : "已切换为手动选择");
+    return;
   }
 
   if (target.dataset.openTool) {
@@ -631,10 +806,24 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.selectModel) {
     const modelId = target.dataset.selectModel;
+    const adopted = state.management[state.activeTool] === "external";
+    const configured = state.management[state.activeTool] === "unconfigured";
+    if (adopted) state.management[state.activeTool] = "token-hub";
+    if (configured) state.management[state.activeTool] = "token-hub";
     state.selections[state.activeTool] = modelId;
     renderTools();
     openTool(state.activeTool);
-    showToast(`已切换至 ${models[modelId].name}`);
+    showToast(adopted || configured ? `已选择 ${models[modelId].name}` : `已切换至 ${models[modelId].name}`);
+  }
+
+  if (target.dataset.adoptTokenHub) {
+    const toolId = target.dataset.adoptTokenHub;
+    const tool = tools.find((item) => item.id === toolId);
+    state.management[toolId] = "token-hub";
+    state.selections[toolId] = tool.models[0];
+    renderTools();
+    openTool(toolId);
+    showToast(`已切换到 Token Hub，推荐 ${models[state.selections[toolId]].name}`);
   }
 
   if (target.dataset.configureHub) {
@@ -691,7 +880,7 @@ document.addEventListener("click", (event) => {
     syncAppMenuState();
     renderAccount();
     renderOnboarding();
-    setActiveDemoState("onboard");
+    setActiveDemoState("login-required");
     showToast("已退出登录");
   }
   if (target.dataset.closeAuth) {
@@ -748,4 +937,4 @@ desktopAppIcon.addEventListener("dblclick", () => {
 });
 
 renderAll();
-setActiveDemoState(state.apiReady ? "ready" : "onboard");
+setActiveDemoState(state.apiReady ? "smart-off" : "login-required");

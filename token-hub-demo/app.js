@@ -81,7 +81,6 @@ const demoButtons = document.querySelectorAll("[data-demo-state]");
 const demoMenuButton = document.querySelector("[data-demo-menu]");
 const demoMenu = document.querySelector("#demo-menu");
 const demoCurrentLabel = document.querySelector("#demo-current-label");
-const toast = document.querySelector("#app-toast");
 const authWindow = document.querySelector("#auth-window");
 const rechargeWindow = document.querySelector("#recharge-window");
 const rechargeContent = document.querySelector("#recharge-content");
@@ -193,7 +192,6 @@ function openWebLogin() {
   authWindow.hidden = false;
   renderAccount();
   renderOnboarding();
-  showToast("已打开联想账号登录窗口");
 }
 
 function renderRecharge() {
@@ -326,7 +324,6 @@ function startConfiguration() {
     syncSmartToggle();
     syncAppMenuState();
     setActiveDemoState("smart-off");
-    showToast("配置完成，所有应用已接入模型服务");
   }, 1200);
 }
 
@@ -411,7 +408,6 @@ function openTool(toolId) {
     showPage("home");
     onboardingCard.classList.add("attention");
     setTimeout(() => onboardingCard.classList.remove("attention"), 700);
-    showToast("请先完成首次初始化");
     return;
   }
   state.activeTool = toolId;
@@ -704,13 +700,6 @@ function setDemoState(mode) {
   openPanel();
 }
 
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("show");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
-}
-
 function setAppMenu(open) {
   const canOpen = state.loggedIn;
   const nextOpen = canOpen && open;
@@ -830,7 +819,6 @@ document.addEventListener("click", (event) => {
     state.selections[state.activeTool] = modelId;
     renderTools();
     openTool(state.activeTool);
-    showToast(adopted || configured ? `已选择 ${models[modelId].name}` : `已切换至 ${models[modelId].name}`);
   }
 
   if (target.dataset.adoptTokenHub) {
@@ -840,7 +828,6 @@ document.addEventListener("click", (event) => {
     state.selections[toolId] = tool.models[0];
     renderTools();
     openTool(toolId);
-    showToast(`已切换到 Token Hub，推荐 ${models[state.selections[toolId]].name}`);
   }
 
   if (target.dataset.configureHub) {
@@ -861,7 +848,6 @@ document.addEventListener("click", (event) => {
     target.classList.add("spinning");
     setTimeout(() => {
       target.classList.remove("spinning");
-      showToast("检测完成，已发现 5 个应用");
     }, 650);
   }
 
@@ -899,11 +885,9 @@ document.addEventListener("click", (event) => {
     renderAccount();
     renderOnboarding();
     setActiveDemoState("login-required");
-    showToast("已退出登录");
   }
   if (target.dataset.closeAuth) {
     authWindow.hidden = true;
-    showToast("登录窗口已关闭，可随时重新打开");
   }
   if (target.dataset.closeRecharge) {
     closeRechargeWindow();
@@ -921,9 +905,9 @@ document.addEventListener("click", (event) => {
   }
   if (target.dataset.completeRecharge) {
     state.balance += Number(state.rechargeAmount || 0);
+    state.balanceStatus = "normal";
     closeRechargeWindow();
     renderAccount();
-    showToast(`充值成功，额度已增加 ¥${Number(state.rechargeAmount || 0).toFixed(2)}`);
   }
 
   if (target.matches(".settings-list .toggle")) {

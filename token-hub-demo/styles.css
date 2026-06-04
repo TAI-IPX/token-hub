@@ -572,25 +572,6 @@ h1 { font-size: 16px; font-weight: 600; }
 .payment-detail div { display: flex; align-items: center; justify-content: space-between; color: #62666d; font-size: 15px; }
 .payment-detail strong { color: #111; font-size: 18px; }
 .payment-detail .red { color: #d91e2b; }
-.app-toast {
-  position: absolute;
-  top: 54px;
-  left: 50%;
-  z-index: 90;
-  max-width: calc(100% - 36px);
-  padding: 8px 13px;
-  border-radius: 999px;
-  color: white;
-  background: rgba(31,35,42,.94);
-  box-shadow: 0 8px 20px rgba(0,0,0,.16);
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, -8px);
-  transition: opacity .16s, transform .16s;
-  font-size: 12px;
-  white-space: nowrap;
-}
-.app-toast.show { opacity: 1; transform: translate(-50%, 0); }
 @media (max-height: 720px) {
   .tool-list { max-height: 224px; }
   .model-list { min-height: 270px; }

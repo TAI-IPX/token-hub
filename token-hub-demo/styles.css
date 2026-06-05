@@ -852,7 +852,7 @@ h1 { font-size: 16px; font-weight: 600; }
   border-radius: 8px;
   background: rgba(248, 251, 255, 0.88);
   box-shadow: var(--shadow-flyout);
-  backdrop-filter: blur(80px) saturate(1.08);
+  backdrop-filter: blur(40px);
 }
 .tray-panel:has(.onboarding-card[data-state="login"]),
 .tray-panel:has(.onboarding-card[data-state="configuring"]),
@@ -1372,7 +1372,7 @@ button.model-row-v2.external-row-v2 .radio-v2 {
   border-radius: 8px;
   background: rgba(248, 251, 255, 0.88);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
-  backdrop-filter: blur(80px) saturate(1.08);
+  backdrop-filter: blur(40px);
 }
 .desktop-notification header {
   height: 40px;
@@ -1458,7 +1458,7 @@ button.model-row-v2.external-row-v2 .radio-v2 {
   border-radius: 8px;
   background: rgba(248, 251, 255, 0.92);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
-  backdrop-filter: blur(80px) saturate(1.08);
+  backdrop-filter: blur(40px);
 }
 .tray-context-menu {
   width: 160px;

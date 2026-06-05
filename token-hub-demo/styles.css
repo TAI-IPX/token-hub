@@ -609,7 +609,7 @@ h1 { font-size: 16px; font-weight: 600; }
   border-radius: 0 9px 0 6px;
 }
 .recharge-webview { height: calc(100% - 40px); overflow: auto; padding: 22px 26px; background: #fff; }
-.update-webview { padding: 22px 24px 24px; background: #fff; }
+.update-webview { padding: 22px 24px 24px; }
 .update-card { display: grid; gap: 18px; }
 .update-masthead {
   min-height: 24px;

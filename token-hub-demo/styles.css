@@ -423,6 +423,7 @@ h1 { font-size: 16px; font-weight: 600; }
 .tool-copy em { margin-left: 7px; padding: 2px 5px; border-radius: 999px; color: #9d6100; background: #fff1cc; font-size: 10px; font-style: normal; font-weight: 500; }
 .chevron { width: 20px; height: 20px; flex: 0 0 auto; }
 .account-list { padding: 0 16px; border-top: 1px solid rgba(217, 222, 232, 0.64); height: 64px; display: flex; align-items: center; }
+.account-list[hidden] { display: none; }
 .account-row { display: flex; align-items: center; gap: 16px; width: 100%; height: 100%; }
 .account-row:hover { background: transparent; }
 .account-copy { min-width: 0; flex: 1; display: grid; gap: 2px; }
@@ -1164,7 +1165,7 @@ h1 { font-size: 16px; font-weight: 600; }
   padding: 0;
 }
 .detail-back:hover { background: rgba(0, 0, 0, 0.05); }
-.detail-back .ui-icon { width: 12px; height: 12px; color: rgba(0, 0, 0, 0.9); }
+.detail-back .ui-icon { width: 16px; height: 16px; color: rgba(0, 0, 0, 0.9); }
 .detail-close {
   width: 20px;
   height: 20px;
@@ -1294,3 +1295,16 @@ h1 { font-size: 16px; font-weight: 600; }
   white-space: nowrap;
 }
 .refresh-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Model switch button */
+.model-switch-btn {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  white-space: nowrap;
+}
+.model-switch-btn:hover { background: rgba(0, 95, 184, 0.08); }

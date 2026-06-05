@@ -125,6 +125,7 @@ function renderTools() {
 function renderOnboarding() {
   onboardingCard.hidden = state.apiReady;
   readyContent.hidden = !state.apiReady;
+  accountBar.hidden = !state.apiReady;
   if (settingsButton) settingsButton.hidden = !state.apiReady;
   if (state.apiReady) { onboardingCard.dataset.state = ''; return; }
   // Set data-state for CSS styling
@@ -437,17 +438,18 @@ function openTool(toolId) {
   document.querySelector("#detail-tool-name").textContent = tool.name;
   const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
-  const externalItem = external
+  const hasExternalConfig = Boolean(tool.externalModel);
+  const externalItem = hasExternalConfig
     ? `
-      <button class="model-row-v2 selected">
-        <span class="radio-v2 selected"><i></i></span>
+      <div class="model-row-v2${external ? " selected" : ""}">
+        <span class="radio-v2${external ? " selected" : ""}"><i></i></span>
         <span class="model-content-v2">
           <strong>${tool.externalModel}</strong>
           <small>外部配置 · 不由 Token Hub 管理</small>
           <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
         </span>
-        <em class="model-badge">当前模型</em>
-      </button>
+        ${external ? `<em class="model-badge">当前模型</em>` : `<button class="model-switch-btn" data-use-external-config="${toolId}">切换到外部</button>`}
+      </div>
     `
     : "";
   modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {

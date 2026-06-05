@@ -16,12 +16,17 @@ const state = {
   authPending: false,
   configuring: false,
   discoveryNotice: null,
+  detectingApps: false,
   balance: 128.5,
   balanceStatus: "normal",
   rechargeAmount: 50,
   rechargeView: "amount",
   rechargeOrderId: "lenovo_75f4bae6_121",
+  currentVersion: "v0.1.0",
+  latestVersion: "v0.1.1",
+  updateAvailable: false,
   apiReady: savedSession.apiReady || false,
+  installedTools: true,
   selections: {
     openclaw: "deepseek-v4-flash",
     "claude-code": "deepseek-v4-pro",
@@ -86,10 +91,17 @@ const refreshToast = document.querySelector("#refresh-toast");
 const authWindow = document.querySelector("#auth-window");
 const rechargeWindow = document.querySelector("#recharge-window");
 const rechargeContent = document.querySelector("#recharge-content");
+const updateWindow = document.querySelector("#update-window");
+const updateContent = document.querySelector("#update-content");
+const titleUpdateButton = document.querySelector("#title-update-button");
+const settingsUpdateCurrent = document.querySelector("#settings-update-current");
+const settingsUpdateButton = document.querySelector("#settings-update-button");
 const appMenuButton = document.querySelector(".app-menu-button");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
 const smartConfirm = document.querySelector("#smart-confirm");
+const smartModeSection = document.querySelector(".smart-mode");
+const appListSection = document.querySelector(".section-block");
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -100,6 +112,29 @@ function saveSession() {
 }
 
 function renderTools() {
+  smartModeSection.hidden = !state.installedTools;
+  appListSection.classList.toggle("empty", !state.installedTools);
+  if (!state.installedTools) {
+    toolList.innerHTML = `
+      <section class="empty-tools">
+        <span class="setup-icon${state.detectingApps ? " progress" : ""}">${state.detectingApps ? "↻" : "✦"}</span>
+        <div>
+          <h3>${state.detectingApps ? "正在检测应用" : "未检测到可配置的应用"}</h3>
+          <p>${state.detectingApps ? "正在查找本机已安装的 OpenClaw、Hermes 和 Claude Code。" : "当前支持 OpenClaw、Hermes 和 Claude Code"}</p>
+        </div>
+        ${state.detectingApps ? `
+          <div class="progress-track"><i></i></div>
+          <div class="onboarding-notes">
+            <span>· 正在扫描已安装应用</span>
+            <span>· 正在检查本机配置</span>
+          </div>
+        ` : `
+          <button class="setup-primary" data-refresh-apps="true">重新检测应用</button>
+        `}
+      </section>
+    `;
+    return;
+  }
   toolList.innerHTML = tools.map((tool) => {
     const model = models[state.selections[tool.id]];
     const unconfigured = state.management[tool.id] === "unconfigured";
@@ -308,6 +343,85 @@ function closeRechargeWindow() {
   rechargeWindow.hidden = true;
 }
 
+function renderUpdateState() {
+  if (titleUpdateButton) {
+    titleUpdateButton.hidden = !state.apiReady || !state.updateAvailable;
+  }
+  if (settingsUpdateCurrent) {
+    settingsUpdateCurrent.textContent = state.updateAvailable
+      ? `发现新版本 ${state.latestVersion}，当前版本 ${state.currentVersion}`
+      : `当前版本 ${state.currentVersion}，已是最新版本`;
+  }
+  if (settingsUpdateButton) {
+    settingsUpdateButton.textContent = state.updateAvailable ? "立即更新" : "检查更新";
+  }
+}
+
+function renderUpdateContent(status = "available") {
+  const success = status === "success";
+  const updating = status === "updating";
+  updateContent.innerHTML = `
+    <section class="update-card${success ? " success" : ""}${updating ? " updating" : ""}">
+      <header class="update-masthead">
+        <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+        <strong>联想 Token Hub</strong>
+      </header>
+      <span class="update-icon${success ? " success" : ""}${updating ? " updating" : ""}" aria-hidden="true">${success ? "✓" : "↻"}</span>
+      <div>
+        <h2>${success ? "更新完成" : updating ? "正在更新" : "发现新版本"}</h2>
+        <p>${success
+          ? `Token Hub 已更新至 ${state.currentVersion}，现在可以继续使用。`
+          : updating
+            ? "正在下载并应用更新，请稍候。"
+          : `Token Hub ${state.latestVersion} 可用，建议更新以获得最新适配和体验优化。`}</p>
+      </div>
+      ${success ? `
+        <footer>
+          <button class="primary" data-close-update="true">完成</button>
+        </footer>
+      ` : updating ? `
+        <div class="update-progress" aria-label="更新进度"><i></i></div>
+      ` : `
+        <ul>
+          <li>优化模型匹配体验</li>
+          <li>提升应用检测稳定性</li>
+          <li>更新 Token Mall 服务入口</li>
+        </ul>
+        <footer>
+          <button data-close-update="true">稍后</button>
+          <button class="primary" data-install-update="true">立即更新</button>
+        </footer>
+      `}
+    </section>
+  `;
+}
+
+function openUpdateWindow({ notifyIfCurrent = false } = {}) {
+  if (!state.updateAvailable) {
+    renderUpdateState();
+    if (notifyIfCurrent) showRefreshToast("当前已是最新版本");
+    return;
+  }
+  renderUpdateContent("available");
+  updateWindow.hidden = false;
+  trayContextMenu.hidden = true;
+}
+
+function closeUpdateWindow() {
+  updateWindow.hidden = true;
+}
+
+function installUpdate() {
+  renderUpdateContent("updating");
+  clearTimeout(installUpdate.timer);
+  installUpdate.timer = setTimeout(() => {
+    state.currentVersion = state.latestVersion;
+    state.updateAvailable = false;
+    renderUpdateState();
+    renderUpdateContent("success");
+  }, 900);
+}
+
 function startConfiguration() {
   state.configuring = true;
   state.onboardingStarted = true;
@@ -321,6 +435,7 @@ function startConfiguration() {
     renderTools();
     renderAccount();
     renderOnboarding();
+    renderUpdateState();
     syncSmartToggle();
     syncAppMenuState();
     setActiveDemoState("smart-off");
@@ -507,6 +622,7 @@ function renderAll() {
   renderTools();
   renderAccount();
   renderOnboarding();
+  renderUpdateState();
   syncAppMenuState();
   syncSmartToggle();
 }
@@ -547,6 +663,11 @@ function resetDemoBaseline() {
   state.smartMode = false;
   state.balance = 128.5;
   state.balanceStatus = "normal";
+  state.currentVersion = "v0.1.0";
+  state.latestVersion = "v0.1.1";
+  state.updateAvailable = false;
+  state.installedTools = true;
+  state.detectingApps = false;
   state.activeTool = null;
   state.discoveryNotice = null;
   authWindow.hidden = true;
@@ -633,6 +754,16 @@ function setDemoState(mode) {
     });
   }
 
+  if (mode === "no-apps") {
+    state.installedTools = false;
+    state.detectingApps = false;
+    state.smartMode = false;
+  }
+
+  if (mode === "update-available") {
+    state.updateAvailable = true;
+  }
+
   if (mode === "unconfigured") {
     setAllManagement("unconfigured");
     state.smartMode = false;
@@ -685,6 +816,12 @@ function syncAppMenuState() {
 }
 
 document.addEventListener("click", (event) => {
+  const updateTarget = event.target.closest("[data-check-update]");
+  if (updateTarget) {
+    openUpdateWindow({ notifyIfCurrent: updateTarget.dataset.checkUpdate === "settings" });
+    return;
+  }
+
   const menuTarget = event.target.closest("[data-app-menu]");
   if (menuTarget) {
     if (!state.loggedIn) {
@@ -730,6 +867,11 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.closePanel) closePanel();
+  if (target.dataset.openMain) {
+    openPanel();
+    showPage("home");
+    trayContextMenu.hidden = true;
+  }
   if (target.dataset.exitApp) exitApp();
 
   if (target.dataset.smartToggle) {
@@ -795,6 +937,16 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.refreshApps) {
+    if (!state.installedTools) {
+      state.detectingApps = true;
+      renderTools();
+      setTimeout(() => {
+        state.detectingApps = false;
+        renderTools();
+        showRefreshToast("暂未检测到可配置应用");
+      }, 1100);
+      return;
+    }
     target.classList.add("spinning");
     setTimeout(() => {
       target.classList.remove("spinning");
@@ -835,6 +987,7 @@ document.addEventListener("click", (event) => {
     syncAppMenuState();
     renderAccount();
     renderOnboarding();
+    renderUpdateState();
     setActiveDemoState("login-required");
   }
   if (target.dataset.closeAuth) {
@@ -842,6 +995,15 @@ document.addEventListener("click", (event) => {
   }
   if (target.dataset.closeRecharge) {
     closeRechargeWindow();
+  }
+  if (target.dataset.closeUpdate) {
+    closeUpdateWindow();
+  }
+  if (target.dataset.checkUpdate) {
+    openUpdateWindow();
+  }
+  if (target.dataset.installUpdate) {
+    installUpdate();
   }
   if (target.dataset.recharge) {
     openRechargeWindow();

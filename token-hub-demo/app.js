@@ -30,7 +30,7 @@ const state = {
     hermes: "kimi-k2.6",
   },
   management: {
-    openclaw: "external",
+    openclaw: "token-hub",
     "claude-code": "token-hub",
     qclaw: "token-hub",
     workbuddy: "token-hub",
@@ -39,7 +39,7 @@ const state = {
 };
 
 const tools = [
-  { id: "openclaw", name: "OpenClaw", mark: "OC", externalModel: "gpt-4.1", externalVendor: "OpenAI Compatible", externalPrices: ["¥18.00", "¥72.00", "¥4.50"], externalTags: ["文本生成", "OpenAI 兼容"], models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
+  { id: "openclaw", name: "OpenClaw", mark: "OC", models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
   { id: "claude-code", name: "Claude Code", mark: "CC", models: ["deepseek-v4-pro", "glm-5.1", "qwen3.6-max-preview"] },
   { id: "qclaw", name: "QClaw", mark: "QC", isNew: true, models: ["deepseek-v4-flash", "qwen3.6-flash", "kimi-k2.6"] },
   { id: "workbuddy", name: "WorkBuddy", mark: "WB", models: ["qwen3.6-plus", "kimi-k2.6", "MiniMax-M2.5"] },
@@ -89,6 +89,7 @@ const rechargeContent = document.querySelector("#recharge-content");
 const appMenuButton = document.querySelector(".app-menu-button");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
+const smartConfirm = document.querySelector("#smart-confirm");
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -101,14 +102,13 @@ function saveSession() {
 function renderTools() {
   toolList.innerHTML = tools.map((tool) => {
     const model = models[state.selections[tool.id]];
-    const external = state.management[tool.id] === "external";
     const unconfigured = state.management[tool.id] === "unconfigured";
     return `
       <button class="tool-row" data-open-tool="${tool.id}">
         <span class="tool-mark">${tool.mark}</span>
         <span class="tool-copy">
-          <strong>${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}${external ? `<em class="external"><span>⚠</span>外部配置</em>` : ""}</strong>
-          <small>${external ? tool.externalModel : unconfigured ? "待选择模型" : model.name}</small>
+          <strong>${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}</strong>
+          <small>${unconfigured ? "待选择模型" : model.name}</small>
         </span>
         <span class="chevron">›</span>
       </button>
@@ -417,30 +417,12 @@ function openTool(toolId) {
     renderTools();
   }
   document.querySelector("#detail-tool-name").textContent = tool.name;
-  const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
-  const hasExternalConfig = Boolean(tool.externalModel);
-  const externalLocked = state.smartMode && !external;
-  const externalRadio = !external && !externalLocked
-    ? `<button class="radio radio-action" data-use-external-config="${toolId}" aria-label="切换到外部配置"><i></i></button>`
-    : `<span class="radio"><i></i></span>`;
-  const externalItem = hasExternalConfig
-    ? `
-      <div class="model-row external-current${external ? " selected" : ""}${externalLocked ? " external-muted" : ""}">
-        ${externalRadio}
-        <span class="model-copy">
-          <strong class="model-title-line">${tool.externalModel} <i><span>⚠</span>外部配置</i></strong>
-          <small>不由 Token Hub 管理</small>
-        </span>
-        ${externalLocked ? `<span class="external-info" tabindex="0" aria-label="智能匹配开启中，关闭后可切回外部配置。" data-tip="智能匹配开启中，关闭后可切回外部配置。">i</span>` : `<button class="inline-action" ${external ? `data-adopt-token-hub="${toolId}"` : `data-use-external-config="${toolId}"`}>${external ? "切换到 Token Hub" : "切换到外部配置"}</button>`}
-      </div>
-    `
-    : "";
-  modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {
+  modelList.innerHTML = tool.models.map((modelId) => {
     const model = models[modelId];
-    const active = !external && !unconfigured && state.selections[toolId] === modelId;
+    const active = !unconfigured && state.selections[toolId] === modelId;
     return `
-      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !external && !unconfigured ? "disabled" : ""}>
+      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !unconfigured ? "disabled" : ""}>
         <span class="radio"><i></i></span>
         <span class="model-copy">
           <strong>${model.name}</strong>
@@ -450,7 +432,7 @@ function openTool(toolId) {
         ${active ? `<em>使用中</em>` : ""}
       </button>
     `;
-  }).join("")}`;
+  }).join("");
   notification.classList.remove("show");
   openPanel();
   showPage("models");
@@ -465,29 +447,8 @@ function openAppFromNotification() {
 function renderNotification() {
   const matchedModel = models[state.selections.qclaw];
   const isAuto = state.discoveryNotice === "auto";
-  const externalOpenClaw = state.discoveryNotice === "external";
   notification.classList.toggle("clickable", isAuto);
-  notification.innerHTML = externalOpenClaw
-    ? `
-      <header>
-        <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
-          <span>联想 Token Hub</span>
-        </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
-      </header>
-      <div class="notification-content">
-        <span class="tool-mark">OC</span>
-        <div>
-          <strong>OpenClaw 正在使用外部模型</strong>
-          <p>Token Hub 不会自动修改现有配置。切换后可使用智能模型匹配。</p>
-        </div>
-      </div>
-      <div class="notification-actions">
-        <button class="primary" data-open-tool="openclaw">查看配置</button>
-      </div>
-    `
-    : isAuto
+  notification.innerHTML = isAuto
     ? `
       <header>
         <div class="notification-brand">
@@ -590,6 +551,7 @@ function resetDemoBaseline() {
   state.discoveryNotice = null;
   authWindow.hidden = true;
   rechargeWindow.hidden = true;
+  smartConfirm.hidden = true;
   notification.classList.remove("show");
   setAllManagement("token-hub");
   tools.forEach((tool) => {
@@ -619,6 +581,7 @@ function enableSmartMatchAndAdoptAll() {
     tool.isNew = false;
   });
   state.smartMode = true;
+  smartConfirm.hidden = true;
   syncSmartToggle();
   renderTools();
   if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
@@ -662,13 +625,6 @@ function setDemoState(mode) {
     });
   }
 
-  if (mode === "external-config" || mode === "external-discovery") {
-    state.management.openclaw = "external";
-    tools.forEach((tool) => {
-      tool.isNew = false;
-    });
-  }
-
   if (mode === "low-balance") {
     state.balance = 0.8;
     state.balanceStatus = "empty";
@@ -692,12 +648,6 @@ function setDemoState(mode) {
     tools.find((tool) => tool.id === "qclaw").isNew = true;
     closePanel();
     setDiscoveryNotice("auto");
-    return;
-  }
-
-  if (mode === "external-discovery") {
-    closePanel();
-    setDiscoveryNotice("external");
     return;
   }
 
@@ -794,6 +744,18 @@ document.addEventListener("click", (event) => {
       }
       return;
     }
+    smartConfirm.hidden = false;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.cancelSmartConfirm) {
+    smartConfirm.hidden = true;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.confirmSmartMatch) {
     enableSmartMatchAndAdoptAll();
     if (state.discoveryNotice) {
       state.discoveryNotice = "auto";
@@ -811,29 +773,11 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.selectModel) {
     const modelId = target.dataset.selectModel;
-    const adopted = state.management[state.activeTool] === "external";
     const configured = state.management[state.activeTool] === "unconfigured";
-    if (adopted) state.management[state.activeTool] = "token-hub";
     if (configured) state.management[state.activeTool] = "token-hub";
     state.selections[state.activeTool] = modelId;
     renderTools();
     openTool(state.activeTool);
-  }
-
-  if (target.dataset.adoptTokenHub) {
-    const toolId = target.dataset.adoptTokenHub;
-    const tool = tools.find((item) => item.id === toolId);
-    state.management[toolId] = "token-hub";
-    state.selections[toolId] = tool.models[0];
-    renderTools();
-    openTool(toolId);
-  }
-
-  if (target.dataset.useExternalConfig) {
-    const toolId = target.dataset.useExternalConfig;
-    state.management[toolId] = "external";
-    renderTools();
-    openTool(toolId);
   }
 
   if (target.dataset.configureHub) {

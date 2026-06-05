@@ -28,11 +28,9 @@
           <button data-demo-state="smart-off">正常使用 - 智能匹配关</button>
           <button data-demo-state="smart-on">正常使用 - 智能匹配开</button>
           <button data-demo-state="unconfigured">待选择模型 - 多应用未配置</button>
-          <button data-demo-state="external-config">外部配置 - 部分应用不由 Token Hub 管理</button>
           <button data-demo-state="low-balance">额度不足 - 引导充值</button>
           <button data-demo-state="auto-discovery">通知 - 智能匹配开，发现新应用</button>
           <button data-demo-state="manual-discovery">通知 - 智能匹配关，发现新应用</button>
-          <button data-demo-state="external-discovery">通知 - 发现外部配置</button>
         </div>
       </div>
     </main>
@@ -68,10 +66,17 @@
                 <span class="feature-icon compact">✦</span>
                 <div>
                   <strong>智能模型匹配</strong>
-                  <p>开启后，应用将使用 Token Hub 提供的推荐模型。</p>
+                  <p>使用 Token Hub 提供的推荐模型</p>
                 </div>
               </div>
               <button class="toggle" data-smart-toggle="true" aria-label="智能模型匹配"></button>
+            </div>
+            <div class="smart-inline-confirm" id="smart-confirm" hidden>
+              <p>开启后，已检测应用将使用 Token Hub 推荐模型。</p>
+              <div>
+                <button data-cancel-smart-confirm="true">取消</button>
+                <button class="primary" data-confirm-smart-match="true">开启</button>
+              </div>
             </div>
           </section>
 

@@ -1204,13 +1204,16 @@ h1 { font-size: 16px; font-weight: 600; }
   flex: 1 1 0;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 8px 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(0,0,0,0.3) transparent;
+  scrollbar-gutter: stable;
 }
 .model-list-v2::-webkit-scrollbar { width: 6px; background: transparent; }
-.model-list-v2::-webkit-scrollbar-track { background: transparent; }
-.model-list-v2::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); border-radius: 99px; }
+.model-list-v2::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
+.model-list-v2::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); border-radius: 99px; min-height: 40px; }
+.model-list-v2::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.5); }
 
 .model-row-v2 {
   width: 100%;

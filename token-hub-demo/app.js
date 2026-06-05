@@ -788,9 +788,7 @@ function setAppMenu(open) {
   const nextOpen = canOpen && open;
   appMenu.hidden = !nextOpen;
   appMenuButton.classList.toggle("active", nextOpen);
-  appMenuButton.classList.toggle("locked", !canOpen);
-  const menuChevron = appMenuButton.querySelector(".menu-chevron");
-  if (menuChevron) menuChevron.textContent = canOpen ? "&#9662;" : "";
+  appMenuButton.disabled = !canOpen;
   appMenuButton.setAttribute("aria-expanded", String(nextOpen));
 }
 

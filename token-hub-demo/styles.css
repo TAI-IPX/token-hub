@@ -873,6 +873,7 @@ h1 { font-size: 16px; font-weight: 600; }
   padding: 0 0 0 16px;
   background: rgba(246, 248, 252, 0.44);
   backdrop-filter: blur(18px);
+  z-index: 10;
 }
 .titlebar-left {
   height: 24px;
@@ -890,6 +891,29 @@ h1 { font-size: 16px; font-weight: 600; }
 .titlebar-dropdown {
   width: 16px;
   height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.7);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: background 0.1s;
+}
+.titlebar-dropdown:hover {
+  background: rgba(255, 255, 255, 1);
+  opacity: 1;
+}
+.titlebar-dropdown .ui-icon {
+  width: 10px;
+  height: 10px;
+  color: rgba(0, 0, 0, 0.61);
+  transform: rotate(0deg);
+  transition: transform 0.15s ease;
+}
+.titlebar-dropdown[aria-expanded="true"] .ui-icon {
+  transform: rotate(180deg);
 }
 .titlebar-right {
   width: 193.5px;
@@ -1452,21 +1476,41 @@ button.model-row-v2.external-row-v2 .radio-v2 {
 }
 
 .tray-context-menu,
-.account-menu,
-.app-menu {
+.account-menu {
   border: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 8px;
   background: rgba(248, 251, 255, 0.92);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
   backdrop-filter: blur(40px);
 }
+.app-menu {
+  width: 200px;
+  top: 48px;
+  left: 16px;
+  padding: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(252, 252, 252, 0.92);
+  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(30px);
+}
+.app-menu button {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 0;
+  color: rgba(0, 0, 0, 0.9);
+  background: transparent;
+  font-size: 14px;
+}
+.app-menu button:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
 .tray-context-menu {
   width: 160px;
   padding: 4px;
 }
 .tray-context-menu button,
-.account-menu button,
-.app-menu button {
+.account-menu button {
   height: 36px;
   border-radius: 4px;
   color: rgba(0, 0, 0, 0.82);

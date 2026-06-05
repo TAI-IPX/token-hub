@@ -1,0 +1,1035 @@
+<Window x:Class="TokenHubPanel.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TokenHubPanel.ViewModels"
+        xmlns:models="clr-namespace:TokenHubPanel.Models"
+        Title="联想 Token Hub"
+        FontFamily="Microsoft YaHei"
+        FontSize="14"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="Transparent"
+        SizeToContent="WidthAndHeight"
+        Topmost="True"
+        MouseDown="Window_MouseDown">
+    <Window.DataContext>
+        <vm:MainViewModel x:Name="ViewModel" />
+    </Window.DataContext>
+
+    <Grid>
+        <!-- Desktop background subtle hint -->
+        <Image Source="Assets/wallpaper-bloom-white@3x.png"
+               Stretch="UniformToFill"
+               Opacity="0.12" />
+
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- State Selector (separate from the tray panel) -->
+            <Border Grid.Row="0"
+                    Background="#2A161C26"
+                    CornerRadius="8"
+                    Padding="10"
+                    Margin="0,0,0,12"
+                    BorderBrush="#61FFFFFF"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Demo State: "
+                               Foreground="White"
+                               FontSize="13"
+                               VerticalAlignment="Center" />
+                    <ComboBox x:Name="StateCombo"
+                              Width="220"
+                              Height="30"
+                              FontSize="12"
+                              SelectedIndex="2"
+                              SelectionChanged="StateCombo_SelectionChanged"
+                              Background="#33FFFFFF"
+                              Foreground="White"
+                              BorderBrush="#61FFFFFF">
+                        <ComboBoxItem Content="首次使用 - 未登录" />
+                        <ComboBoxItem Content="首次使用 - 配置中" />
+                        <ComboBoxItem Content="正常使用 - 智能匹配关" />
+                        <ComboBoxItem Content="正常使用 - 智能匹配开" />
+                        <ComboBoxItem Content="待选择模型 - 多应用未配置" />
+                        <ComboBoxItem Content="额度不足 - 引导充值" />
+                        <ComboBoxItem Content="通知 - 智能匹配开发现新应用" />
+                        <ComboBoxItem Content="通知 - 智能匹配关发现新应用" />
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+
+            <!-- The Tray Panel -->
+            <Border x:Name="PanelBorder"
+                    Grid.Row="1"
+                    Width="440"
+                    Height="384"
+                    CornerRadius="8"
+                    BorderBrush="#2E000000"
+                    BorderThickness="1"
+                    UseLayoutRounding="True"
+                    SnapsToDevicePixels="True"
+                    Effect="{StaticResource PanelShadow}">
+                <Border.Background>
+                    <SolidColorBrush Color="#F0F8FBFF" />
+                </Border.Background>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- ============ TITLE BAR ============ -->
+                    <Border Grid.Row="0"
+                            Height="48"
+                            Background="#70F6F8FC"
+                            Padding="0,0,16,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Left: Logo + Title + Dropdown -->
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                                <Image Source="Assets/panel-logo@3x.png"
+                                       Width="24" Height="24"
+                                       Margin="0,0,8,0" />
+                                <TextBlock Text="联想 TokenHub"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#FF1B1B1F"
+                                           VerticalAlignment="Center" />
+                                <Button x:Name="AppMenuButton"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="4,0,0,0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        Click="AppMenuButton_Click">
+                                    <Image Source="Assets/panel-dropdown@3x.png"
+                                           Width="16"
+                                           Height="16" />
+                                </Button>
+                            </StackPanel>
+
+                            <!-- Right: Settings + Close -->
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right">
+                                <Button Width="20"
+                                        Height="20"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        Click="SettingsButton_Click"
+                                        ToolTip="设置">
+                                    <Image Source="Assets/panel-settings@3x.png"
+                                           Width="20"
+                                           Height="20" />
+                                </Button>
+                                <Button Width="20"
+                                        Height="20"
+                                        Margin="16,0,0,0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        Click="CloseButton_Click"
+                                        ToolTip="关闭">
+                                    <Image Source="Assets/panel-close@3x.png"
+                                           Width="20"
+                                           Height="20" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- ============ CONTENT AREA ============ -->
+                    <Grid Grid.Row="1">
+
+                        <!-- ===== HOME PAGE ===== -->
+                        <Grid x:Name="HomePage">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- === ONBOARDING (Login, Configuring) === -->
+                            <Grid x:Name="OnboardingContent" Grid.Row="0">
+
+                                <!-- LOGIN STATE -->
+                                <Border x:Name="LoginPanel"
+                                        Padding="16"
+                                        Background="Transparent">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0">
+                                            <!-- Illustration (80px) -->
+                                            <Border CornerRadius="8"
+                                                    Height="80"
+                                                    ClipToBounds="True"
+                                                    Margin="0,0,0,16">
+                                                <Image Source="Assets/onboarding-illustration@3x.png"
+                                                       Stretch="UniformToFill"
+                                                       Height="80" />
+                                            </Border>
+
+                                            <!-- Heading -->
+                                            <TextBlock Text="登录联想账号"
+                                                       FontSize="24"
+                                                       FontWeight="Bold"
+                                                       Foreground="#E01B1B1F"
+                                                       Margin="0,0,0,16" />
+
+                                            <!-- Description -->
+                                            <TextBlock Text="接下来将打开账号登录窗口。完成登录后，将自动继续配置"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F"
+                                                       TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <!-- Login Button pinned to bottom -->
+                                        <Button Grid.Row="2"
+                                                Content="登录"
+                                                Style="{StaticResource OnboardingButtonStyle}"
+                                                Click="LoginButton_Click" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- CONFIGURING STATE -->
+                                <Border x:Name="ConfiguringPanel"
+                                        Padding="16"
+                                        Background="Transparent">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,40,0,0">
+                                            <TextBlock Text="正在完成服务配置"
+                                                       FontSize="24"
+                                                       FontWeight="Bold"
+                                                       Foreground="#E01B1B1F" />
+                                            <TextBlock FontSize="14"
+                                                       Foreground="#731B1B1F"
+                                                       Margin="0,16,0,24"
+                                                       TextWrapping="Wrap">
+                                                <Run Text="正在创建 TokenHub 访问凭证并接入本机服务" />
+                                                <LineBreak />
+                                                <Run Text="请稍后" />
+                                            </TextBlock>
+                                        </StackPanel>
+
+                                        <!-- Progress bar with animation -->
+                                        <Border Grid.Row="1"
+                                                Height="3"
+                                                CornerRadius="99"
+                                                Background="#14000000"
+                                                Margin="0,0,0,16">
+                                            <Border x:Name="ProgressBarFill"
+                                                    Height="3"
+                                                    Width="240"
+                                                    HorizontalAlignment="Left"
+                                                    CornerRadius="99"
+                                                    Background="{StaticResource AccentBrush}" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- === READY CONTENT (SmartOff/SmartOn/Unconfigured/LowBalance) === -->
+                                <Grid x:Name="ReadyContent">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Smart Mode Toggle -->
+                                    <Border Grid.Row="0"
+                                            Height="56"
+                                            Padding="16,0"
+                                            Background="Transparent">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="智能模型匹配"
+                                                           FontSize="14"
+                                                           FontWeight="Bold"
+                                                           Foreground="#E01B1B1F" />
+                                                <TextBlock Text="按应用特性自动选择模型"
+                                                           FontSize="12"
+                                                           Foreground="#FF5E626A"
+                                                           Margin="0,2,0,0" />
+                                            </StackPanel>
+
+                                            <!-- Custom Toggle Switch -->
+                                            <Border x:Name="ToggleTrack"
+                                                    Grid.Column="1"
+                                                    Width="42"
+                                                    Height="22"
+                                                    CornerRadius="99"
+                                                    Background="#8A929D"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    MouseLeftButtonDown="ToggleSwitch_Click">
+                                                <Border x:Name="ToggleKnob"
+                                                        Width="16"
+                                                        Height="16"
+                                                        CornerRadius="99"
+                                                        Background="White"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="3,3,0,0"
+                                                        Effect="{StaticResource ToggleKnobShadow}" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- App List -->
+                                    <ScrollViewer Grid.Row="1"
+                                                  VerticalScrollBarVisibility="Hidden"
+                                                  HorizontalScrollBarVisibility="Disabled">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- App List Header -->
+                                            <Border Grid.Row="0"
+                                                    Height="48"
+                                                    Padding="16,0">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="应用列表"
+                                                               FontSize="14"
+                                                               FontWeight="Bold"
+                                                               Foreground="#E01B1B1F"
+                                                               VerticalAlignment="Center" />
+                                                    <Button Grid.Column="1"
+                                                            Width="20"
+                                                            Height="20"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            VerticalAlignment="Center"
+                                                            Cursor="Hand"
+                                                            Click="RefreshApps_Click"
+                                                            ToolTip="重新检测应用">
+                                                        <Image Source="Assets/icon-action@3x.svg"
+                                                               Width="16"
+                                                               Height="16" />
+                                                    </Button>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Tool Items -->
+                                            <ItemsControl Grid.Row="1"
+                                                          x:Name="ToolListControl"
+                                                          ItemsSource="{Binding Tools}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="models:AppTool">
+                                                        <Button Height="48"
+                                                                Padding="16,0"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Cursor="Hand"
+                                                                FontFamily="Microsoft YaHei"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                Command="{Binding DataContext.SelectToolCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                CommandParameter="{Binding Id}">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <!-- App Icon 28x28 rounded 6px -->
+                                                                <Border Grid.Column="0"
+                                                                        Width="28"
+                                                                        Height="28"
+                                                                        CornerRadius="6"
+                                                                        Background="#EBEAF3FF"
+                                                                        Margin="0,0,12,0">
+                                                                    <Image Source="{Binding IconPath}"
+                                                                           Width="28"
+                                                                           Height="28" />
+                                                                </Border>
+
+                                                                <!-- Tool Name -->
+                                                                <TextBlock Grid.Column="1"
+                                                                           Text="{Binding Name}"
+                                                                           FontSize="14"
+                                                                           Foreground="#991B1B1F"
+                                                                           VerticalAlignment="Center"
+                                                                           TextTrimming="CharacterEllipsis" />
+
+                                                                <!-- Right side: model name + chevron -->
+                                                                <StackPanel Grid.Column="2"
+                                                                            Orientation="Horizontal"
+                                                                            VerticalAlignment="Center">
+                                                                    <TextBlock x:Name="ModelNameText"
+                                                                               FontSize="11"
+                                                                               Foreground="#FF5E626A"
+                                                                               VerticalAlignment="Center" />
+                                                                    <Image Source="Assets/icon-chevron-right@3x.svg"
+                                                                           Width="20"
+                                                                           Height="20"
+                                                                           Margin="8,0,0,0" />
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Grid>
+
+                            <!-- ===== ACCOUNT BAR (Footer) ===== -->
+                            <Border x:Name="AccountFooter"
+                                    Grid.Row="1"
+                                    Height="64"
+                                    Padding="16,0"
+                                    Background="#E0F6F8FC"
+                                    BorderBrush="#14000000"
+                                    BorderThickness="0,1,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Avatar -->
+                                    <Image Grid.Column="0"
+                                           Source="Assets/avatar@3x.png"
+                                           Width="28"
+                                           Height="28"
+                                           Margin="0,0,12,0" />
+
+                                    <!-- Account Info -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding PhoneNumber}"
+                                                       FontSize="14"
+                                                       FontWeight="Bold"
+                                                       Foreground="#FF1B1B1F" />
+                                            <Border x:Name="BalanceBadge"
+                                                    Height="16"
+                                                    CornerRadius="99"
+                                                    Padding="5,0"
+                                                    Margin="6,0,0,0"
+                                                    Visibility="Collapsed"
+                                                    Background="#FFF0C2">
+                                                <TextBlock x:Name="BalanceBadgeText"
+                                                           FontSize="10"
+                                                           FontWeight="Medium"
+                                                           Foreground="#8A5700"
+                                                           VerticalAlignment="Center" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding BalanceText}"
+                                                   FontSize="12"
+                                                   Foreground="#991B1B1F"
+                                                   Margin="0,2,0,0" />
+                                    </StackPanel>
+
+                                    <Grid Grid.Column="2" />
+
+                                    <!-- More Button -->
+                                    <Button Grid.Column="3"
+                                            Width="20"
+                                            Height="20"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,12,0"
+                                            Click="MoreButton_Click">
+                                        <Image Source="Assets/icon-more@3x.svg"
+                                               Width="20"
+                                               Height="20" />
+                                    </Button>
+
+                                    <!-- Recharge Button -->
+                                    <Button Grid.Column="4"
+                                            Content="充值"
+                                            Width="80"
+                                            Height="32"
+                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            VerticalAlignment="Center"
+                                            Click="RechargeButton_Click" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Logged-out Footer -->
+                            <Border x:Name="LoggedOutFooter"
+                                    Grid.Row="1"
+                                    Height="64"
+                                    Padding="16,0"
+                                    Background="#E0F6F8FC"
+                                    BorderBrush="#14000000"
+                                    BorderThickness="0,1,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            Width="28"
+                                            Height="28"
+                                            CornerRadius="14"
+                                            Background="#EBEAF3FF"
+                                            Margin="0,0,12,0">
+                                        <TextBlock Text="1"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   Foreground="#FF315FAA"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="登录联想账户"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="#FF1B1B1F" />
+                                        <TextBlock Text="同步额度并使用模型服务"
+                                                   FontSize="12"
+                                                   Foreground="#FF5E626A"
+                                                   Margin="0,2,0,0" />
+                                    </StackPanel>
+
+                                    <Button Grid.Column="2"
+                                            Content="登录"
+                                            Height="28"
+                                            Padding="9,0"
+                                            FontSize="11"
+                                            Background="#ADFFFFFF"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            VerticalAlignment="Center"
+                                            Click="LoginFromFooter_Click" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <!-- ===== MODELS PAGE ===== -->
+                        <Grid x:Name="ModelsPage" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Detail Header -->
+                            <Border Grid.Row="0"
+                                    Height="48"
+                                    Padding="16,0"
+                                    Background="#70F6F8FC"
+                                    BorderBrush="#14000000"
+                                    BorderThickness="0,0,0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Grid.Column="0"
+                                            Width="24"
+                                            Height="24"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Margin="0,0,8,0"
+                                            Click="BackToHome_Click">
+                                        <Path Data="M8.8 4.4 3.7 9.5a.7.7 0 0 0 0 1l5.1 5.1 1-1-3.9-3.9h10.4V9.3H5.9l3.9-3.9z"
+                                              Fill="#E61B1B1F"
+                                              Stretch="Uniform"
+                                              Width="16"
+                                              Height="16" />
+                                    </Button>
+
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding DetailToolName}"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               Foreground="#FF1B1B1F"
+                                               VerticalAlignment="Center" />
+
+                                    <Button Grid.Column="2"
+                                            Width="20"
+                                            Height="20"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Click="CloseButton_Click">
+                                        <Image Source="Assets/panel-close@3x.png"
+                                               Width="20"
+                                               Height="20" />
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <!-- Model List -->
+                            <ScrollViewer Grid.Row="1"
+                                          VerticalScrollBarVisibility="Hidden"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          Padding="0,8,0,0">
+                                <ItemsControl x:Name="ModelListControl"
+                                              ItemsSource="{Binding CurrentModels}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="models:ModelInfo">
+                                            <Border Height="80"
+                                                    Padding="20,8"
+                                                    Background="Transparent"
+                                                    CornerRadius="4"
+                                                    Cursor="Hand"
+                                                    MouseLeftButtonDown="ModelItem_Click"
+                                                    Tag="{Binding Id}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Radio Button 20x20 -->
+                                                    <Border x:Name="RadioOuter"
+                                                            Grid.Column="0"
+                                                            Width="20"
+                                                            Height="20"
+                                                            CornerRadius="10"
+                                                            BorderThickness="1"
+                                                            BorderBrush="#9B000000"
+                                                            Background="#05000000"
+                                                            VerticalAlignment="Center">
+                                                        <Ellipse x:Name="RadioBullet"
+                                                                 Width="10"
+                                                                 Height="10"
+                                                                 Fill="Transparent" />
+                                                    </Border>
+
+                                                    <!-- Model Info -->
+                                                    <StackPanel Grid.Column="1"
+                                                                Margin="20,0,0,0"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontSize="14"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#E01B1B1F" />
+                                                        <TextBlock Margin="0,4,0,0"
+                                                                   FontSize="12"
+                                                                   Foreground="#991B1B1F"
+                                                                   TextWrapping="NoWrap">
+                                                            <Run Text="输入" />
+                                                            <Run Text="{Binding InputPrice}" />
+                                                            <Run Text="  输出" />
+                                                            <Run Text="{Binding OutputPrice}" />
+                                                            <Run Text="  缓存读取" />
+                                                            <Run Text="{Binding CachePrice}" />
+                                                            <Run Text="/1M" />
+                                                        </TextBlock>
+                                                        <ItemsControl ItemsSource="{Binding Tags}"
+                                                                      Margin="0,4,0,0">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <StackPanel Orientation="Horizontal" />
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"
+                                                                               Height="16"
+                                                                               FontSize="10"
+                                                                               Foreground="#FFF59E0B"
+                                                                               VerticalAlignment="Center"
+                                                                               Margin="0,0,8,0" />
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </Grid>
+                                                </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <!-- ===== SETTINGS PAGE ===== -->
+                        <Grid x:Name="SettingsPage" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Settings Header -->
+                            <Border Grid.Row="0"
+                                    Height="48"
+                                    Padding="16,0"
+                                    Background="#70F6F8FC"
+                                    BorderBrush="#14000000"
+                                    BorderThickness="0,0,0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Grid.Column="0"
+                                            Width="24"
+                                            Height="24"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Margin="0,0,8,0"
+                                            Click="BackToHome_Click">
+                                        <Path Data="M8.8 4.4 3.7 9.5a.7.7 0 0 0 0 1l5.1 5.1 1-1-3.9-3.9h10.4V9.3H5.9l3.9-3.9z"
+                                              Fill="#E61B1B1F"
+                                              Stretch="Uniform"
+                                              Width="16"
+                                              Height="16" />
+                                    </Button>
+
+                                    <TextBlock Grid.Column="1"
+                                               Text="设置"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               Foreground="#FF1B1B1F"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Settings List -->
+                            <ScrollViewer Grid.Row="1"
+                                          VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <!-- 开机自启 -->
+                                    <Border Height="64"
+                                            Padding="16,0"
+                                            BorderBrush="#A4D9DEE8"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="开机自启" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
+                                                <TextBlock Text="登录 Windows 后自动运行" FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Width="42" Height="22"
+                                                    CornerRadius="99"
+                                                    Background="{StaticResource AccentBrush}"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    Margin="0,0,0,0"
+                                                    MouseLeftButtonDown="SettingToggle_Click">
+                                                <Border Width="16" Height="16"
+                                                        CornerRadius="99"
+                                                        Background="White"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="0,0,3,0"
+                                                        Effect="{StaticResource ToggleKnobShadow}" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- 系统通知 -->
+                                    <Border Height="64"
+                                            Padding="16,0"
+                                            BorderBrush="#A4D9DEE8"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="系统通知" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
+                                                <TextBlock Text="发现新应用和切换异常时提醒" FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Width="42" Height="22"
+                                                    CornerRadius="99"
+                                                    Background="{StaticResource AccentBrush}"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    MouseLeftButtonDown="SettingToggle_Click">
+                                                <Border Width="16" Height="16"
+                                                        CornerRadius="99"
+                                                        Background="White"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="0,0,3,0"
+                                                        Effect="{StaticResource ToggleKnobShadow}" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- 自动检测新应用 -->
+                                    <Border Height="64"
+                                            Padding="16,0"
+                                            BorderBrush="#A4D9DEE8"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="自动检测新应用" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
+                                                <TextBlock Text="安装应用后自动加入列表" FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Width="42" Height="22"
+                                                    CornerRadius="99"
+                                                    Background="{StaticResource AccentBrush}"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    MouseLeftButtonDown="SettingToggle_Click">
+                                                <Border Width="16" Height="16"
+                                                        CornerRadius="99"
+                                                        Background="White"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="0,0,3,0"
+                                                        Effect="{StaticResource ToggleKnobShadow}" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- 接管前二次确认 -->
+                                    <Border Height="64"
+                                            Padding="16,0"
+                                            BorderBrush="#A4D9DEE8"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="接管前二次确认" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
+                                                <TextBlock Text="开启智能匹配前确认是否由 Token Hub 管理应用配置"
+                                                           FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0"
+                                                           TextWrapping="Wrap" />
+                                            </StackPanel>
+                                            <Border Grid.Column="1"
+                                                    Width="42" Height="22"
+                                                    CornerRadius="99"
+                                                    Background="{StaticResource AccentBrush}"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    MouseLeftButtonDown="SettingToggle_Click">
+                                                <Border Width="16" Height="16"
+                                                        CornerRadius="99"
+                                                        Background="White"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="0,0,3,0"
+                                                        Effect="{StaticResource ToggleKnobShadow}" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+
+                    <!-- ===== NOTIFICATION POPUP ===== -->
+                    <Border x:Name="NotificationPanel"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Width="364"
+                            CornerRadius="8"
+                            BorderBrush="#2E000000"
+                            BorderThickness="1"
+                            Background="#E0F8FBFF"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,-8,8"
+                            Visibility="Collapsed"
+                            Effect="{StaticResource NotificationShadow}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Notification Header -->
+                            <Border Grid.Row="0"
+                                    Height="40"
+                                    Padding="14,0,8,0"
+                                    Background="#70F6F8FC">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="Assets/desktop-token-hub-icon@3x.png"
+                                               Width="20" Height="20"
+                                               Margin="0,0,8,0" />
+                                        <TextBlock Text="联想 Token Hub"
+                                                   FontSize="12"
+                                                   Foreground="#B81B1B1F"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <Button Grid.Column="2"
+                                            Width="28"
+                                            Height="28"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            FontSize="18"
+                                            Foreground="#9E1B1B1F"
+                                            Cursor="Hand"
+                                            Content="&#x00D7;"
+                                            Click="DismissNotification_Click" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Auto Discovery Body (smart match ON) -->
+                            <StackPanel x:Name="AutoNotificationBody"
+                                        Grid.Row="1"
+                                        Margin="14,12,14,14">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image Grid.Column="0"
+                                           Source="Assets/app-qclaw@3x.png"
+                                           Width="32" Height="32"
+                                           Margin="0,0,12,0" />
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="QClaw 已完成模型匹配"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="#E01B1B1F" />
+                                        <TextBlock Text="已根据应用特性自动选择 DeepSeek V4 Flash，现在可以直接使用。"
+                                                   FontSize="12"
+                                                   Foreground="#991B1B1F"
+                                                   Margin="0,4,0,0"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <WrapPanel Margin="0,8,0,0">
+                                    <Border Height="18"
+                                            Padding="6,0"
+                                            CornerRadius="4"
+                                            Background="#1A0F6CBD"
+                                            Margin="0,0,4,0">
+                                        <TextBlock Text="文本生成"
+                                                   FontSize="10"
+                                                   Foreground="#FF0F6CBD"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                    <Border Height="18"
+                                            Padding="6,0"
+                                            CornerRadius="4"
+                                            Background="#1A0F6CBD"
+                                            Margin="0,0,4,0">
+                                        <TextBlock Text="轻量快速"
+                                                   FontSize="10"
+                                                   Foreground="#FF0F6CBD"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                    <Border Height="18"
+                                            Padding="6,0"
+                                            CornerRadius="4"
+                                            Background="#1A0F6CBD">
+                                        <TextBlock Text="DeepSeek"
+                                                   FontSize="10"
+                                                   Foreground="#FF0F6CBD"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </WrapPanel>
+                            </StackPanel>
+
+                            <!-- Manual Discovery Body (smart match OFF) -->
+                            <StackPanel x:Name="ManualNotificationBody"
+                                        Grid.Row="1"
+                                        Margin="14,12,14,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image Grid.Column="0"
+                                           Source="Assets/app-qclaw@3x.png"
+                                           Width="32" Height="32"
+                                           Margin="0,0,12,0" />
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="发现新应用 QClaw"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="#E01B1B1F" />
+                                        <TextBlock Text="为 QClaw 选择一个模型后即可使用。"
+                                                   FontSize="12"
+                                                   Foreground="#991B1B1F"
+                                                   Margin="0,4,0,0"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Notification Actions (Manual only) -->
+                            <Border x:Name="NotificationActions"
+                                    Grid.Row="2"
+                                    Padding="14,0,14,14">
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <Button Content="去选择模型"
+                                            Height="32"
+                                            Padding="12,0"
+                                            FontSize="12"
+                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            Cursor="Hand"
+                                            Click="GoToToolFromNotification_Click" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

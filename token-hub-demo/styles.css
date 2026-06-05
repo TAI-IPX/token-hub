@@ -908,8 +908,8 @@ h1 { font-size: 16px; font-weight: 600; }
   background: rgba(255, 255, 255, 1);
 }
 .titlebar-dropdown .ui-icon {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   color: rgba(0, 0, 0, 0.61);
   transform: rotate(0deg);
   transition: transform 0.15s ease;
@@ -1494,9 +1494,9 @@ button.model-row-v2.external-row-v2 .radio-v2 {
   top: 48px;
   left: 16px;
   padding: 8px 0;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  background: rgba(252, 252, 252, 0.92);
+  background: #fcfcfc;
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.14);
   backdrop-filter: blur(30px);
 }

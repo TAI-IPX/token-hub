@@ -1,0 +1,545 @@
+<!-- TokenHubDesignSystem.xaml
+     联想 Token Hub 托盘面板 — WPF 设计系统规范
+     ─────────────────────────────────────────────
+     版本: 1.0 (2026-06-05)
+     基准: Figma 联想Token → Token Hub 页面 (node-id=355-7022)
+     对应 Web Demo: token-hub-demo/ @ commit df80e43
+     目标框架: .NET 8.0 WPF (或 .NET Framework 4.7.2+)
+
+     使用方式:
+       <Application.Resources>
+         <ResourceDictionary Source="TokenHubDesignSystem.xaml" />
+       </Application.Resources>
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║  SECTION 1: DESIGN TOKENS (设计变量)                         ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+
+    <!-- ─── 1.1 Color Palette (色板) ─── -->
+
+    <!-- Brand / Accent -->
+    <Color x:Key="Accent.Default">#005FB8</Color>
+    <Color x:Key="Accent.Hover">#004C99</Color>
+    <Color x:Key="Accent.Pressed">#003E7E</Color>
+    <Color x:Key="Accent.Soft">#EAF3FF</Color>
+
+    <!-- Text -->
+    <Color x:Key="Text.Primary">#1B1B1F</Color>
+    <Color x:Key="Text.Primary.88">#E0000000</Color>        <!-- rgba(0,0,0,0.88) -->
+    <Color x:Key="Text.Secondary">#5E626A</Color>
+    <Color x:Key="Text.Secondary.60">#99000000</Color>      <!-- rgba(0,0,0,0.60) -->
+    <Color x:Key="Text.Tertiary">#7B8088</Color>
+    <Color x:Key="Text.Tertiary.45">#73000000</Color>       <!-- rgba(0,0,0,0.45) -->
+    <Color x:Key="Text.OnAccent">#FFFFFF</Color>
+
+    <!-- Surface -->
+    <Color x:Key="Surface.Panel">#F0F8FBFF</Color>          <!-- rgba(248,251,255,0.94) -->
+    <Color x:Key="Surface.TitleBar">#70F6F8FC</Color>       <!-- rgba(246,248,252,0.44) -->
+    <Color x:Key="Surface.Control">#ADFFFFFF</Color>        <!-- rgba(255,255,255,0.68) -->
+    <Color x:Key="Surface.Control.Hover">#EBEEF1F6</Color>  <!-- rgba(238,241,246,0.92) -->
+    <Color x:Key="Surface.Control.Pressed">#F0DEE2E9</Color><!-- rgba(222,226,233,0.94) -->
+
+    <!-- Stroke / Border -->
+    <Color x:Key="Stroke.Card">#2E000000</Color>            <!-- rgba(0,0,0,0.18) -->
+    <Color x:Key="Stroke.Subtle">#14000000</Color>          <!-- rgba(0,0,0,0.08) -->
+    <Color x:Key="Stroke.Divider">#A3D9DEE8</Color>        <!-- rgba(217,222,232,0.64) -->
+    <Color x:Key="Stroke.AccentBorder">#14FFFFFF</Color>    <!-- rgba(255,255,255,0.08) -->
+
+    <!-- Status Tags -->
+    <Color x:Key="Tag.Success.Text">#16A34A</Color>
+    <Color x:Key="Tag.Success.Bg">#5CFFFFFF</Color>         <!-- rgba(255,255,255,0.36) -->
+    <Color x:Key="Tag.Danger.Text">#DC2626</Color>
+    <Color x:Key="Tag.Danger.Bg">#1FDC2626</Color>          <!-- rgba(220,38,38,0.12) -->
+    <Color x:Key="Tag.Warning.Text">#9D6100</Color>
+    <Color x:Key="Tag.Warning.Bg">#FFF1CC</Color>
+
+    <!-- Toggle -->
+    <Color x:Key="Toggle.On.Track">#0067C0</Color>
+    <Color x:Key="Toggle.Off.Track">#CCCCCC</Color>
+    <Color x:Key="Toggle.Knob">#FFFFFF</Color>
+
+    <!-- Radio -->
+    <Color x:Key="Radio.Selected.Fill">#005FB8</Color>
+    <Color x:Key="Radio.Selected.Border">#005FB8</Color>
+    <Color x:Key="Radio.Unselected.Fill">#05000000</Color>  <!-- rgba(0,0,0,0.02) -->
+    <Color x:Key="Radio.Unselected.Border">#9C000000</Color><!-- rgba(0,0,0,0.61) -->
+    <Color x:Key="Radio.Bullet">#FFFFFF</Color>
+
+    <!-- Badge -->
+    <Color x:Key="Badge.Active.Text">#2563EB</Color>
+
+    <!-- ─── 1.2 Brushes (画刷) ─── -->
+    <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Accent.Default}" />
+    <SolidColorBrush x:Key="Brush.Accent.Hover" Color="{StaticResource Accent.Hover}" />
+    <SolidColorBrush x:Key="Brush.Accent.Pressed" Color="{StaticResource Accent.Pressed}" />
+    <SolidColorBrush x:Key="Brush.Text.Primary" Color="{StaticResource Text.Primary}" />
+    <SolidColorBrush x:Key="Brush.Text.Secondary" Color="{StaticResource Text.Secondary}" />
+    <SolidColorBrush x:Key="Brush.Text.Tertiary" Color="{StaticResource Text.Tertiary}" />
+    <SolidColorBrush x:Key="Brush.Text.OnAccent" Color="{StaticResource Text.OnAccent}" />
+    <SolidColorBrush x:Key="Brush.Surface.Panel" Color="{StaticResource Surface.Panel}" />
+    <SolidColorBrush x:Key="Brush.Surface.TitleBar" Color="{StaticResource Surface.TitleBar}" />
+    <SolidColorBrush x:Key="Brush.Stroke.Card" Color="{StaticResource Stroke.Card}" />
+    <SolidColorBrush x:Key="Brush.Stroke.Divider" Color="{StaticResource Stroke.Divider}" />
+
+    <!-- ─── 1.3 Typography (字体规范) ─── -->
+    <FontFamily x:Key="Font.Primary">Microsoft YaHei</FontFamily>
+    <FontFamily x:Key="Font.Fallback">Segoe UI</FontFamily>
+
+    <!-- Font sizes -->
+    <sys:Double x:Key="FontSize.Title">24</sys:Double>      <!-- 登录页标题 -->
+    <sys:Double x:Key="FontSize.Subtitle">14</sys:Double>   <!-- 列表标题/正文 -->
+    <sys:Double x:Key="FontSize.Body">14</sys:Double>       <!-- 正文/按钮 -->
+    <sys:Double x:Key="FontSize.Caption">12</sys:Double>    <!-- 描述/价格 -->
+    <sys:Double x:Key="FontSize.Small">11</sys:Double>      <!-- 模型名/badge -->
+    <sys:Double x:Key="FontSize.Tiny">10</sys:Double>       <!-- 标签文字 -->
+
+    <!-- ─── 1.4 Spacing (间距规范) ─── -->
+    <Thickness x:Key="Spacing.Panel.Padding">0</Thickness>
+    <Thickness x:Key="Spacing.Content.Padding">16,8,16,8</Thickness>
+    <Thickness x:Key="Spacing.ListItem.Padding">16,0</Thickness>
+    <Thickness x:Key="Spacing.DetailItem.Padding">20,8</Thickness>
+    <Thickness x:Key="Spacing.Footer.Padding">16,0</Thickness>
+    <sys:Double x:Key="Spacing.Gap.Small">4</sys:Double>
+    <sys:Double x:Key="Spacing.Gap.Medium">8</sys:Double>
+    <sys:Double x:Key="Spacing.Gap.Large">12</sys:Double>
+    <sys:Double x:Key="Spacing.Gap.XLarge">16</sys:Double>
+    <sys:Double x:Key="Spacing.Gap.Radio">20</sys:Double>
+
+    <!-- ─── 1.5 Dimensions (尺寸规范) ─── -->
+    <sys:Double x:Key="Size.Panel.Width">440</sys:Double>
+    <sys:Double x:Key="Size.Panel.Height.Normal">384</sys:Double>
+    <sys:Double x:Key="Size.Panel.Height.Onboarding">318</sys:Double>
+    <sys:Double x:Key="Size.TitleBar.Height">48</sys:Double>
+    <sys:Double x:Key="Size.SmartMatch.Height">56</sys:Double>
+    <sys:Double x:Key="Size.ListHeader.Height">48</sys:Double>
+    <sys:Double x:Key="Size.ListItem.Height">48</sys:Double>
+    <sys:Double x:Key="Size.ModelItem.Height">72</sys:Double>
+    <sys:Double x:Key="Size.Footer.Height">64</sys:Double>
+    <sys:Double x:Key="Size.AppIcon">28</sys:Double>
+    <sys:Double x:Key="Size.Avatar">28</sys:Double>
+    <sys:Double x:Key="Size.Radio">20</sys:Double>
+    <sys:Double x:Key="Size.Toggle.Width">42</sys:Double>
+    <sys:Double x:Key="Size.Toggle.Height">22</sys:Double>
+    <sys:Double x:Key="Size.Toggle.Knob">16</sys:Double>
+    <sys:Double x:Key="Size.Button.Height">32</sys:Double>
+    <sys:Double x:Key="Size.Button.Recharge.Width">80</sys:Double>
+    <sys:Double x:Key="Size.IconButton">20</sys:Double>
+    <sys:Double x:Key="Size.Logo">24</sys:Double>
+    <sys:Double x:Key="Size.Tag.Height">16</sys:Double>
+
+    <!-- ─── 1.6 Corner Radius (圆角) ─── -->
+    <CornerRadius x:Key="Radius.Panel">8</CornerRadius>
+    <CornerRadius x:Key="Radius.Card">8</CornerRadius>
+    <CornerRadius x:Key="Radius.Control">4</CornerRadius>
+    <CornerRadius x:Key="Radius.AppIcon">6</CornerRadius>
+    <CornerRadius x:Key="Radius.Tag">4</CornerRadius>
+    <CornerRadius x:Key="Radius.Toggle">11</CornerRadius>
+    <CornerRadius x:Key="Radius.Radio">10</CornerRadius>
+    <CornerRadius x:Key="Radius.Avatar">14</CornerRadius>
+    <CornerRadius x:Key="Radius.Full">999</CornerRadius>
+
+    <!-- ─── 1.7 Effects (效果) ─── -->
+    <!-- Panel shadow: 0 22px 46px rgba(15,23,42,0.22) -->
+    <!-- Panel backdrop-filter: blur(80px) -->
+    <!-- TitleBar backdrop-filter: blur(18px) -->
+    <!-- Toggle knob shadow: 0 1px 2px rgba(0,0,0,0.2) -->
+
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║  SECTION 2: COMPONENT STYLES (组件规范)                      ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+
+    <!-- ─── 2.1 Panel Container (面板容器) ─── -->
+    <!--
+         规格:
+         - 宽度: 440px, 高度: 384px (功能态) / 318px (onboarding)
+         - 背景: rgba(248,251,255,0.94) + blur(80px)
+         - 边框: 1px rgba(0,0,0,0.18), 圆角 8px
+         - 阴影: 0 22px 46px rgba(15,23,42,0.22)
+         - 定位: 右下角, right=24px, bottom=任务栏高度+24px
+    -->
+    <Style x:Key="Style.Panel" TargetType="Border">
+        <Setter Property="Width" Value="440" />
+        <Setter Property="CornerRadius" Value="{StaticResource Radius.Panel}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Brush.Stroke.Card}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{StaticResource Brush.Surface.Panel}" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="46" ShadowDepth="22" Direction="270"
+                                  Color="#0F172A" Opacity="0.22" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.2 Title Bar (标题栏) ─── -->
+    <!--
+         规格:
+         - 高度: 48px
+         - 背景: rgba(246,248,252,0.44) + blur(18px)
+         - 内边距: left 16px
+         - 左侧: Logo(24×24) + 标题(14px Bold) + 下拉按钮(16×16)
+         - 右侧: 设置按钮(20×20) + gap 16px + 关闭按钮(20×20) + right padding 16px
+    -->
+    <Style x:Key="Style.TitleBar" TargetType="Border">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="Background" Value="{StaticResource Brush.Surface.TitleBar}" />
+        <Setter Property="Padding" Value="16,0,16,0" />
+    </Style>
+
+    <Style x:Key="Style.TitleBar.Title" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Primary}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource Brush.Text.Primary}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- ─── 2.3 Icon Button (图标按钮) ─── -->
+    <!--
+         规格:
+         - 尺寸: 20×20
+         - 背景: 透明, hover 时 opacity 0.7
+         - 圆角: 4px
+    -->
+    <Style x:Key="Style.IconButton" TargetType="Button">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="Transparent" CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.7" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.4 Toggle Switch (开关) ─── -->
+    <!--
+         规格:
+         - 尺寸: 42×22
+         - 开启: 轨道 #0067C0, 旋钮右侧
+         - 关闭: 轨道 #CCCCCC, 旋钮左侧
+         - 旋钮: 16×16 白色圆形, shadow 0 1px 2px rgba(0,0,0,0.2)
+    -->
+    <Style x:Key="Style.ToggleSwitch" TargetType="ToggleButton">
+        <Setter Property="Width" Value="42" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Border x:Name="Track" CornerRadius="11" Background="#CCCCCC" />
+                        <Border x:Name="Knob" Width="16" Height="16" CornerRadius="8"
+                                Background="White" HorizontalAlignment="Left" Margin="3,0,0,0">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="2" ShadowDepth="1"
+                                                  Opacity="0.2" Direction="270" />
+                            </Border.Effect>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Track" Property="Background" Value="#0067C0" />
+                            <Setter TargetName="Knob" Property="HorizontalAlignment" Value="Right" />
+                            <Setter TargetName="Knob" Property="Margin" Value="0,0,3,0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.5 Primary Button (主按钮) ─── -->
+    <!--
+         规格:
+         - 高度: 32px, 宽度: 按内容或固定 (充值=80px, 登录=full width)
+         - 背景: #005FB8, hover #004C99, pressed #003E7E
+         - 文字: 14px 白色居中
+         - 圆角: 4px
+         - 边框: 1px rgba(255,255,255,0.08)
+    -->
+    <Style x:Key="Style.Button.Primary" TargetType="Button">
+        <Setter Property="Height" Value="32" />
+        <Setter Property="FontFamily" Value="{StaticResource Font.Primary}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" CornerRadius="4"
+                            Background="{StaticResource Brush.Accent}"
+                            BorderBrush="#14FFFFFF" BorderThickness="1"
+                            Padding="12,0">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{StaticResource Brush.Accent.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{StaticResource Brush.Accent.Pressed}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.6 App List Item (应用列表项) ─── -->
+    <!--
+         规格:
+         - 高度: 48px
+         - 内边距: 0 16px
+         - 圆角: 4px
+         - hover: 背景 rgba(0,0,0,0.03)
+         - 左侧: App图标(28×28, 圆角6px) + gap 12px + 应用名(14px)
+         - 右侧: 模型名(11px #5E626A) + gap 8px + 箭头(20×20)
+    -->
+    <Style x:Key="Style.AppListItem" TargetType="Button">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontFamily" Value="{StaticResource Font.Primary}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Height="48" CornerRadius="4"
+                            Background="Transparent" Padding="16,0">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#08000000" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#0D000000" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.7 Model List Item (模型列表项 - 二级页) ─── -->
+    <!--
+         规格:
+         - 高度: 72px
+         - 内边距: 20px 水平, 8px 垂直
+         - 圆角: 4px
+         - 左侧: Radio(20×20) + gap 20px + 内容列(name + price + tags)
+         - 右侧: "当前模型" badge (11px #2563EB) — 仅选中项
+         - name: 14px Bold rgba(0,0,0,0.88)
+         - price: 12px rgba(0,0,0,0.60)
+         - tags: 16px高, padding 4px, 圆角4px, 文字10px #16A34A, 背景 rgba(255,255,255,0.36)
+    -->
+    <Style x:Key="Style.ModelListItem" TargetType="Button">
+        <Setter Property="Height" Value="72" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Height="72" CornerRadius="4"
+                            Background="Transparent" Padding="20,8">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#08000000" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.8 Radio Button (单选按钮) ─── -->
+    <!--
+         规格:
+         - 尺寸: 20×20
+         - 未选中: 背景 rgba(0,0,0,0.02), 边框 1px rgba(0,0,0,0.61)
+         - 选中: 背景 #005FB8, 边框 #005FB8
+         - 选中弹头: 8×8 白色圆, 边框 1px rgba(0,0,0,0.06)
+    -->
+    <Style x:Key="Style.RadioButton" TargetType="RadioButton">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <Ellipse x:Name="Outer" Width="20" Height="20"
+                                 Fill="#05000000" Stroke="#9C000000" StrokeThickness="1" />
+                        <Ellipse x:Name="Bullet" Width="8" Height="8"
+                                 Fill="White" Stroke="#0F000000" StrokeThickness="1"
+                                 Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Outer" Property="Fill" Value="#005FB8" />
+                            <Setter TargetName="Outer" Property="Stroke" Value="#005FB8" />
+                            <Setter TargetName="Bullet" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─── 2.9 Tag (标签) ─── -->
+    <!--
+         规格:
+         - 高度: 16px
+         - 内边距: 0 4px
+         - 圆角: 4px
+         - 文字: 10px
+         - 成功: 文字 #16A34A, 背景 rgba(255,255,255,0.36)
+         - 危险: 文字 #DC2626, 背景 rgba(220,38,38,0.12)
+    -->
+    <Style x:Key="Style.Tag.Success" TargetType="Border">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="Background" Value="#5CFFFFFF" />
+    </Style>
+
+    <Style x:Key="Style.Tag.Success.Text" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="#16A34A" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="Style.Tag.Danger" TargetType="Border">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="Background" Value="#1FDC2626" />
+    </Style>
+
+    <Style x:Key="Style.Tag.Danger.Text" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="#DC2626" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- ─── 2.10 Detail Page Title Bar (二级页标题栏) ─── -->
+    <!--
+         规格:
+         - 高度: 48px
+         - 背景: 同主标题栏
+         - 底部分割线: 1px rgba(0,0,0,0.08)
+         - 左侧: 返回按钮(24×24, 图标16×16) + gap 8px + 页面标题(14px Bold)
+         - 右侧: 仅关闭按钮
+    -->
+    <Style x:Key="Style.DetailTitleBar" TargetType="Border">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="Background" Value="{StaticResource Brush.Surface.TitleBar}" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="BorderBrush" Value="#14000000" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+
+    <!-- ─── 2.11 Account Footer (底部账号栏) ─── -->
+    <!--
+         规格:
+         - 高度: 64px, 固定在面板底部 (不随内容滚动)
+         - 内边距: 0 16px
+         - 顶部分割线: 1px rgba(217,222,232,0.64)
+         - 左侧: 头像(28×28圆形) + gap 12px + 手机号(14px Bold) + 余额(12px secondary)
+         - 右侧: 更多按钮(20×20) + gap 12px + 充值按钮(80×32)
+    -->
+    <Style x:Key="Style.Footer" TargetType="Border">
+        <Setter Property="Height" Value="64" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="BorderBrush" Value="{StaticResource Brush.Stroke.Divider}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+    </Style>
+
+
+    <!-- ╔══════════════════════════════════════════════════════════════╗
+         ║  SECTION 3: LAYOUT SPECIFICATION (布局规范)                  ║
+         ╚══════════════════════════════════════════════════════════════╝ -->
+
+    <!--
+    Panel Layout (功能态 384px):
+    ┌──────────────────────────────────────┐ ← Border 440×384, radius 8
+    │  Title Bar (48px)                    │   bg rgba(246,248,252,0.44) blur 18
+    │  ┌──────────────────────────────┐    │
+    │  │ Logo  Title  ▾  │  ⚙  ✕     │    │
+    │  └──────────────────────────────┘    │
+    ├──────────────────────────────────────┤
+    │  Content (flex:1, overflow-y:auto)   │   padding 0 0, items padding 16 horiz
+    │  ┌──────────────────────────────┐    │
+    │  │ 智能模型匹配 (56px)    [═══] │    │
+    │  ├──────────────────────────────┤    │
+    │  │ 应用列表 (48px header)    ↻  │    │
+    │  ├──────────────────────────────┤    │
+    │  │ [icon] App Name    model › │×N │  │   each 48px
+    │  └──────────────────────────────┘    │
+    ├──────────────────────────────────────┤ ← divider rgba(217,222,232,0.64)
+    │  Footer (64px, pinned)               │
+    │  ┌──────────────────────────────┐    │
+    │  │ (●) Name     ⋮  [充值]      │    │
+    │  │     Balance                   │    │
+    │  └──────────────────────────────┘    │
+    └──────────────────────────────────────┘
+
+    Panel Layout (onboarding态 318px):
+    ┌──────────────────────────────────────┐
+    │  Title Bar (48px)                    │
+    ├──────────────────────────────────────┤
+    │  Content (flex:1, centered)          │   padding 16
+    │                                      │
+    │      [illustration]                  │   仅未登录态
+    │      Title (24px Bold)               │
+    │      Description (14px)              │
+    │                                      │
+    │  ┌──────────────────────────────┐    │
+    │  │         [登录] / progress    │    │   full-width 32px button 或 进度条
+    │  └──────────────────────────────┘    │
+    └──────────────────────────────────────┘
+
+    Detail Page (二级页):
+    ┌──────────────────────────────────────┐
+    │  Detail Title Bar (48px)             │   底部有 1px divider
+    │  ← AppName                      ✕   │
+    ├──────────────────────────────────────┤
+    │  Model List (flex:1, scroll)         │   padding-top 8
+    │  ┌──────────────────────────────┐    │
+    │  │ ◉  Model Name       当前模型 │    │   72px, selected
+    │  │    价格行                     │    │
+    │  │    [tag] [tag]                │    │
+    │  ├──────────────────────────────┤    │
+    │  │ ○  Model Name                │    │   72px, unselected
+    │  │    价格行                     │    │
+    │  │    [tag] [tag]                │    │
+    │  └──────────────────────────────┘    │
+    └──────────────────────────────────────┘
+    -->
+
+</ResourceDictionary>

@@ -30,7 +30,7 @@ const state = {
     hermes: "kimi-k2.6",
   },
   management: {
-    openclaw: "external",
+    openclaw: "token-hub",
     "claude-code": "token-hub",
     qclaw: "token-hub",
     workbuddy: "token-hub",
@@ -39,7 +39,7 @@ const state = {
 };
 
 const tools = [
-  { id: "openclaw", name: "Open Claw", icon: "./assets/3x/app-openclaw@3x.png", mark: "OC", externalModel: "gpt-4.1", externalVendor: "OpenAI Compatible", externalPrices: ["¥18.00", "¥72.00", "¥4.50"], externalTags: ["文本生成", "OpenAI 兼容"], models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
+  { id: "openclaw", name: "Open Claw", icon: "./assets/3x/app-openclaw@3x.png", mark: "OC", models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
   { id: "qclaw", name: "Q Claw", icon: "./assets/3x/app-qclaw@3x.png", mark: "QC", models: ["deepseek-v4-flash", "qwen3.6-flash", "kimi-k2.6"] },
   { id: "claude-code", name: "Claude Code", icon: "./assets/3x/app-claude@3x.png", mark: "CC", models: ["deepseek-v4-pro", "glm-5.1", "qwen3.6-max-preview"] },
   { id: "workbuddy", name: "OpenClaw", icon: "./assets/3x/app-openclaw2@3x.png", mark: "WB", models: ["qwen3.6-plus", "kimi-k2.6", "MiniMax-M2.5"] },
@@ -106,7 +106,6 @@ function saveSession() {
 function renderTools() {
   toolList.innerHTML = tools.map((tool) => {
     const model = models[state.selections[tool.id]];
-    const external = state.management[tool.id] === "external";
     const unconfigured = state.management[tool.id] === "unconfigured";
     return `
       <button class="tool-row" data-open-tool="${tool.id}">
@@ -115,8 +114,7 @@ function renderTools() {
           <span class="tool-name">${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}</span>
         </div>
         <div class="tool-row-right">
-          ${external ? `<span class="tool-tag-external">外部模型</span>` : ""}
-          <span class="tool-model-name">${external ? tool.externalModel : unconfigured ? "待选择模型" : model.name}</span>
+          <span class="tool-model-name">${unconfigured ? "待选择模型" : model.name}</span>
           <img class="tool-chevron" src="./assets/3x/icon-chevron-right@3x.svg" alt="" />
         </div>
       </button>
@@ -441,41 +439,11 @@ function openTool(toolId) {
     renderTools();
   }
   document.querySelector("#detail-tool-name").textContent = tool.name;
-  const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
-  const hasExternalConfig = Boolean(tool.externalModel);
-  const externalCurrentBadge = state.smartMode ? "不参与智能匹配" : "当前模型";
   const tokenHubCurrentBadge = state.smartMode ? "智能匹配" : "当前模型";
-  const externalItem = hasExternalConfig
-    ? external
-      ? `
-        <div class="model-row-v2 external-row-v2 selected">
-          <span class="radio-v2 selected"><i></i></span>
-          <span class="model-content-v2">
-            <strong>${tool.externalModel}</strong>
-            <small>${state.smartMode ? "外部配置 · 已从智能匹配中排除" : "外部配置 · 不由 Token Hub 管理"}</small>
-            <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
-          </span>
-          ${state.smartMode
-            ? `<button class="model-switch-btn primary" data-adopt-smart-match="${toolId}">接入智能匹配</button>`
-            : `<em class="model-badge muted">${externalCurrentBadge}</em>`}
-        </div>
-      `
-      : `
-        <button class="model-row-v2 external-row-v2" data-use-external-config="${toolId}">
-          <span class="radio-v2"><i></i></span>
-          <span class="model-content-v2">
-            <strong>${tool.externalModel}</strong>
-            <small>${state.smartMode ? "外部配置 · 已从智能匹配中排除" : "外部配置 · 不由 Token Hub 管理"}</small>
-            <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
-          </span>
-          <em class="model-badge action">切换到外部</em>
-        </button>
-      `
-    : "";
-  modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {
+  modelList.innerHTML = tool.models.map((modelId) => {
     const model = models[modelId];
-    const active = !external && !unconfigured && state.selections[toolId] === modelId;
+    const active = !unconfigured && state.selections[toolId] === modelId;
     const lockedBySmart = state.smartMode;
     return `
       <button class="model-row-v2${active ? " selected" : ""}${lockedBySmart ? " locked-by-smart" : ""}" data-select-model="${modelId}" ${lockedBySmart ? "disabled" : ""}>
@@ -488,7 +456,7 @@ function openTool(toolId) {
         ${active ? `<em class="model-badge">${tokenHubCurrentBadge}</em>` : ""}
       </button>
     `;
-  }).join("")}`;
+  }).join("");
   notification.classList.remove("show");
   openPanel();
   showPage("models");
@@ -503,31 +471,9 @@ function openAppFromNotification() {
 function renderNotification() {
   const matchedModel = models[state.selections.qclaw];
   const isAuto = state.discoveryNotice === "auto";
-  const externalOpenClaw = state.discoveryNotice === "external";
   const qclaw = tools.find((tool) => tool.id === "qclaw");
-  const openClaw = tools.find((tool) => tool.id === "openclaw");
   notification.classList.toggle("clickable", isAuto);
-  notification.innerHTML = externalOpenClaw
-    ? `
-      <header>
-        <div class="notification-brand">
-          <img src="${tokenHubIcon}" alt="" />
-          <span>联想 Token Hub</span>
-        </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">&times;</button>
-      </header>
-      <div class="notification-content">
-        <img class="notification-tool-icon" src="${openClaw.icon}" alt="" />
-        <div>
-          <strong>OpenClaw 正在使用外部模型</strong>
-          <p>Token Hub 不会自动修改现有配置。切换后可使用智能模型匹配。</p>
-        </div>
-      </div>
-      <div class="notification-actions">
-        <button class="primary" data-open-tool="openclaw">查看配置</button>
-      </div>
-    `
-    : isAuto
+  notification.innerHTML = isAuto
     ? `
       <header>
         <div class="notification-brand">
@@ -673,10 +619,8 @@ function isPageActive(page) {
 
 function enableSmartMatch() {
   tools.forEach((tool) => {
-    if (state.management[tool.id] !== "external") {
-      state.management[tool.id] = "token-hub";
-      state.selections[tool.id] = tool.models[0];
-    }
+    state.management[tool.id] = "token-hub";
+    state.selections[tool.id] = tool.models[0];
     tool.isNew = false;
   });
   state.smartMode = true;
@@ -734,13 +678,6 @@ function setDemoState(mode) {
     });
   }
 
-  if (mode === "external-config" || mode === "external-discovery") {
-    state.management.openclaw = "external";
-    tools.forEach((tool) => {
-      tool.isNew = false;
-    });
-  }
-
   if (mode === "low-balance") {
     state.balance = 0.8;
     state.balanceStatus = "empty";
@@ -764,12 +701,6 @@ function setDemoState(mode) {
     tools.find((tool) => tool.id === "qclaw").isNew = true;
     closePanel();
     setDiscoveryNotice("auto");
-    return;
-  }
-
-  if (mode === "external-discovery") {
-    closePanel();
-    setDiscoveryNotice("external");
     return;
   }
 
@@ -897,9 +828,7 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.selectModel) {
     const modelId = target.dataset.selectModel;
-    const adopted = state.management[state.activeTool] === "external";
     const configured = state.management[state.activeTool] === "unconfigured";
-    if (adopted) state.management[state.activeTool] = "token-hub";
     if (configured) state.management[state.activeTool] = "token-hub";
     state.selections[state.activeTool] = modelId;
     renderTools();
@@ -911,24 +840,6 @@ document.addEventListener("click", (event) => {
     const tool = tools.find((item) => item.id === toolId);
     state.management[toolId] = "token-hub";
     state.selections[toolId] = tool.models[0];
-    renderTools();
-    openTool(toolId);
-  }
-
-  if (target.dataset.useExternalConfig) {
-    const toolId = target.dataset.useExternalConfig;
-    state.management[toolId] = "external";
-    renderTools();
-    openTool(toolId);
-  }
-
-  if (target.dataset.adoptSmartMatch) {
-    const toolId = target.dataset.adoptSmartMatch;
-    const tool = tools.find((item) => item.id === toolId);
-    state.management[toolId] = "token-hub";
-    state.selections[toolId] = tool.models[0];
-    state.smartMode = true;
-    syncSmartToggle();
     renderTools();
     openTool(toolId);
   }

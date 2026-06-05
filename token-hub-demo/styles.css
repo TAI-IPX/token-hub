@@ -252,11 +252,6 @@ button:focus-visible, input:focus-visible, [role="button"]:focus-visible {
 .tool-icon {
   width: 28px; height: 28px; flex: 0 0 auto; border-radius: 6px; object-fit: cover;
 }
-.tool-tag-external {
-  height: 16px; padding: 0 4px; border-radius: 4px;
-  background: rgba(220, 38, 38, 0.12); color: #dc2626;
-  font-size: 10px; line-height: 16px; white-space: nowrap;
-}
 .tool-name { font-size: 14px; font-weight: 400; color: #1b1b1f; white-space: nowrap; }
 .tool-name em { margin-left: 6px; padding: 2px 5px; border-radius: 999px; color: #9d6100; background: #fff1cc; font-size: 10px; font-style: normal; font-weight: 500; }
 .tool-row-right { display: flex; align-items: center; gap: 8px; }
@@ -827,15 +822,12 @@ h1 { font-size: 16px; font-weight: 600; }
   border-bottom-color: rgba(224, 175, 44, .28);
   background: transparent;
 }
-.model-row.external-current:hover { background: rgba(225, 228, 234, .76); }
-
 /* Inline action button (Switch to Token Hub) */
 .inline-action { height: 30px; padding: 0 10px; border-radius: 5px; color: white; background: var(--accent); font-size: 12px; white-space: nowrap; }
 .inline-action:hover { background: #075ea7; }
 
-/* Tool name external badge */
+/* Tool name badge */
 .tool-name em.new { color: #08783d; background: #dff7e9; }
-.tool-name em.external { color: #8a5700; background: #fff0c2; }
 .tool-name em span { margin-right: 3px; font-size: 9px; line-height: 1; }
 
 /* Legacy smart-mode-copy display fix for feature-icon positioning */
@@ -1236,19 +1228,6 @@ h1 { font-size: 16px; font-weight: 600; }
 .model-row-v2:active { background: rgba(0, 0, 0, 0.05); }
 .model-row-v2:disabled { cursor: default; opacity: 0.6; }
 .model-row-v2:disabled:hover { background: transparent; }
-.model-row-v2.external-row-v2 {
-  cursor: default;
-}
-button.model-row-v2.external-row-v2 {
-  cursor: pointer;
-}
-button.model-row-v2.external-row-v2 .radio-v2 {
-  border-color: transparent;
-  background: transparent;
-}
-.model-row-v2.external-row-v2:hover {
-  background: rgba(0, 0, 0, 0.03);
-}
 .model-row-v2.locked-by-smart:not(.selected) {
   opacity: 0.46;
 }
@@ -1309,10 +1288,6 @@ button.model-row-v2.external-row-v2 .radio-v2 {
   line-height: 16px;
   color: #16a34a;
   white-space: nowrap;
-}
-.model-tags-v2 i.tag-danger {
-  background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
 }
 .model-badge {
   font-size: 11px;

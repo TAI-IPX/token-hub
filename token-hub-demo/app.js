@@ -39,11 +39,11 @@ const state = {
 };
 
 const tools = [
-  { id: "openclaw", name: "OpenClaw", mark: "OC", externalModel: "gpt-4.1", externalVendor: "OpenAI Compatible", externalPrices: ["¥18.00", "¥72.00", "¥4.50"], externalTags: ["文本生成", "OpenAI 兼容"], models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
-  { id: "claude-code", name: "Claude Code", mark: "CC", models: ["deepseek-v4-pro", "glm-5.1", "qwen3.6-max-preview"] },
-  { id: "qclaw", name: "QClaw", mark: "QC", isNew: true, models: ["deepseek-v4-flash", "qwen3.6-flash", "kimi-k2.6"] },
-  { id: "workbuddy", name: "WorkBuddy", mark: "WB", models: ["qwen3.6-plus", "kimi-k2.6", "MiniMax-M2.5"] },
-  { id: "hermes", name: "Hermes", mark: "HM", models: ["kimi-k2.6", "deepseek-v4-pro", "glm-5"] },
+  { id: "openclaw", name: "Open Claw", icon: "./assets/3x/app-openclaw@3x.png", mark: "OC", externalModel: "gpt-4.1", externalVendor: "OpenAI Compatible", externalPrices: ["¥18.00", "¥72.00", "¥4.50"], externalTags: ["文本生成", "OpenAI 兼容"], models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
+  { id: "qclaw", name: "Q Claw", icon: "./assets/3x/app-qclaw@3x.png", mark: "QC", models: ["deepseek-v4-flash", "qwen3.6-flash", "kimi-k2.6"] },
+  { id: "claude-code", name: "Claude Code", icon: "./assets/3x/app-claude@3x.png", mark: "CC", models: ["deepseek-v4-pro", "glm-5.1", "qwen3.6-max-preview"] },
+  { id: "workbuddy", name: "OpenClaw", icon: "./assets/3x/app-openclaw2@3x.png", mark: "WB", models: ["qwen3.6-plus", "kimi-k2.6", "MiniMax-M2.5"] },
+  { id: "hermes", name: "Hermes", icon: "./assets/3x/app-openclaw2@3x.png", mark: "HM", models: ["kimi-k2.6", "deepseek-v4-pro", "glm-5"] },
 ];
 
 const models = {
@@ -60,13 +60,16 @@ const models = {
 
 const webLinks = {
   auth: "https://lai-hub.lenovomm.com/login?source=token-hub-desktop",
-  dashboard: "https://lai-hub.lenovomm.com/dashboard/models",
-  logs: "https://lai-hub.lenovomm.com/usage-logs/common",
+  dashboard: "https://lai-hub.lenovomm.com/",
+  logs: "https://lai-hub.lenovomm.com/logs",
   marketplace: "https://lai-hub.lenovomm.com/pricing",
   keys: "https://lai-hub.lenovomm.com/keys",
-  account: "https://lai-hub.lenovomm.com/wallet",
-  orders: "https://lai-hub.lenovomm.com/wallet",
+  account: "https://lai-hub.lenovomm.com/account",
 };
+
+function icon(name, className = "") {
+  return `<svg class="ui-icon${className ? ` ${className}` : ""}" aria-hidden="true"><use href="#icon-${name}" /></svg>`;
+}
 
 const panel = document.querySelector("#tray-panel");
 const trayButton = document.querySelector("#tray-app-button");
@@ -76,19 +79,19 @@ const modelList = document.querySelector("#model-list");
 const accountBar = document.querySelector("#account-bar");
 const onboardingCard = document.querySelector("#onboarding-card");
 const readyContent = document.querySelector("#ready-content");
-const settingsButton = document.querySelector(".settings-button");
+const settingsButton = document.querySelector("[data-settings]");
 const notification = document.querySelector("#tool-notification");
 const demoButtons = document.querySelectorAll("[data-demo-state]");
 const demoMenuButton = document.querySelector("[data-demo-menu]");
 const demoMenu = document.querySelector("#demo-menu");
 const demoCurrentLabel = document.querySelector("#demo-current-label");
-const refreshToast = document.querySelector("#refresh-toast");
 const authWindow = document.querySelector("#auth-window");
 const rechargeWindow = document.querySelector("#recharge-window");
 const rechargeContent = document.querySelector("#recharge-content");
-const appMenuButton = document.querySelector(".app-menu-button");
+const appMenuButton = document.querySelector("[data-app-menu]");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
+const smartConfirm = document.querySelector("#smart-confirm");
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -105,12 +108,15 @@ function renderTools() {
     const unconfigured = state.management[tool.id] === "unconfigured";
     return `
       <button class="tool-row" data-open-tool="${tool.id}">
-        <span class="tool-mark">${tool.mark}</span>
-        <span class="tool-copy">
-          <strong>${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}${external ? `<em class="external"><span>⚠</span>外部配置</em>` : ""}</strong>
-          <small>${external ? tool.externalModel : unconfigured ? "待选择模型" : model.name}</small>
-        </span>
-        <span class="chevron">›</span>
+        <div class="tool-row-left">
+          <img class="tool-icon" src="${tool.icon}" alt="" />
+          <span class="tool-name">${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}</span>
+        </div>
+        <div class="tool-row-right">
+          ${external ? `<span class="tool-tag-external">外部模型</span>` : ""}
+          <span class="tool-model-name">${external ? tool.externalModel : unconfigured ? "待选择模型" : model.name}</span>
+          <img class="tool-chevron" src="./assets/3x/icon-chevron-right@3x.svg" alt="" />
+        </div>
       </button>
     `;
   }).join("");
@@ -119,80 +125,91 @@ function renderTools() {
 function renderOnboarding() {
   onboardingCard.hidden = state.apiReady;
   readyContent.hidden = !state.apiReady;
-  settingsButton.hidden = !state.apiReady;
-  if (state.apiReady) return;
+  if (settingsButton) settingsButton.hidden = !state.apiReady;
+  if (state.apiReady) { onboardingCard.dataset.state = ''; return; }
+  // Set data-state for CSS styling
+  const onboardState = state.configuring ? 'configuring'
+    : state.authPending ? 'auth-pending'
+    : !state.onboardingStarted ? 'first-run'
+    : state.loggedIn ? 'ready'
+    : 'login';
+  onboardingCard.dataset.state = onboardState;
   onboardingCard.innerHTML = state.configuring
     ? `
-      <span class="setup-icon progress">↻</span>
-      <div class="onboarding-copy">
-        <h2>正在完成服务配置</h2>
-        <p>正在创建 Token Hub 访问凭证并接入本机服务，请稍候。</p>
-        <div class="progress-track"><i></i></div>
-        <div class="onboarding-notes">
-          <span>✓ 联想账号认证完成</span>
-          <span>✓ 正在创建访问凭证</span>
-          <span>· 正在启用多模型服务</span>
+      <div class="config-info">
+        <div class="login-text">
+          <h2>正在完成服务配置</h2>
+          <p>正在创建 TokenHub 访问凭证并接入本机服务<br>请稍后</p>
         </div>
       </div>
+      <div class="config-progress"><i></i></div>
     `
     : state.authPending
       ? `
-        <span class="setup-icon progress">↻</span>
-        <div class="onboarding-copy">
-          <h2>等待登录确认</h2>
-          <p>请在联想账号登录窗口中完成认证。登录成功后，将自动继续配置。</p>
-          <div class="onboarding-notes">
-            <span>✓ 已打开联想账号登录窗口</span>
-            <span>· 等待完成登录认证</span>
+        <div class="config-info">
+          <div class="login-text">
+            <h2>等待登录确认</h2>
+            <p>请在联想账号登录窗口中完成认证<br>登录成功后，将自动继续配置</p>
           </div>
         </div>
-        <div class="onboarding-actions">
-          <button class="setup-primary" data-login="true">重新打开登录窗口</button>
-        </div>
+        <div class="config-progress"><i></i></div>
       `
       : !state.onboardingStarted
         ? `
-          <span class="setup-icon">✦</span>
-          <div class="onboarding-copy">
-            <h2>自动完成服务配置</h2>
-            <p>只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。</p>
-            <div class="onboarding-notes">
-              <span>✓ 自动完成必要设置</span>
-              <span>✓ 自动为应用选择合适的模型</span>
-              <span>✓ 配置完成后即可使用</span>
+          <div class="config-info">
+            <div class="login-text">
+              <h2>自动完成服务配置</h2>
+              <p>只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。</p>
+              <p>&#10003; 自动完成必要设置</p>
+              <p>&#10003; 自动为应用选择合适的模型</p>
+              <p>&#10003; 配置完成后即可使用</p>
             </div>
           </div>
-          <button class="setup-primary" data-start-onboarding="true">开始配置</button>
+          <button class="setup-primary full-width" data-start-onboarding="true">开始配置</button>
         `
       : state.loggedIn
     ? `
-      <span class="setup-icon">✦</span>
-      <div class="onboarding-copy">
-        <h2>自动完成服务配置</h2>
-        <p>Token Hub 将自动创建访问凭证并完成本机接入。所有应用共用一套多模型服务，无需手动复制或修改密钥。</p>
-        <div class="onboarding-notes">
-          <span>✓ 一套凭证，全局接入</span>
-          <span>✓ 自动匹配推荐模型</span>
-          <span>✓ 初始化完成后立即可用</span>
+      <div class="config-info">
+        <div class="login-text">
+          <h2>自动完成服务配置</h2>
+          <p>Token Hub 将自动创建访问凭证并完成本机接入。所有应用共用一套多模型服务，无需手动复制或修改密钥。</p>
+          <p>&#10003; 一套凭证，全局接入</p>
+          <p>&#10003; 自动匹配推荐模型</p>
+          <p>&#10003; 初始化完成后立即可用</p>
         </div>
       </div>
-      <button class="setup-primary" data-configure-hub="true">自动配置</button>
+      <button class="setup-primary full-width" data-configure-hub="true">自动配置</button>
     `
     : `
-      <span class="setup-icon">♙</span>
-      <div class="onboarding-copy">
-        <h2>登录联想账号</h2>
-        <p>接下来将打开联想账号登录窗口。完成登录后，将自动继续配置。</p>
+      <div class="login-info">
+        <div class="login-illustration">
+          <img src="./assets/3x/onboarding-illustration@3x.png?v=20260604b" alt="" />
+        </div>
+        <div class="login-text">
+          <h2>登录联想账号</h2>
+          <p>接下来将打开账号登录窗口。完成登录后，将自动继续配置</p>
+        </div>
       </div>
-      <button class="setup-primary" data-login="true">打开登录窗口</button>
+      <button class="setup-primary full-width" data-login="true">登录</button>
     `;
 }
 
 function openWebLogin() {
   state.authPending = true;
-  authWindow.hidden = false;
-  renderAccount();
   renderOnboarding();
+  // 3s 后模拟登录完成 → 进入功能面板
+  clearTimeout(window._configTimer);
+  window._configTimer = setTimeout(() => {
+    state.authPending = false;
+    state.loggedIn = true;
+    state.configuring = false;
+    state.apiReady = true;
+    state.smartMode = false;
+    authWindow.hidden = true;
+    saveSession();
+    renderAll();
+    setActiveDemoState("smart-off");
+  }, 3000);
 }
 
 function renderRecharge() {
@@ -202,7 +219,7 @@ function renderRecharge() {
     rechargeContent.innerHTML = `
       <section class="recharge-head">
         <div class="recharge-title">
-          <i>▣</i>
+          <i>${icon("wallet")}</i>
           <div>
             <h2>确认付款</h2>
             <p>查看您的付款详情</p>
@@ -210,9 +227,9 @@ function renderRecharge() {
         </div>
       </section>
       <section class="confirm-list">
-        <div><span>充值金额</span><strong>¥${amount.toFixed(2)}</strong></div>
+        <div><span>充值金额</span><strong>&yen;${amount.toFixed(2)}</strong></div>
         <div><span>您支付</span><strong>${amount.toFixed(2)}</strong></div>
-        <div><span>付款方式</span><strong><span class="pay-icon">▢</span> 微信/支付宝</strong></div>
+        <div><span>付款方式</span><strong><span class="pay-icon">${icon("wallet")}</span> 微信/支付宝</strong></div>
       </section>
       <footer class="recharge-footer">
         <button class="primary" data-recharge-view="pay">去支付</button>
@@ -226,7 +243,7 @@ function renderRecharge() {
     rechargeContent.innerHTML = `
       <section class="recharge-head">
         <div class="recharge-title">
-          <i>▣</i>
+          <i>${icon("wallet")}</i>
           <div>
             <h2>扫码支付</h2>
             <p>请使用手机 app 完成支付</p>
@@ -234,13 +251,13 @@ function renderRecharge() {
         </div>
       </section>
       <div class="pay-tabs">
-        <button class="${detail ? "" : "active"}" data-recharge-view="pay">▦ 二维码</button>
-        <button class="${detail ? "active" : ""}" data-recharge-view="detail">◷ 详情</button>
+        <button class="${detail ? "" : "active"}" data-recharge-view="pay">${icon("apps")}二维码</button>
+        <button class="${detail ? "active" : ""}" data-recharge-view="detail">${icon("wallet")}详情</button>
       </div>
       <section class="qr-box">
         ${detail ? `
           <div class="payment-detail">
-            <div><span>金额</span><strong class="red">¥${amount.toFixed(2)}</strong></div>
+            <div><span>金额</span><strong class="red">&yen;${amount.toFixed(2)}</strong></div>
             <div><span>订单编号</span><strong>${orderId}</strong></div>
             <div><span>付款方式</span><strong>聚合码</strong></div>
             <div><span>到期时间</span><strong>2026/6/1 10:46:33</strong></div>
@@ -267,12 +284,13 @@ function renderRecharge() {
   rechargeContent.innerHTML = `
     <section class="recharge-head">
       <div class="recharge-title">
-        <i>▣</i>
+        <i>${icon("wallet")}</i>
         <div>
           <h2>充值</h2>
           <p>选择金额和支付方式</p>
         </div>
       </div>
+      <button class="recharge-history" data-web-link="account">订单历史</button>
     </section>
     <section class="recharge-section">
       <strong>金额</strong>
@@ -284,12 +302,12 @@ function renderRecharge() {
       <strong>自定义金额</strong>
       <div class="recharge-input-row">
         <input id="custom-recharge-amount" value="${amount}" inputmode="decimal" aria-label="自定义金额" />
-        <div class="recharge-total"><span>待支付金额：</span><strong>¥${amount.toFixed(2)}</strong></div>
+        <div class="recharge-total"><span>待支付金额：</span><strong>&yen;${amount.toFixed(2)}</strong></div>
       </div>
     </section>
     <section class="recharge-section">
       <strong>付款方式</strong>
-      <button class="payment-method"><span class="pay-icon">▢</span> 微信/支付宝</button>
+      <button class="payment-method"><span class="pay-icon">${icon("wallet")}</span> 微信/支付宝</button>
     </section>
     <footer class="recharge-footer">
       <button class="primary" data-recharge-view="confirm">确认付款</button>
@@ -313,7 +331,8 @@ function startConfiguration() {
   state.onboardingStarted = true;
   saveSession();
   renderOnboarding();
-  setTimeout(() => {
+  clearTimeout(window._configTimer);
+  window._configTimer = setTimeout(() => {
     state.configuring = false;
     state.apiReady = true;
     state.smartMode = false;
@@ -324,7 +343,7 @@ function startConfiguration() {
     syncSmartToggle();
     syncAppMenuState();
     setActiveDemoState("smart-off");
-  }, 1200);
+  }, 3000);
 }
 
 function renderAccount() {
@@ -335,23 +354,22 @@ function renderAccount() {
   accountBar.innerHTML = state.loggedIn
     ? `
       <div class="account-row">
-        <span class="account-avatar">1</span>
-        <span class="account-copy"><strong>15*******88${balanceTag}</strong><small>可用额度 ¥${state.balance.toFixed(2)}</small></span>
-        <button class="account-action account-recharge" data-recharge="true">充值</button>
+        <img class="account-avatar" src="./assets/3x/avatar@3x.png" alt="" />
+        <span class="account-copy"><strong>159*****788${balanceTag}</strong><small>可用额度 &yen;${state.balance.toFixed(2)}</small></span>
         <div class="account-more-wrap">
-          <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false">⋮</button>
+          <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false"><img src="./assets/3x/icon-more@3x.svg" alt="" /></button>
           <div class="account-menu" hidden>
             <button data-web-link="account">我的账户</button>
-            <button data-web-link="orders">订单历史</button>
             <button class="danger" data-logout="true">登出</button>
           </div>
         </div>
+        <button class="account-action account-recharge" data-recharge="true">充值</button>
       </div>
     `
     : state.authPending
       ? `
         <div class="account-row">
-          <span class="account-avatar">1</span>
+          <img class="account-avatar" src="./assets/3x/avatar@3x.png" alt="" />
           <span class="account-copy"><strong>等待登录窗口确认</strong><small>完成联想账号认证后继续</small></span>
           <button class="account-action secondary" data-login="true">重试</button>
           <button class="account-action" data-complete-login="true">完成认证</button>
@@ -419,35 +437,31 @@ function openTool(toolId) {
   document.querySelector("#detail-tool-name").textContent = tool.name;
   const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
-  const hasExternalConfig = Boolean(tool.externalModel);
-  const externalLocked = state.smartMode && !external;
-  const externalRadio = !external && !externalLocked
-    ? `<button class="radio radio-action" data-use-external-config="${toolId}" aria-label="切换到外部配置"><i></i></button>`
-    : `<span class="radio"><i></i></span>`;
-  const externalItem = hasExternalConfig
+  const externalItem = external
     ? `
-      <div class="model-row external-current${external ? " selected" : ""}${externalLocked ? " external-muted" : ""}">
-        ${externalRadio}
-        <span class="model-copy">
-          <strong class="model-title-line">${tool.externalModel} <i><span>⚠</span>外部配置</i></strong>
-          <small>不由 Token Hub 管理</small>
+      <button class="model-row-v2 selected">
+        <span class="radio-v2 selected"><i></i></span>
+        <span class="model-content-v2">
+          <strong>${tool.externalModel}</strong>
+          <small>外部配置 · 不由 Token Hub 管理</small>
+          <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
         </span>
-        ${externalLocked ? `<span class="external-info" tabindex="0" aria-label="智能匹配开启中，关闭后可切回外部配置。" data-tip="智能匹配开启中，关闭后可切回外部配置。">i</span>` : `<button class="inline-action" ${external ? `data-adopt-token-hub="${toolId}"` : `data-use-external-config="${toolId}"`}>${external ? "切换到 Token Hub" : "切换到外部配置"}</button>`}
-      </div>
+        <em class="model-badge">当前模型</em>
+      </button>
     `
     : "";
   modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {
     const model = models[modelId];
     const active = !external && !unconfigured && state.selections[toolId] === modelId;
     return `
-      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !external && !unconfigured ? "disabled" : ""}>
-        <span class="radio"><i></i></span>
-        <span class="model-copy">
+      <button class="model-row-v2${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !external && !unconfigured ? "disabled" : ""}>
+        <span class="radio-v2${active ? " selected" : ""}"><i></i></span>
+        <span class="model-content-v2">
           <strong>${model.name}</strong>
-          <span class="model-tags">${model.tags.map((tag) => `<i>${tag}</i>`).join("")}</span>
-          <span class="model-prices"><b>输入 ${model.prices[0]}</b><b>输出 ${model.prices[1]}</b><b>缓存读取 ${model.prices[2]}</b><i>/1M</i></span>
+          <small>输入${model.prices[0]}  输出${model.prices[1]}  缓存读取${model.prices[2]}/1M</small>
+          <span class="model-tags-v2">${model.tags.map((tag) => `<i>${tag}</i>`).join("")}</span>
         </span>
-        ${active ? `<em>使用中</em>` : ""}
+        ${active ? `<em class="model-badge">当前模型</em>` : ""}
       </button>
     `;
   }).join("")}`;
@@ -471,10 +485,10 @@ function renderNotification() {
     ? `
       <header>
         <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
           <span>联想 Token Hub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
+        <button data-dismiss-notification="true" aria-label="关闭通知">&#10005;</button>
       </header>
       <div class="notification-content">
         <span class="tool-mark">OC</span>
@@ -491,10 +505,10 @@ function renderNotification() {
     ? `
       <header>
         <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
           <span>联想 Token Hub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
+        <button data-dismiss-notification="true" aria-label="关闭通知">&#10005;</button>
       </header>
       <div class="notification-content">
         <span class="tool-mark">QC</span>
@@ -511,10 +525,10 @@ function renderNotification() {
     : `
       <header>
         <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
           <span>联想 Token Hub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
+        <button data-dismiss-notification="true" aria-label="关闭通知">&#10005;</button>
       </header>
       <div class="notification-content">
         <span class="tool-mark">QC</span>
@@ -550,6 +564,15 @@ function renderAll() {
   syncSmartToggle();
 }
 
+function showRefreshToast(message) {
+  const el = document.querySelector("#refresh-toast");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(showRefreshToast.timer);
+  showRefreshToast.timer = setTimeout(() => el.classList.remove("show"), 1800);
+}
+
 function setActiveDemoState(mode) {
   demoButtons.forEach((button) => {
     const active = button.dataset.demoState === mode;
@@ -562,13 +585,6 @@ function setDemoMenu(open) {
   demoMenu.hidden = !open;
   demoMenuButton.classList.toggle("active", open);
   demoMenuButton.setAttribute("aria-expanded", String(open));
-}
-
-function showRefreshToast(message) {
-  refreshToast.textContent = message;
-  refreshToast.classList.add("show");
-  clearTimeout(showRefreshToast.timer);
-  showRefreshToast.timer = setTimeout(() => refreshToast.classList.remove("show"), 1500);
 }
 
 function setAllManagement(status) {
@@ -590,6 +606,7 @@ function resetDemoBaseline() {
   state.discoveryNotice = null;
   authWindow.hidden = true;
   rechargeWindow.hidden = true;
+  if (smartConfirm) smartConfirm.hidden = true;
   notification.classList.remove("show");
   setAllManagement("token-hub");
   tools.forEach((tool) => {
@@ -619,17 +636,19 @@ function enableSmartMatchAndAdoptAll() {
     tool.isNew = false;
   });
   state.smartMode = true;
+  if (smartConfirm) smartConfirm.hidden = true;
   syncSmartToggle();
   renderTools();
   if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
 }
 
 function setDemoState(mode) {
+  clearTimeout(window._configTimer);
   resetDemoBaseline();
 
   if (mode === "login-required") {
     state.loggedIn = false;
-    state.onboardingStarted = false;
+    state.onboardingStarted = true;
     state.apiReady = false;
     state.smartMode = false;
     localStorage.removeItem("tokenHubTraySession");
@@ -652,6 +671,15 @@ function setDemoState(mode) {
     openPanel();
     renderAll();
     setActiveDemoState(mode);
+    // 3s 后自动进入功能面板
+    clearTimeout(window._configTimer);
+    window._configTimer = setTimeout(() => {
+      state.configuring = false;
+      state.apiReady = true;
+      saveSession();
+      renderAll();
+      setActiveDemoState("smart-off");
+    }, 3000);
     return;
   }
 
@@ -717,7 +745,8 @@ function setAppMenu(open) {
   appMenu.hidden = !nextOpen;
   appMenuButton.classList.toggle("active", nextOpen);
   appMenuButton.classList.toggle("locked", !canOpen);
-  appMenuButton.querySelector(".menu-chevron").textContent = canOpen ? "▾" : "";
+  const menuChevron = appMenuButton.querySelector(".menu-chevron");
+  if (menuChevron) menuChevron.textContent = canOpen ? "&#9662;" : "";
   appMenuButton.setAttribute("aria-expanded", String(nextOpen));
 }
 
@@ -792,8 +821,23 @@ document.addEventListener("click", (event) => {
         state.discoveryNotice = "manual";
         renderNotification();
       }
-      return;
+    } else {
+      enableSmartMatchAndAdoptAll();
+      if (state.discoveryNotice) {
+        state.discoveryNotice = "auto";
+        renderNotification();
+      }
     }
+    return;
+  }
+
+  if (target.dataset.cancelSmartConfirm) {
+    if (smartConfirm) smartConfirm.hidden = true;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.confirmSmartMatch) {
     enableSmartMatchAndAdoptAll();
     if (state.discoveryNotice) {
       state.discoveryNotice = "auto";
@@ -843,11 +887,7 @@ document.addEventListener("click", (event) => {
   if (target.dataset.startOnboarding) {
     state.onboardingStarted = true;
     saveSession();
-    if (state.loggedIn) {
-      renderOnboarding();
-    } else {
-      openWebLogin();
-    }
+    renderOnboarding();
   }
 
   if (target.dataset.refreshApps) {
@@ -927,7 +967,7 @@ document.addEventListener("input", (event) => {
   const value = Math.max(1, Number(event.target.value || 1));
   state.rechargeAmount = value;
   const total = rechargeContent.querySelector(".recharge-total strong");
-  if (total) total.textContent = `¥${value.toFixed(2)}`;
+  if (total) total.textContent = `&yen;${value.toFixed(2)}`;
 });
 
 trayButton.addEventListener("contextmenu", (event) => {

@@ -936,23 +936,10 @@ h1 { font-size: 16px; font-weight: 600; }
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.3) transparent;
+  scrollbar-width: none;
+  scrollbar-gutter: stable;
 }
-/* Figma scrollbar: 2px thumb, 4px from right edge */
-.ready-content::-webkit-scrollbar { width: 6px; background: transparent; }
-.ready-content::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
-.ready-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 99px;
-  min-height: 40px;
-}
-.ready-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
-}
-.ready-content::-webkit-scrollbar-thumb:active {
-  background: rgba(0, 0, 0, 0.6);
-}
+.ready-content::-webkit-scrollbar { width: 0; background: transparent; }
 .smart-mode {
   flex: 0 0 56px;
   min-height: 56px;

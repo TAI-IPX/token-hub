@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>联想 Token Hub · Windows 设计交付 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=figma-home-20260604" />
+    <link rel="stylesheet" href="./styles.css?v=figma-delivery-20260605b" />
   </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true">
@@ -138,12 +138,12 @@
       </div>
 
       <div class="panel-page" data-panel-page="settings">
-        <header class="detail-header">
-          <button class="back-button" data-back-home="true" aria-label="返回"><svg class="ui-icon"><use href="#icon-arrow-left" /></svg></button>
-          <div>
+        <header class="detail-header-v2 settings-header">
+          <div class="detail-header-left">
+            <button class="detail-back" data-back-home="true" aria-label="返回"><svg class="ui-icon"><use href="#icon-arrow-left" /></svg></button>
             <h1>设置</h1>
           </div>
-          <button class="icon-button" data-close-panel="true" aria-label="关闭"><svg class="ui-icon"><use href="#icon-close" /></svg></button>
+          <button class="detail-close" data-close-panel="true" aria-label="关闭"><img src="./assets/3x/panel-close@3x.png" alt="" /></button>
         </header>
         <div class="detail-accent"></div>
         <section class="settings-list">
@@ -161,14 +161,14 @@
     <section class="auth-window" id="auth-window" hidden aria-label="联想账号登录">
       <header class="auth-titlebar">
         <div>
-          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
           <strong>联想账号登录</strong>
         </div>
         <button class="window-close" data-close-auth="true" aria-label="关闭"><svg class="ui-icon"><use href="#icon-close" /></svg></button>
       </header>
       <main class="auth-webview">
         <div class="auth-brand">
-          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
           <strong>联想账号</strong>
         </div>
         <section class="auth-card">
@@ -190,7 +190,7 @@
     <section class="auth-window recharge-window" id="recharge-window" hidden aria-label="充值">
       <header class="auth-titlebar">
         <div>
-          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
           <strong>充值</strong>
         </div>
         <button class="window-close" data-close-recharge="true" aria-label="关闭"><svg class="ui-icon"><use href="#icon-close" /></svg></button>
@@ -200,7 +200,7 @@
 
     <footer class="taskbar" aria-label="Windows 任务栏">
       <button class="tray-app-button active" id="tray-app-button" aria-label="联想 Token Hub 托盘菜单">
-        <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+        <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
       </button>
     </footer>
 
@@ -208,6 +208,6 @@
       <button data-exit-app="true" role="menuitem">退出应用</button>
     </div>
 
-    <script src="./app.js?v=figma-home-20260604"></script>
+    <script src="./app.js?v=figma-delivery-20260605"></script>
   </body>
 </html>

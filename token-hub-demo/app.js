@@ -92,6 +92,8 @@ const appMenuButton = document.querySelector("[data-app-menu]");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
 const smartConfirm = document.querySelector("#smart-confirm");
+const homePage = document.querySelector('[data-panel-page="home"]');
+const tokenHubIcon = "./assets/3x/desktop-token-hub-icon@3x.png";
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -120,6 +122,7 @@ function renderTools() {
       </button>
     `;
   }).join("");
+  updateReadyScrollbar();
 }
 
 function renderOnboarding() {
@@ -391,6 +394,8 @@ function openPanel() {
   panel.classList.add("open");
   trayButton.classList.add("active");
   state.panelOpen = true;
+  state.discoveryNotice = null;
+  notification.classList.remove("show");
   trayContextMenu.hidden = true;
 }
 
@@ -439,31 +444,48 @@ function openTool(toolId) {
   const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
   const hasExternalConfig = Boolean(tool.externalModel);
+  const externalCurrentBadge = state.smartMode ? "不参与智能匹配" : "当前模型";
+  const tokenHubCurrentBadge = state.smartMode ? "智能匹配" : "当前模型";
   const externalItem = hasExternalConfig
-    ? `
-      <div class="model-row-v2${external ? " selected" : ""}">
-        <span class="radio-v2${external ? " selected" : ""}"><i></i></span>
-        <span class="model-content-v2">
-          <strong>${tool.externalModel}</strong>
-          <small>外部配置 · 不由 Token Hub 管理</small>
-          <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
-        </span>
-        ${external ? `<em class="model-badge">当前模型</em>` : `<button class="model-switch-btn" data-use-external-config="${toolId}">切换到外部</button>`}
-      </div>
-    `
+    ? external
+      ? `
+        <div class="model-row-v2 external-row-v2 selected">
+          <span class="radio-v2 selected"><i></i></span>
+          <span class="model-content-v2">
+            <strong>${tool.externalModel}</strong>
+            <small>${state.smartMode ? "外部配置 · 已从智能匹配中排除" : "外部配置 · 不由 Token Hub 管理"}</small>
+            <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
+          </span>
+          ${state.smartMode
+            ? `<button class="model-switch-btn primary" data-adopt-smart-match="${toolId}">接入智能匹配</button>`
+            : `<em class="model-badge muted">${externalCurrentBadge}</em>`}
+        </div>
+      `
+      : `
+        <button class="model-row-v2 external-row-v2" data-use-external-config="${toolId}">
+          <span class="radio-v2"><i></i></span>
+          <span class="model-content-v2">
+            <strong>${tool.externalModel}</strong>
+            <small>${state.smartMode ? "外部配置 · 已从智能匹配中排除" : "外部配置 · 不由 Token Hub 管理"}</small>
+            <span class="model-tags-v2"><i class="tag-danger">外部模型</i></span>
+          </span>
+          <em class="model-badge action">切换到外部</em>
+        </button>
+      `
     : "";
   modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {
     const model = models[modelId];
     const active = !external && !unconfigured && state.selections[toolId] === modelId;
+    const lockedBySmart = state.smartMode;
     return `
-      <button class="model-row-v2${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !external && !unconfigured ? "disabled" : ""}>
+      <button class="model-row-v2${active ? " selected" : ""}${lockedBySmart ? " locked-by-smart" : ""}" data-select-model="${modelId}" ${lockedBySmart ? "disabled" : ""}>
         <span class="radio-v2${active ? " selected" : ""}"><i></i></span>
         <span class="model-content-v2">
           <strong>${model.name}</strong>
           <small>输入${model.prices[0]}  输出${model.prices[1]}  缓存读取${model.prices[2]}/1M</small>
           <span class="model-tags-v2">${model.tags.map((tag) => `<i>${tag}</i>`).join("")}</span>
         </span>
-        ${active ? `<em class="model-badge">当前模型</em>` : ""}
+        ${active ? `<em class="model-badge">${tokenHubCurrentBadge}</em>` : ""}
       </button>
     `;
   }).join("")}`;
@@ -482,18 +504,20 @@ function renderNotification() {
   const matchedModel = models[state.selections.qclaw];
   const isAuto = state.discoveryNotice === "auto";
   const externalOpenClaw = state.discoveryNotice === "external";
+  const qclaw = tools.find((tool) => tool.id === "qclaw");
+  const openClaw = tools.find((tool) => tool.id === "openclaw");
   notification.classList.toggle("clickable", isAuto);
   notification.innerHTML = externalOpenClaw
     ? `
       <header>
         <div class="notification-brand">
-          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+          <img src="${tokenHubIcon}" alt="" />
           <span>联想 Token Hub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">&#10005;</button>
+        <button data-dismiss-notification="true" aria-label="关闭通知">&times;</button>
       </header>
       <div class="notification-content">
-        <span class="tool-mark">OC</span>
+        <img class="notification-tool-icon" src="${openClaw.icon}" alt="" />
         <div>
           <strong>OpenClaw 正在使用外部模型</strong>
           <p>Token Hub 不会自动修改现有配置。切换后可使用智能模型匹配。</p>
@@ -507,13 +531,13 @@ function renderNotification() {
     ? `
       <header>
         <div class="notification-brand">
-          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+          <img src="${tokenHubIcon}" alt="" />
           <span>联想 Token Hub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">&#10005;</button>
+        <button data-dismiss-notification="true" aria-label="关闭通知">&times;</button>
       </header>
       <div class="notification-content">
-        <span class="tool-mark">QC</span>
+        <img class="notification-tool-icon" src="${qclaw.icon}" alt="" />
         <div>
           <strong>QClaw 已完成模型匹配</strong>
           <p>已根据应用特性自动选择 ${matchedModel.name}，现在可以直接使用。</p>
@@ -527,13 +551,13 @@ function renderNotification() {
     : `
       <header>
         <div class="notification-brand">
-          <img src="./assets/3x/token-hub-icon@3x.png" alt="" />
+          <img src="${tokenHubIcon}" alt="" />
           <span>联想 Token Hub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">&#10005;</button>
+        <button data-dismiss-notification="true" aria-label="关闭通知">&times;</button>
       </header>
       <div class="notification-content">
-        <span class="tool-mark">QC</span>
+        <img class="notification-tool-icon" src="${qclaw.icon}" alt="" />
         <div>
           <strong>发现新应用 QClaw</strong>
           <p>为 QClaw 选择一个模型后即可使用。</p>
@@ -564,6 +588,7 @@ function renderAll() {
   renderOnboarding();
   syncAppMenuState();
   syncSmartToggle();
+  updateReadyScrollbar();
 }
 
 function showRefreshToast(message) {
@@ -627,14 +652,31 @@ function syncSmartToggle() {
   document.querySelector("[data-smart-toggle]")?.classList.toggle("active", state.smartMode);
 }
 
+function updateReadyScrollbar() {
+  if (!readyContent || !homePage) return;
+  requestAnimationFrame(() => {
+    const maxScroll = readyContent.scrollHeight - readyContent.clientHeight;
+    const scrollable = !readyContent.hidden && maxScroll > 1;
+    homePage.classList.toggle("home-scrollable", scrollable);
+    if (!scrollable) return;
+    const trackHeight = Math.max(40, readyContent.clientHeight - 16);
+    const thumbHeight = Math.max(40, Math.round((readyContent.clientHeight / readyContent.scrollHeight) * trackHeight));
+    const thumbTop = 8 + Math.round((readyContent.scrollTop / maxScroll) * Math.max(0, trackHeight - thumbHeight));
+    homePage.style.setProperty("--ready-scroll-thumb-height", `${thumbHeight}px`);
+    homePage.style.setProperty("--ready-scroll-thumb-top", `${thumbTop}px`);
+  });
+}
+
 function isPageActive(page) {
   return document.querySelector(`[data-panel-page="${page}"]`)?.classList.contains("active");
 }
 
-function enableSmartMatchAndAdoptAll() {
+function enableSmartMatch() {
   tools.forEach((tool) => {
-    state.management[tool.id] = "token-hub";
-    state.selections[tool.id] = tool.models[0];
+    if (state.management[tool.id] !== "external") {
+      state.management[tool.id] = "token-hub";
+      state.selections[tool.id] = tool.models[0];
+    }
     tool.isNew = false;
   });
   state.smartMode = true;
@@ -824,7 +866,7 @@ document.addEventListener("click", (event) => {
         renderNotification();
       }
     } else {
-      enableSmartMatchAndAdoptAll();
+      enableSmartMatch();
       if (state.discoveryNotice) {
         state.discoveryNotice = "auto";
         renderNotification();
@@ -840,7 +882,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.confirmSmartMatch) {
-    enableSmartMatchAndAdoptAll();
+    enableSmartMatch();
     if (state.discoveryNotice) {
       state.discoveryNotice = "auto";
       renderNotification();
@@ -878,6 +920,17 @@ document.addEventListener("click", (event) => {
   if (target.dataset.useExternalConfig) {
     const toolId = target.dataset.useExternalConfig;
     state.management[toolId] = "external";
+    renderTools();
+    openTool(toolId);
+  }
+
+  if (target.dataset.adoptSmartMatch) {
+    const toolId = target.dataset.adoptSmartMatch;
+    const tool = tools.find((item) => item.id === toolId);
+    state.management[toolId] = "token-hub";
+    state.selections[toolId] = tool.models[0];
+    state.smartMode = true;
+    syncSmartToggle();
     renderTools();
     openTool(toolId);
   }
@@ -971,6 +1024,9 @@ document.addEventListener("input", (event) => {
   const total = rechargeContent.querySelector(".recharge-total strong");
   if (total) total.textContent = `&yen;${value.toFixed(2)}`;
 });
+
+readyContent?.addEventListener("scroll", updateReadyScrollbar);
+window.addEventListener("resize", updateReadyScrollbar);
 
 trayButton.addEventListener("contextmenu", (event) => {
   event.preventDefault();

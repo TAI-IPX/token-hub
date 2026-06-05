@@ -894,7 +894,7 @@ h1 { font-size: 16px; font-weight: 600; }
   padding: 0;
   border: 0;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.7);
+  background: transparent;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -902,18 +902,24 @@ h1 { font-size: 16px; font-weight: 600; }
   transition: background 0.1s;
 }
 .titlebar-dropdown:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.titlebar-dropdown[aria-expanded="true"] {
   background: rgba(255, 255, 255, 1);
-  opacity: 1;
 }
 .titlebar-dropdown .ui-icon {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   color: rgba(0, 0, 0, 0.61);
   transform: rotate(0deg);
   transition: transform 0.15s ease;
 }
 .titlebar-dropdown[aria-expanded="true"] .ui-icon {
   transform: rotate(180deg);
+}
+/* 登录前/登录中隐藏下拉按钮 */
+.tray-panel:has(.onboarding-card:not([data-state=""])) .titlebar-dropdown {
+  display: none;
 }
 .titlebar-right {
   width: 193.5px;

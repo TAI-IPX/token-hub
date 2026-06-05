@@ -457,7 +457,6 @@ function renderAccount() {
           <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false">⋮</button>
           <div class="account-menu" hidden>
             <button data-web-link="account">我的账户</button>
-            <button data-web-link="orders">订单历史</button>
             <button class="danger" data-logout="true">登出</button>
           </div>
         </div>

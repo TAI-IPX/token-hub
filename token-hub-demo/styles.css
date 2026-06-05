@@ -392,7 +392,7 @@ h1 { font-size: 16px; font-weight: 600; }
 .section-block { padding: 0 16px; }
 .section-heading { justify-content: space-between; padding: 0; height: 48px; display: flex; align-items: center; }
 .section-heading h2 { font-size: 14px; font-weight: 700; color: rgba(0,0,0,.88); }
-.refresh.spinning { animation: spin .65s linear; }
+.refresh.spinning, .app-list-refresh.spinning img { animation: spin .65s linear; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .tool-list { overflow: auto; max-height: 276px; }
 .tool-row, .model-row {

@@ -388,9 +388,9 @@ function renderAccount() {
 
 function openPanel() {
   state.appExited = false;
-  trayButton.hidden = false;
+  if (trayButton) trayButton.hidden = false;
   panel.classList.add("open");
-  trayButton.classList.add("active");
+  if (trayButton) trayButton.classList.add("active");
   state.panelOpen = true;
   state.discoveryNotice = null;
   notification.classList.remove("show");
@@ -399,7 +399,7 @@ function openPanel() {
 
 function closePanel() {
   panel.classList.remove("open");
-  trayButton.classList.remove("active");
+  if (trayButton) trayButton.classList.remove("active");
   state.panelOpen = false;
 }
 
@@ -407,13 +407,13 @@ function exitApp() {
   closePanel();
   notification.classList.remove("show");
   trayContextMenu.hidden = true;
-  trayButton.hidden = true;
+  if (trayButton) trayButton.hidden = true;
   state.appExited = true;
 }
 
 function launchApp() {
   state.appExited = false;
-  trayButton.hidden = false;
+  if (trayButton) trayButton.hidden = false;
   openPanel();
   showPage("home");
 }

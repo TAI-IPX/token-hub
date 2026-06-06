@@ -477,14 +477,14 @@ function renderNotification() {
     ? `
       <header>
         <div class="notification-brand">
-          <img src="${tokenHubIcon}" alt="" />
-          <span>联想 Token Hub</span>
+          <img src="${tokenHubIcon}" alt="" width="16" height="16" />
+          <span>联想TokenHub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">&times;</button>
+        <button data-dismiss-notification="true" aria-label="关闭">&times;</button>
       </header>
       <div class="notification-content">
         <img class="notification-tool-icon" src="${qclaw.icon}" alt="" />
-        <div>
+        <div class="notification-body">
           <strong>QClaw 已完成模型匹配</strong>
           <p>已根据应用特性自动选择 ${matchedModel.name}，现在可以直接使用。</p>
           <div class="notification-result">
@@ -497,20 +497,20 @@ function renderNotification() {
     : `
       <header>
         <div class="notification-brand">
-          <img src="${tokenHubIcon}" alt="" />
-          <span>联想 Token Hub</span>
+          <img src="${tokenHubIcon}" alt="" width="16" height="16" />
+          <span>联想TokenHub</span>
         </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">&times;</button>
+        <button data-dismiss-notification="true" aria-label="关闭">&times;</button>
       </header>
       <div class="notification-content">
         <img class="notification-tool-icon" src="${qclaw.icon}" alt="" />
-        <div>
+        <div class="notification-body">
           <strong>发现新应用 QClaw</strong>
-          <p>为 QClaw 选择一个模型后即可使用。</p>
+          <p>为 QClaw 选择模型即可马上使用</p>
         </div>
       </div>
       <div class="notification-actions">
-        <button class="primary" data-open-tool="qclaw">去选择模型</button>
+        <button class="primary" data-open-tool="qclaw">查看配置</button>
       </div>
     `;
 }

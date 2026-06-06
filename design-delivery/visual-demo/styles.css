@@ -1365,7 +1365,7 @@ h1 { font-size: 16px; font-weight: 600; }
 }
 
 .desktop-notification {
-  width: 440px;
+  width: 364px;
   right: 24px;
   bottom: calc((100vw * 60 / 1920) + 16px);
   padding: 0;
@@ -1403,7 +1403,7 @@ h1 { font-size: 16px; font-weight: 600; }
 }
 .desktop-notification header button:hover { background: rgba(0, 0, 0, 0.06); }
 .notification-content {
-  align-items: center;
+  align-items: flex-start;
   gap: 1px;
   padding: 16px 16px 0;
 }

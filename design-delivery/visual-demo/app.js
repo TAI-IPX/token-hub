@@ -16,6 +16,8 @@ const state = {
   authPending: false,
   configuring: false,
   discoveryNotice: null,
+  newVersionAvailable: false,
+  noApps: false,
   balance: 128.5,
   balanceStatus: "normal",
   rechargeAmount: 50,
@@ -79,7 +81,7 @@ const modelList = document.querySelector("#model-list");
 const accountBar = document.querySelector("#account-bar");
 const onboardingCard = document.querySelector("#onboarding-card");
 const readyContent = document.querySelector("#ready-content");
-const settingsButton = document.querySelector("[data-settings]");
+const settingsButton = document.getElementById("titlebar-settings-btn");
 const notification = document.querySelector("#tool-notification");
 const demoButtons = document.querySelectorAll("[data-demo-state]");
 const demoMenuButton = document.querySelector("[data-demo-menu]");
@@ -104,6 +106,16 @@ function saveSession() {
 }
 
 function renderTools() {
+  if (state.noApps) {
+    toolList.innerHTML = `
+      <div class="tool-list-empty">
+        <p class="tool-list-empty-title">未检测到可配置的应用</p>
+        <p class="tool-list-empty-desc">安装受支持的 AI 应用后点击右上方刷新</p>
+      </div>
+    `;
+    updateReadyScrollbar();
+    return;
+  }
   toolList.innerHTML = tools.map((tool) => {
     const model = models[state.selections[tool.id]];
     const unconfigured = state.management[tool.id] === "unconfigured";
@@ -127,7 +139,7 @@ function renderOnboarding() {
   onboardingCard.hidden = state.apiReady;
   readyContent.hidden = !state.apiReady;
   accountBar.hidden = !state.apiReady;
-  if (settingsButton) settingsButton.hidden = !state.apiReady;
+  if (settingsButton) settingsButton.style.display = state.apiReady ? "" : "none";
   if (state.apiReady) { onboardingCard.dataset.state = ''; return; }
   // Set data-state for CSS styling
   const onboardState = state.configuring ? 'configuring'
@@ -534,7 +546,20 @@ function renderAll() {
   renderOnboarding();
   syncAppMenuState();
   syncSmartToggle();
+  syncUpdateBanner();
   updateReadyScrollbar();
+}
+
+function syncUpdateBanner() {
+  const titlebarBtn = document.getElementById("titlebar-update-btn"); // wrapper div
+  const versionInline = document.getElementById("version-new-inline");
+  const checkBtn = document.getElementById("version-check-btn");
+  const updateBtn = document.getElementById("version-update-btn");
+  const v = state.newVersionAvailable && state.apiReady;
+  if (titlebarBtn) titlebarBtn.style.display = v ? "flex" : "none";
+  if (versionInline) versionInline.hidden = !v;
+  if (checkBtn) checkBtn.style.display = v ? "none" : "";
+  if (updateBtn) updateBtn.style.display = v ? "" : "none";
 }
 
 function showRefreshToast(message) {
@@ -577,6 +602,8 @@ function resetDemoBaseline() {
   state.balanceStatus = "normal";
   state.activeTool = null;
   state.discoveryNotice = null;
+  state.newVersionAvailable = false;
+  state.noApps = false;
   authWindow.hidden = true;
   rechargeWindow.hidden = true;
   if (smartConfirm) smartConfirm.hidden = true;
@@ -691,6 +718,26 @@ function setDemoState(mode) {
     state.smartMode = false;
   }
 
+  if (mode === "new-version") {
+    state.newVersionAvailable = true;
+    saveSession();
+    showPage("home");
+    openPanel();
+    renderAll();
+    setActiveDemoState(mode);
+    return;
+  }
+
+  if (mode === "no-app") {
+    state.noApps = true;
+    saveSession();
+    showPage("home");
+    openPanel();
+    renderAll();
+    setActiveDemoState(mode);
+    return;
+  }
+
   saveSession();
   showPage("home");
   renderAll();
@@ -787,6 +834,7 @@ document.addEventListener("click", (event) => {
   if (target.dataset.smartToggle) {
     if (state.smartMode) {
       state.smartMode = false;
+      if (smartConfirm) smartConfirm.hidden = true;
       syncSmartToggle();
       renderTools();
       if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
@@ -795,11 +843,7 @@ document.addEventListener("click", (event) => {
         renderNotification();
       }
     } else {
-      enableSmartMatch();
-      if (state.discoveryNotice) {
-        state.discoveryNotice = "auto";
-        renderNotification();
-      }
+      if (smartConfirm) smartConfirm.hidden = false;
     }
     return;
   }
@@ -858,8 +902,30 @@ document.addEventListener("click", (event) => {
     target.classList.add("spinning");
     setTimeout(() => {
       target.classList.remove("spinning");
-      showRefreshToast("应用列表已刷新");
+      if (state.noApps) {
+        state.noApps = false;
+        renderTools();
+        showRefreshToast("检测到 5 个可配置应用");
+      } else {
+        showRefreshToast("应用列表已刷新");
+      }
     }, 650);
+  }
+
+  if (target.dataset.checkUpdate) {
+    target.disabled = true;
+    target.innerHTML = '<span class="btn-spinner"></span>';
+    setTimeout(() => {
+      target.disabled = false;
+      target.textContent = '检查更新';
+      showRefreshToast("当前已是最新版本");
+    }, 1500);
+  }
+
+  if (target.dataset.dismissUpdate) {
+    state.newVersionAvailable = false;
+    syncUpdateBanner();
+    showRefreshToast("正在后台更新，完成后自动重启");
   }
 
   if (target.dataset.demoState) {
@@ -937,7 +1003,7 @@ document.addEventListener("input", (event) => {
 readyContent?.addEventListener("scroll", updateReadyScrollbar);
 window.addEventListener("resize", updateReadyScrollbar);
 
-trayButton.addEventListener("contextmenu", (event) => {
+trayButton?.addEventListener("contextmenu", (event) => {
   event.preventDefault();
   if (state.appExited) return;
   setAppMenu(false);
@@ -953,4 +1019,5 @@ desktopAppIcon.addEventListener("dblclick", () => {
 });
 
 renderAll();
+showPage("home");
 setActiveDemoState(state.apiReady ? "smart-off" : "login-required");

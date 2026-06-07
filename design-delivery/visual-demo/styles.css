@@ -442,32 +442,16 @@ h1 { font-size: 16px; font-weight: 600; }
 }
 .account-more:hover, .account-more.active { color: #2f343c; background: transparent; }
 .account-menu {
-  width: 126px;
   position: absolute;
   right: 0;
   bottom: 34px;
   z-index: 70;
-  overflow: hidden;
-  padding: 5px;
-  border: 1px solid var(--stroke-card);
-  border-radius: var(--radius-card);
-  background: rgba(252, 252, 254, .97);
-  box-shadow: var(--shadow-flyout);
-  backdrop-filter: blur(22px);
 }
 .account-menu[hidden] { display: none; }
 .account-menu button {
   width: 100%;
-  height: 34px;
-  padding: 0 9px;
-  border-radius: var(--radius-control);
-  color: #20242a;
   background: transparent;
-  font-size: 12px;
-  text-align: left;
 }
-.account-menu button:hover { background: var(--surface-control-hover); }
-.account-menu .danger { color: #d92c2c; }
 .detail-header { justify-content: flex-start; gap: 9px; }
 .detail-header .icon-button { margin-left: auto; }
 .detail-accent { width: 112px; height: 3px; background: var(--accent); }
@@ -765,29 +749,31 @@ h1 { font-size: 16px; font-weight: 600; }
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
-  padding: 9px 10px;
-  border: 1px solid rgba(170, 177, 188, .42);
+  padding: 11px 12px 11px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-  background: rgba(255, 255, 255, .94);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, .16);
-  backdrop-filter: blur(18px);
+  background: rgba(249, 251, 255, 0.97);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(20px);
 }
 .smart-inline-confirm[hidden] { display: none; }
-.smart-inline-confirm p { margin: 0; color: #555d67; line-height: 1.45; }
-.smart-inline-confirm div { display: flex; align-items: center; gap: 6px; }
+.smart-inline-confirm p { margin: 0; color: rgba(0, 0, 0, 0.8); font-size: 13px; line-height: 1.45; }
+.smart-inline-confirm div { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .smart-inline-confirm button {
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  color: #303640;
-  background: rgba(239, 242, 247, .9);
-  font-size: 12px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  white-space: nowrap;
 }
-.smart-inline-confirm button:hover { background: rgba(226, 230, 237, .96); }
-.smart-inline-confirm .primary { color: white; background: #050505; }
-.smart-inline-confirm .primary:hover { background: #1b1f26; }
+.smart-inline-confirm button:hover { background: rgba(0, 0, 0, 0.06); }
+.smart-inline-confirm .primary { color: #fff; background: #005fb8; border-color: rgba(255, 255, 255, 0.08); }
+.smart-inline-confirm .primary:hover { background: #0067c0; }
 
 /* Account balance status badges */
 .account-status {
@@ -914,21 +900,145 @@ h1 { font-size: 16px; font-weight: 600; }
   display: none;
 }
 .titlebar-right {
-  width: 193.5px;
   height: 48px;
   justify-content: flex-end;
-  gap: 16px;
-  padding-right: 16px;
+  align-items: center;
+  gap: 4px;
+  padding-right: 8px;
 }
 .titlebar-btn {
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
   border-radius: 4px;
 }
 .titlebar-btn:hover {
   opacity: 1;
   background: rgba(0, 0, 0, 0.05);
 }
+/* 标题栏「新版本」区域 */
+.titlebar-update-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.titlebar-new-version {
+  height: 22px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 4px;
+  color: #005fb8;
+  background: rgba(0, 95, 184, 0.1);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.titlebar-new-version:hover { background: rgba(0, 95, 184, 0.16); }
+.version-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #005fb8;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  font-style: normal;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.version-tooltip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: rgba(249, 251, 255, 0.98);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(40px);
+  z-index: 100;
+  pointer-events: none;
+  text-align: left;
+  color: rgba(0, 0, 0, 0.9);
+}
+/* 向上箭头 — 边框层 */
+.version-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  right: 22px;
+  border: 7px solid transparent;
+  border-top: none;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+/* 向上箭头 — 填充层 */
+.version-tooltip::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 23px;
+  border: 6px solid transparent;
+  border-top: none;
+  border-bottom-color: rgba(249, 251, 255, 0.98);
+  z-index: 1;
+}
+.titlebar-update-wrap:hover .version-tooltip { display: block; }
+.version-tooltip strong { font-size: 12px; display: block; margin-bottom: 6px; }
+.version-tooltip ul { margin: 0; padding-left: 16px; }
+.version-tooltip li { font-size: 12px; line-height: 1.7; color: rgba(0, 0, 0, 0.7); }
+/* 设置页版本行 */
+.setting-row-version .version-update-wrap { display: flex; align-items: center; gap: 8px; }
+.version-new-inline {
+  color: #005fb8;
+  font-size: inherit;
+  font-weight: 500;
+}
+.version-check-btn {
+  height: 30px;
+  min-width: 72px;
+  padding: 0 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.version-check-btn:hover { background: rgba(0, 0, 0, 0.05); }
+.version-check-btn:disabled { opacity: 0.7; cursor: default; }
+.version-update-btn {
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  color: #fff;
+  background: #005fb8;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.version-update-btn:hover { background: #0067c0; }
+/* button 内 loading spinner */
+.btn-spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 .ready-content {
   flex: 1 1 0;
   min-height: 0;
@@ -1108,14 +1218,14 @@ h1 { font-size: 16px; font-weight: 600; }
   height: 20px;
 }
 .account-action.account-recharge {
-  width: 80px;
+  width: 52px;
   height: 32px;
-  padding: 0 12px;
+  padding: 0;
   color: #fff;
   background: var(--accent);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
 }
 .account-action.account-recharge:hover {
@@ -1138,7 +1248,7 @@ h1 { font-size: 16px; font-weight: 600; }
   align-items: center;
   justify-content: space-between;
   height: 48px;
-  padding: 0 16px;
+  padding: 0 8px 0 16px;
   background: rgba(246, 248, 252, 0.44);
   backdrop-filter: blur(18px);
   position: relative;
@@ -1177,15 +1287,16 @@ h1 { font-size: 16px; font-weight: 600; }
 .detail-back:hover { background: rgba(0, 0, 0, 0.05); }
 .detail-back .ui-icon { width: 16px; height: 16px; color: rgba(0, 0, 0, 0.9); }
 .detail-close {
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
   background: transparent;
+  border-radius: 4px;
   padding: 0;
 }
 .detail-close img { width: 20px; height: 20px; }
-.detail-close:hover { opacity: 0.7; }
+.detail-close:hover { opacity: 1; background: rgba(0, 0, 0, 0.05); }
 
 .model-list-v2 {
   flex: 1 1 0;
@@ -1310,7 +1421,7 @@ h1 { font-size: 16px; font-weight: 600; }
   z-index: 90;
   max-width: calc(100% - 36px);
   padding: 8px 13px;
-  border-radius: 999px;
+  border-radius: 4px;
   color: white;
   background: rgba(31,35,42,.94);
   box-shadow: 0 8px 20px rgba(0,0,0,.16);
@@ -1407,6 +1518,9 @@ h1 { font-size: 16px; font-weight: 600; }
   gap: 1px;
   padding: 16px 16px 0;
 }
+.notification-content:last-child {
+  padding-bottom: 16px;
+}
 .notification-tool-icon {
   width: 48px;
   height: 48px;
@@ -1416,7 +1530,7 @@ h1 { font-size: 16px; font-weight: 600; }
 }
 .notification-body {
   flex: 1;
-  padding: 0 16px 16px;
+  padding: 0 16px;
   min-width: 0;
 }
 .notification-content strong {
@@ -1448,7 +1562,7 @@ h1 { font-size: 16px; font-weight: 600; }
 .notification-actions {
   display: flex;
   justify-content: flex-end;
-  padding: 24px;
+  padding: 16px;
 }
 .notification-actions button {
   height: 32px;
@@ -1458,15 +1572,12 @@ h1 { font-size: 16px; font-weight: 600; }
   background: rgba(255, 255, 255, 0.72);
 }
 .notification-actions .primary {
-  width: 120px;
-  height: auto;
-  padding: 5px 12px 7px;
+  height: 30px;
+  padding: 0 16px;
   color: #fff;
   background: #005fb8;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
+  font-size: 13px;
 }
 .notification-actions .primary:hover {
   background: var(--accent-hover);
@@ -1474,33 +1585,37 @@ h1 { font-size: 16px; font-weight: 600; }
 
 .tray-context-menu,
 .account-menu {
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  min-width: 130px;
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-  background: rgba(248, 251, 255, 0.92);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+  background: rgba(249, 251, 255, 0.97);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
   backdrop-filter: blur(40px);
 }
 .app-menu {
-  width: 200px;
+  width: 160px;
   top: 48px;
   left: 16px;
-  padding: 8px 0;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-  background: #fcfcfc;
-  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.14);
-  backdrop-filter: blur(30px);
+  background: rgba(249, 251, 255, 0.97);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(40px);
 }
 .app-menu button {
-  height: 32px;
-  padding: 0 16px;
-  border-radius: 0;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 4px;
   color: rgba(0, 0, 0, 0.9);
   background: transparent;
   font-size: 14px;
+  text-align: left;
 }
 .app-menu button:hover {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0, 0, 0, 0.05);
 }
 .tray-context-menu {
   width: 160px;
@@ -1509,10 +1624,14 @@ h1 { font-size: 16px; font-weight: 600; }
 .tray-context-menu button,
 .account-menu button {
   height: 36px;
+  padding: 0 12px;
   border-radius: 4px;
-  color: rgba(0, 0, 0, 0.82);
-  font-size: 12px;
+  color: rgba(0, 0, 0, 0.9);
+  font-size: 14px;
+  text-align: left;
 }
+.account-menu button:hover { background: rgba(0, 0, 0, 0.05); }
+.account-menu .danger { color: #c42b1c; }
 .tray-context-menu button {
   display: flex;
   align-items: center;
@@ -1705,4 +1824,47 @@ h1 { font-size: 16px; font-weight: 600; }
   border-color: rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
+}
+
+/* Update banner */
+.update-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 16px 8px;
+  padding: 10px 12px;
+  border-left: 3px solid #005fb8;
+  border-radius: 0 6px 6px 0;
+  background: rgba(0, 95, 184, 0.07);
+}
+.update-banner-info { flex: 1; min-width: 0; }
+.update-banner-info strong { display: block; font-size: 13px; color: rgba(0,0,0,0.88); }
+.update-banner-info p { margin-top: 2px; font-size: 12px; color: rgba(0,0,0,0.55); }
+.update-banner-btn {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 4px;
+  color: #fff;
+  background: #005fb8;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.update-banner-btn:hover { background: var(--accent-hover); }
+
+/* No-app empty state */
+.tool-list-empty {
+  padding: 32px 20px;
+  text-align: center;
+}
+.tool-list-empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.72);
+}
+.tool-list-empty-desc {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 1.6;
 }

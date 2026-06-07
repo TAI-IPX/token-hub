@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>联想 Token Hub · Windows 设计交付 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=figma-delivery-20260605p" />
+    <link rel="stylesheet" href="./styles.css?v=20260606c" />
   </head>
   <body>
     <svg class="icon-sprite" aria-hidden="true">
@@ -64,6 +64,8 @@
           <button data-demo-state="low-balance">额度不足 - 引导充值</button>
           <button data-demo-state="auto-discovery">通知 - 智能匹配开，发现新应用</button>
           <button data-demo-state="manual-discovery">通知 - 智能匹配关，发现新应用</button>
+          <button data-demo-state="new-version">发现新版本</button>
+          <button data-demo-state="no-app">无可配置应用</button>
         </div>
       </div>
     </main>
@@ -78,7 +80,21 @@
             <button class="titlebar-dropdown" data-app-menu="true" aria-label="应用菜单" aria-expanded="false"><svg class="ui-icon" aria-hidden="true"><use href="#icon-chevron-down" /></svg></button>
           </div>
           <div class="titlebar-right">
-            <button class="titlebar-btn" data-settings="true" aria-label="设置"><img src="./assets/3x/panel-settings@3x.png" alt="" /></button>
+            <div class="titlebar-update-wrap" id="titlebar-update-btn" style="display:none">
+              <button class="titlebar-new-version" data-settings="true" aria-label="有新版本可用">
+                <span class="version-info-icon">i</span>新版本
+              </button>
+              <div class="version-tooltip" role="tooltip">
+                <strong>v2.1.0 更新内容</strong>
+                <ul>
+                  <li>修复智能匹配偶发失效问题</li>
+                  <li>优化应用检测响应速度</li>
+                  <li>改进模型切换稳定性</li>
+                  <li>新增未检测到应用时的引导提示</li>
+                </ul>
+              </div>
+            </div>
+            <button class="titlebar-btn" id="titlebar-settings-btn" data-settings="true" aria-label="设置"><img src="./assets/3x/panel-settings@3x.png" alt="" /></button>
             <button class="titlebar-btn titlebar-close" data-close-panel="true" aria-label="关闭"><img src="./assets/3x/panel-close@3x.png" alt="" /></button>
           </div>
           <nav class="app-menu" id="app-menu" hidden aria-label="联想 Token Hub 菜单">
@@ -149,6 +165,16 @@
           <div class="setting-row"><div><strong>系统通知</strong><small>发现新应用和切换异常时提醒</small></div><button class="toggle active" aria-label="系统通知"></button></div>
           <div class="setting-row"><div><strong>自动检测新应用</strong><small>安装应用后自动加入列表</small></div><button class="toggle active" aria-label="自动检测新应用"></button></div>
           <div class="setting-row"><div><strong>接管前二次确认</strong><small>开启智能匹配前确认是否由 Token Hub 管理应用配置</small></div><button class="toggle active" aria-label="接管前二次确认"></button></div>
+          <div class="setting-row setting-row-version">
+            <div>
+              <strong>版本号</strong>
+              <small>v2.0.4<span class="version-new-inline" id="version-new-inline" hidden>&nbsp;&nbsp;新版本 2.1.0</span></small>
+            </div>
+            <div class="version-update-wrap">
+              <button class="version-check-btn" id="version-check-btn" data-check-update="true">检查更新</button>
+              <button class="version-update-btn" id="version-update-btn" data-dismiss-update="true" style="display:none">立即更新</button>
+            </div>
+          </div>
         </section>
       </div>
       <div class="refresh-toast" id="refresh-toast" aria-live="polite"></div>
@@ -202,6 +228,6 @@
       <button data-exit-app="true" role="menuitem">退出应用</button>
     </div>
 
-    <script src="./app.js?v=figma-delivery-20260605p"></script>
+    <script src="./app.js?v=20260606c"></script>
   </body>
 </html>

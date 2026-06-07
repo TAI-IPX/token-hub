@@ -13,10 +13,12 @@ design-delivery/
 └── wpf/TokenHubPanel/                 ← WPF 完整项目（研发交付）
     ├── TokenHubPanel.csproj           (.NET 8.0)
     ├── App.xaml                        入口 + 资源引用
-    ├── MainWindow.xaml + .cs           全部场景面板 + 状态切换
+    ├── MainWindow.xaml + .cs           主面板 + 全部场景 + 弹窗/菜单/onboarding 多态
+    ├── RechargeWindow.xaml + .cs       独立充值窗口（金额/确认/扫码/详情 4 视图）
     ├── Styles/
     │   ├── DesignTokens.xaml           设计变量（颜色/字体/间距/尺寸/圆角/阴影）
-    │   └── ControlStyles.xaml          组件模板（Toggle/Radio/ScrollBar/Button/Tag/ListItem）
+    │   └── ControlStyles.xaml          组件模板（Toggle/Radio/ScrollBar/Button/Tag/ListItem
+    │                                    + FlyoutMenu 菜单 / Secondary 次按钮）
     ├── ViewModels/
     │   ├── MainViewModel.cs            MVVM 状态管理 + 数据
     │   ├── RelayCommand.cs             ICommand 辅助
@@ -61,6 +63,24 @@ dotnet run
 | 7 | 通知 - 发现新应用 (自动) | 364px popup | ✅ | ✅ |
 | 8 | 通知 - 发现新应用 (手动) | 364px popup | ✅ | ✅ |
 | 9 | 模型详情页 | 440×384 | ✅ | ✅ |
+| 10 | 模型设置页 | 440×384 | ✅ | ✅ |
+| 11 | 发现新版本 | 440×384 | ✅ | ✅ |
+| 12 | 未检测到可配置应用 | 440×384 | ✅ | ✅ |
+
+## 交互与弹窗覆盖
+
+| 交互 / 弹窗 | Web | WPF | 说明 |
+|------------|-----|-----|------|
+| 应用下拉菜单（数据看板等 4 项） | ✅ | ✅ | Popup，Fluent 菜单样式 |
+| 账户下拉菜单（我的账户/登出） | ✅ | ✅ | Popup |
+| 智能匹配二次确认 | ✅ | ✅ | 开启前确认浮层 |
+| 新版本 hover tooltip | ✅ | ✅ | 显示版本更新内容 |
+| onboarding 多态 | ✅ | ✅ | 登录/等待确认/首次引导/自动配置/配置中 |
+| 检查更新 / 立即更新 | ✅ | ✅ | 设置页版本行 + loading + toast |
+| 充值窗口（4 视图） | ✅ | ✅ | 独立 Window：金额/确认/扫码/详情 |
+| 操作 toast 提示 | ✅ | ✅ | 刷新/检查更新等反馈 |
+| 托盘右键「退出应用」 | ✅ | — | WPF 为紧凑面板窗口，无系统托盘图标，触发点不适用 |
+| 登录窗口 auth-window | （未启用） | — | Web 中为保留结构、无显示触发；WPF 以 onboarding「等待确认」态对齐其实际可见行为 |
 
 ## 设计基线
 
@@ -85,6 +105,17 @@ dotnet run
 ## Figma 源文件
 
 https://www.figma.com/design/brmnTFUvvtOb0lMkOcIJS1/联想Token?node-id=355-7022
+
+## WPF 构建状态（重要）
+
+WPF 项目在 macOS 环境开发，**尚未在 Windows 上 `dotnet build` 编译验证**。已完成的静态校验：
+
+- ✅ 全部 XAML 文件 XML 格式合法
+- ✅ 所有 XAML 事件处理器均能在 code-behind 找到对应方法
+- ✅ code-behind 引用的控件 `x:Name` 在 XAML 中均有定义
+- ✅ C# 大括号 / 圆括号配平
+
+> 逻辑正确性、数据绑定路径、布局像素效果尚未运行时验证。首次在 Windows 构建时可能需要微调（如 Segoe 图标字形码、个别间距/动画）。**`visual-demo/` 是视觉唯一标准，WPF 需对照微调。**
 
 ## 研发对接说明
 

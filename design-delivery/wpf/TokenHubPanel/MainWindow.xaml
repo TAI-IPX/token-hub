@@ -355,6 +355,83 @@
                                     </Grid>
                                 </Border>
 
+                                <!-- AUTH-PENDING STATE -->
+                                <Border x:Name="AuthPendingPanel"
+                                        Padding="16"
+                                        Background="Transparent"
+                                        Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,40,0,0">
+                                            <TextBlock Text="等待登录确认"
+                                                       FontSize="24" FontWeight="Bold" Foreground="#E01B1B1F" />
+                                            <TextBlock FontSize="14" Foreground="#731B1B1F" Margin="0,16,0,24" TextWrapping="Wrap">
+                                                <Run Text="请在联想账号登录窗口中完成认证" />
+                                                <LineBreak />
+                                                <Run Text="登录成功后，将自动继续配置" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <Border Grid.Row="1" Height="3" CornerRadius="99" Background="#14000000" Margin="0,0,0,16">
+                                            <Border x:Name="AuthProgressFill" Height="3" Width="240"
+                                                    HorizontalAlignment="Left" CornerRadius="99"
+                                                    Background="{StaticResource AccentBrush}" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- FIRST-RUN STATE (开始配置) -->
+                                <Border x:Name="FirstRunPanel"
+                                        Padding="16"
+                                        Background="Transparent"
+                                        Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Grid.Row="0" Margin="0,8,0,0">
+                                            <TextBlock Text="自动完成服务配置"
+                                                       FontSize="24" FontWeight="Bold" Foreground="#E01B1B1F" Margin="0,0,0,12" />
+                                            <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。"
+                                                       FontSize="14" Foreground="#731B1B1F" TextWrapping="Wrap" Margin="0,0,0,12" />
+                                            <TextBlock Text="✓ 自动完成必要设置" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                            <TextBlock Text="✓ 自动为应用选择合适的模型" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                            <TextBlock Text="✓ 配置完成后即可使用" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                        <Button Grid.Row="1" Content="开始配置"
+                                                Style="{StaticResource OnboardingButtonStyle}"
+                                                Click="StartOnboarding_Click" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- READY-TO-CONFIG STATE (自动配置) -->
+                                <Border x:Name="ReadyToConfigPanel"
+                                        Padding="16"
+                                        Background="Transparent"
+                                        Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Grid.Row="0" Margin="0,8,0,0">
+                                            <TextBlock Text="自动完成服务配置"
+                                                       FontSize="24" FontWeight="Bold" Foreground="#E01B1B1F" Margin="0,0,0,12" />
+                                            <TextBlock Text="Token Hub 将自动创建访问凭证并完成本机接入。所有应用共用一套多模型服务，无需手动复制或修改密钥。"
+                                                       FontSize="14" Foreground="#731B1B1F" TextWrapping="Wrap" Margin="0,0,0,12" />
+                                            <TextBlock Text="✓ 一套凭证，全局接入" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                            <TextBlock Text="✓ 自动匹配推荐模型" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                            <TextBlock Text="✓ 初始化完成后立即可用" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                        <Button Grid.Row="1" Content="自动配置"
+                                                Style="{StaticResource OnboardingButtonStyle}"
+                                                Click="ConfigureHub_Click" />
+                                    </Grid>
+                                </Border>
+
                                 <!-- === READY CONTENT (SmartOff/SmartOn/Unconfigured/LowBalance) === -->
                                 <Grid x:Name="ReadyContent">
                                     <Grid.RowDefinitions>

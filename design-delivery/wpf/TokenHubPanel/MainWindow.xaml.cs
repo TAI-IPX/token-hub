@@ -19,6 +19,10 @@ namespace TokenHubPanel
         private DispatcherTimer? _configTimer;
         private DispatcherTimer? _toastTimer;
 
+        // Onboarding sub-step (only meaningful while CurrentState == Login)
+        private enum OnbStep { Login, AuthPending, FirstRun, ReadyToConfig }
+        private OnbStep _onbStep = OnbStep.Login;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -64,6 +68,11 @@ namespace TokenHubPanel
 
         private void OnStateChanged()
         {
+            // Entering Login state from a demo switch resets onboarding to the login step.
+            // (The auth-pending sub-step does not change CurrentState, so it won't be reset here.)
+            if (_vm.CurrentState == DemoState.Login)
+                _onbStep = OnbStep.Login;
+
             UpdatePanelHeight();
             UpdatePanelStateVisibility();
             UpdateToolListModelNames();
@@ -86,22 +95,28 @@ namespace TokenHubPanel
             var isConfiguring = _vm.CurrentState == DemoState.Configuring;
             var isReady = _vm.IsReady;
 
-            LoginPanel.Visibility = isLogin ? Visibility.Visible : Visibility.Collapsed;
+            // Onboarding sub-panels (only when in Login state)
+            LoginPanel.Visibility = (isLogin && _onbStep == OnbStep.Login) ? Visibility.Visible : Visibility.Collapsed;
+            AuthPendingPanel.Visibility = (isLogin && _onbStep == OnbStep.AuthPending) ? Visibility.Visible : Visibility.Collapsed;
+            FirstRunPanel.Visibility = (isLogin && _onbStep == OnbStep.FirstRun) ? Visibility.Visible : Visibility.Collapsed;
+            ReadyToConfigPanel.Visibility = (isLogin && _onbStep == OnbStep.ReadyToConfig) ? Visibility.Visible : Visibility.Collapsed;
             ConfiguringPanel.Visibility = isConfiguring ? Visibility.Visible : Visibility.Collapsed;
             ReadyContent.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
 
-            bool showFooter = isReady || isConfiguring;
-            bool loggedInFooter = isReady;
-            bool loggedOutFooter = isLogin;
+            // Footer: account bar only when ready; logged-out footer only on the login step
+            AccountFooter.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
+            LoggedOutFooter.Visibility = (isLogin && _onbStep == OnbStep.Login) ? Visibility.Visible : Visibility.Collapsed;
 
-            AccountFooter.Visibility = loggedInFooter ? Visibility.Visible : Visibility.Collapsed;
-            LoggedOutFooter.Visibility = loggedOutFooter ? Visibility.Visible : Visibility.Collapsed;
-
-            // Start/stop progress animation for configuring state
+            // Progress animations
             if (isConfiguring)
                 StartProgressAnimation();
             else
                 StopProgressAnimation();
+
+            if (isLogin && _onbStep == OnbStep.AuthPending)
+                StartAuthProgressAnimation();
+            else
+                StopAuthProgressAnimation();
         }
 
         private void StartConfigTimerIfNeeded()
@@ -140,6 +155,25 @@ namespace TokenHubPanel
         private void StopProgressAnimation()
         {
             ProgressBarFill.BeginAnimation(Border.MarginProperty, null);
+        }
+
+        private void StartAuthProgressAnimation()
+        {
+            StopAuthProgressAnimation();
+            var anim = new ThicknessAnimation
+            {
+                From = new Thickness(-72, 0, 0, 0),
+                To = new Thickness(168, 0, 0, 0),
+                Duration = TimeSpan.FromSeconds(1.6),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+            AuthProgressFill.BeginAnimation(Border.MarginProperty, anim);
+        }
+
+        private void StopAuthProgressAnimation()
+        {
+            AuthProgressFill.BeginAnimation(Border.MarginProperty, null);
         }
 
         private void UpdatePageVisibility()
@@ -308,12 +342,37 @@ namespace TokenHubPanel
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            _vm.SetState(DemoState.Configuring);
+            // Login → auth-pending (waiting for confirmation) → auto-complete after 3s
+            _onbStep = OnbStep.AuthPending;
+            UpdatePanelStateVisibility();
+            _configTimer?.Stop();
+            _configTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+            _configTimer.Tick += (s, ev) =>
+            {
+                _configTimer?.Stop();
+                _onbStep = OnbStep.Login;
+                _vm.SetState(DemoState.SmartOff);
+            };
+            _configTimer.Start();
         }
 
         private void LoginFromFooter_Click(object sender, RoutedEventArgs e)
         {
             _vm.SetState(DemoState.Login);
+        }
+
+        private void StartOnboarding_Click(object sender, RoutedEventArgs e)
+        {
+            // first-run → ready-to-config (自动配置 page)
+            _onbStep = OnbStep.ReadyToConfig;
+            UpdatePanelStateVisibility();
+        }
+
+        private void ConfigureHub_Click(object sender, RoutedEventArgs e)
+        {
+            // ready-to-config → configuring → auto-complete (handled by StartConfigTimerIfNeeded)
+            _onbStep = OnbStep.Login;
+            _vm.SetState(DemoState.Configuring);
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -380,7 +439,13 @@ namespace TokenHubPanel
 
         private void RechargeButton_Click(object sender, RoutedEventArgs e)
         {
-            _vm.RechargeCommand.Execute(null);
+            var win = new RechargeWindow { Owner = this };
+            win.ShowDialog();
+            if (win.RechargeResult is double amount && amount > 0)
+            {
+                _vm.Balance += amount;
+                UpdateBalanceBadge();
+            }
         }
 
         private void RefreshApps_Click(object sender, RoutedEventArgs e)

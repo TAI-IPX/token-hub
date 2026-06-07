@@ -15,7 +15,7 @@
                       Color="#000000"
                       Opacity="0.14" />
     <DropShadowEffect x:Key="NotificationShadow"
-                      BlurRadius="24"
+                      BlurRadius="12"
                       ShadowDepth="12"
                       Direction="270"
                       Color="#0F172A"

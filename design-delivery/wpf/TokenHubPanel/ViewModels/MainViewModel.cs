@@ -18,7 +18,9 @@ namespace TokenHubPanel.ViewModels
         Unconfigured,
         LowBalance,
         AutoDiscovery,
-        ManualDiscovery
+        ManualDiscovery,
+        NewVersion,
+        NoApp
     }
 
     public enum PanelPage
@@ -40,7 +42,27 @@ namespace TokenHubPanel.ViewModels
         public DemoState CurrentState
         {
             get => _currentState;
-            set { _currentState = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsLogin)); OnPropertyChanged(nameof(IsConfiguring)); OnPropertyChanged(nameof(IsReady)); OnPropertyChanged(nameof(IsDiscovering)); OnPropertyChanged(nameof(IsManualDiscovery)); OnPropertyChanged(nameof(IsAutoDiscovery)); OnPropertyChanged(nameof(PanelHeight)); OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(ShowOnboarding)); OnPropertyChanged(nameof(ShowReadyContent)); OnPropertyChanged(nameof(ShowFooter)); OnPropertyChanged(nameof(ShowAccountBar)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
+            set
+            {
+                _currentState = value;
+                // Reset transient states on state switch
+                _newVersionAvailable = value == DemoState.NewVersion;
+                _noApps = value == DemoState.NoApp;
+                _showSmartConfirmPending = false;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsLogin)); OnPropertyChanged(nameof(IsConfiguring));
+                OnPropertyChanged(nameof(IsReady)); OnPropertyChanged(nameof(IsDiscovering));
+                OnPropertyChanged(nameof(IsManualDiscovery)); OnPropertyChanged(nameof(IsAutoDiscovery));
+                OnPropertyChanged(nameof(PanelHeight)); OnPropertyChanged(nameof(IsLoggedIn));
+                OnPropertyChanged(nameof(ShowOnboarding)); OnPropertyChanged(nameof(ShowReadyContent));
+                OnPropertyChanged(nameof(ShowFooter)); OnPropertyChanged(nameof(ShowAccountBar));
+                OnPropertyChanged(nameof(IsNotLoggedIn));
+                OnPropertyChanged(nameof(NewVersionAvailable)); OnPropertyChanged(nameof(ShowNewVersionBadge));
+                OnPropertyChanged(nameof(NewVersionBadgeVisibility)); OnPropertyChanged(nameof(SettingsButtonVisibility));
+                OnPropertyChanged(nameof(NoApps)); OnPropertyChanged(nameof(ShowNoAppsEmpty));
+                OnPropertyChanged(nameof(NoAppsEmptyVisibility)); OnPropertyChanged(nameof(ToolListVisibility));
+                OnPropertyChanged(nameof(SmartConfirmVisibility));
+            }
         }
 
         private PanelPage _currentPage = PanelPage.Home;
@@ -151,7 +173,8 @@ namespace TokenHubPanel.ViewModels
         public bool IsLogin => CurrentState == DemoState.Login;
         public bool IsConfiguring => CurrentState == DemoState.Configuring;
         public bool IsReady => CurrentState == DemoState.SmartOff || CurrentState == DemoState.SmartOn
-            || CurrentState == DemoState.Unconfigured || CurrentState == DemoState.LowBalance;
+            || CurrentState == DemoState.Unconfigured || CurrentState == DemoState.LowBalance
+            || CurrentState == DemoState.NewVersion || CurrentState == DemoState.NoApp;
         public bool IsDiscovering => CurrentState == DemoState.AutoDiscovery || CurrentState == DemoState.ManualDiscovery;
         public bool IsAutoDiscovery => CurrentState == DemoState.AutoDiscovery;
         public bool IsManualDiscovery => CurrentState == DemoState.ManualDiscovery;
@@ -182,7 +205,42 @@ namespace TokenHubPanel.ViewModels
             }
         }
 
-        public bool ShowSmartConfirm => false;
+        // === New Version & No-App State ===
+        private bool _newVersionAvailable;
+        public bool NewVersionAvailable
+        {
+            get => _newVersionAvailable;
+            set { _newVersionAvailable = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowNewVersionBadge)); }
+        }
+
+        private bool _noApps;
+        public bool NoApps
+        {
+            get => _noApps;
+            set { _noApps = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowNoAppsEmpty)); }
+        }
+
+        private bool _showSmartConfirmPending;
+        public bool ShowSmartConfirm
+        {
+            get => _showSmartConfirmPending;
+            set { _showSmartConfirmPending = value; OnPropertyChanged(); OnPropertyChanged(nameof(SmartConfirmVisibility)); }
+        }
+
+        // ShowNewVersionBadge: only when logged in AND new version available
+        public bool ShowNewVersionBadge => IsLoggedIn && NewVersionAvailable;
+        public Visibility NewVersionBadgeVisibility => ShowNewVersionBadge ? Visibility.Visible : Visibility.Collapsed;
+
+        // Settings button hidden when not logged in
+        public Visibility SettingsButtonVisibility => IsLoggedIn ? Visibility.Visible : Visibility.Collapsed;
+
+        // No-app empty state
+        public bool ShowNoAppsEmpty => NoApps;
+        public Visibility NoAppsEmptyVisibility => NoApps ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ToolListVisibility => !NoApps ? Visibility.Visible : Visibility.Collapsed;
+
+        // Smart confirm overlay
+        public Visibility SmartConfirmVisibility => ShowSmartConfirm ? Visibility.Visible : Visibility.Collapsed;
 
         public Thickness SmartKnobOffset => IsSmartMode
             ? new Thickness(23, 3, 0, 0)

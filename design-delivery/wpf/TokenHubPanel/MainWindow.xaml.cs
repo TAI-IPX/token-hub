@@ -16,6 +16,7 @@ namespace TokenHubPanel
         private readonly MainViewModel _vm;
         private DispatcherTimer? _progressAnimTimer;
         private DispatcherTimer? _configTimer;
+        private DispatcherTimer? _toastTimer;
 
         public MainWindow()
         {
@@ -270,6 +271,8 @@ namespace TokenHubPanel
                 5 => DemoState.LowBalance,
                 6 => DemoState.AutoDiscovery,
                 7 => DemoState.ManualDiscovery,
+                8 => DemoState.NewVersion,
+                9 => DemoState.NoApp,
                 _ => DemoState.SmartOff
             };
             _vm.SetState(state);
@@ -293,6 +296,43 @@ namespace TokenHubPanel
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.CurrentPage = PanelPage.Settings;
+        }
+
+        private void CheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+            btn.IsEnabled = false;
+            var original = btn.Content;
+            btn.Content = "检查中…";
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
+            timer.Tick += (s, args) =>
+            {
+                timer.Stop();
+                btn.IsEnabled = true;
+                btn.Content = original;
+                ShowToast("当前已是最新版本");
+            };
+            timer.Start();
+        }
+
+        private void DoUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.NewVersionAvailable = false;
+            ShowToast("正在后台更新，完成后自动重启");
+        }
+
+        private void ShowToast(string message)
+        {
+            ToastText.Text = message;
+            ToastBorder.Visibility = Visibility.Visible;
+            _toastTimer?.Stop();
+            _toastTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2.2) };
+            _toastTimer.Tick += (s, args) =>
+            {
+                _toastTimer?.Stop();
+                ToastBorder.Visibility = Visibility.Collapsed;
+            };
+            _toastTimer.Start();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -322,7 +362,22 @@ namespace TokenHubPanel
 
         private void RefreshApps_Click(object sender, RoutedEventArgs e)
         {
-            UpdateToolListModelNames();
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.65) };
+            timer.Tick += (s, args) =>
+            {
+                timer.Stop();
+                if (_vm.NoApps)
+                {
+                    _vm.NoApps = false;
+                    UpdateToolListModelNames();
+                    ShowToast("检测到 5 个可配置应用");
+                }
+                else
+                {
+                    ShowToast("应用列表已刷新");
+                }
+            };
+            timer.Start();
         }
 
         private void ModelItem_Click(object sender, MouseButtonEventArgs e)

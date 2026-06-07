@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -280,7 +281,29 @@ namespace TokenHubPanel
 
         private void ToggleSwitch_Click(object sender, MouseButtonEventArgs e)
         {
-            _vm.ToggleSmartCommand.Execute(null);
+            if (_vm.IsSmartMode)
+            {
+                // Turn OFF directly
+                _vm.ShowSmartConfirm = false;
+                _vm.ToggleSmartCommand.Execute(null);
+            }
+            else
+            {
+                // Turn ON → show secondary confirm first
+                _vm.ShowSmartConfirm = true;
+            }
+        }
+
+        private void ConfirmSmartMatch_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.ShowSmartConfirm = false;
+            if (!_vm.IsSmartMode)
+                _vm.ToggleSmartCommand.Execute(null);
+        }
+
+        private void CancelSmartConfirm_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.ShowSmartConfirm = false;
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -456,7 +479,36 @@ namespace TokenHubPanel
 
         private void MoreButton_Click(object sender, RoutedEventArgs e)
         {
-            // Context menu placeholder
+            AccountMenuPopup.IsOpen = !AccountMenuPopup.IsOpen;
+        }
+
+        private static readonly System.Collections.Generic.Dictionary<string, string> WebLinks = new()
+        {
+            ["dashboard"] = "https://lai-hub.lenovomm.com/",
+            ["logs"] = "https://lai-hub.lenovomm.com/logs",
+            ["keys"] = "https://lai-hub.lenovomm.com/keys",
+            ["marketplace"] = "https://lai-hub.lenovomm.com/pricing",
+            ["account"] = "https://lai-hub.lenovomm.com/account",
+        };
+
+        private void WebLink_Click(object sender, RoutedEventArgs e)
+        {
+            AppMenuPopup.IsOpen = false;
+            AccountMenuPopup.IsOpen = false;
+            if (sender is Button btn && btn.Tag is string key && WebLinks.TryGetValue(key, out var url))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                }
+                catch { /* ignore in demo */ }
+            }
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            AccountMenuPopup.IsOpen = false;
+            _vm.SetState(DemoState.Login);
         }
 
         private void SettingToggle_Click(object sender, MouseButtonEventArgs e)
@@ -490,6 +542,8 @@ namespace TokenHubPanel
             // Close popups
             if (AppMenuPopup.IsOpen)
                 AppMenuPopup.IsOpen = false;
+            if (AccountMenuPopup.IsOpen)
+                AccountMenuPopup.IsOpen = false;
         }
     }
 }

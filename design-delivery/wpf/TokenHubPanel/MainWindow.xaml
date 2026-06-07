@@ -122,6 +122,24 @@
                                            Width="16"
                                            Height="16" />
                                 </Button>
+                                <!-- App menu dropdown -->
+                                <Popup x:Name="AppMenuPopup"
+                                       PlacementTarget="{Binding ElementName=AppMenuButton}"
+                                       Placement="Bottom"
+                                       VerticalOffset="6"
+                                       HorizontalOffset="-12"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True"
+                                       PopupAnimation="Fade">
+                                    <Border Style="{StaticResource FlyoutMenuBorderStyle}" Width="200" Margin="8">
+                                        <StackPanel>
+                                            <Button Content="数据看板" Style="{StaticResource FlyoutMenuItemStyle}" Tag="dashboard" Click="WebLink_Click" />
+                                            <Button Content="使用日志" Style="{StaticResource FlyoutMenuItemStyle}" Tag="logs" Click="WebLink_Click" />
+                                            <Button Content="密钥管理" Style="{StaticResource FlyoutMenuItemStyle}" Tag="keys" Click="WebLink_Click" />
+                                            <Button Content="模型广场" Style="{StaticResource FlyoutMenuItemStyle}" Tag="marketplace" Click="WebLink_Click" />
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
                             </StackPanel>
 
                             <!-- Right: NewVersion badge + Settings + Close -->
@@ -138,10 +156,33 @@
                                         BorderThickness="0"
                                         Cursor="Hand"
                                         Click="SettingsButton_Click"
-                                        ToolTip="查看版本更新内容">
+                                        ToolTipService.InitialShowDelay="150"
+                                        ToolTipService.Placement="Bottom"
+                                        ToolTipService.VerticalOffset="6">
                                     <Button.Background>
                                         <SolidColorBrush Color="#1A005FB8"/>
                                     </Button.Background>
+                                    <Button.ToolTip>
+                                        <ToolTip Background="Transparent" BorderThickness="0" Padding="0" HasDropShadow="False">
+                                            <Border Width="240"
+                                                    CornerRadius="8"
+                                                    Background="#FAF9FBFF"
+                                                    BorderBrush="#14000000"
+                                                    BorderThickness="1"
+                                                    Padding="14,12"
+                                                    Effect="{StaticResource MenuShadow}">
+                                                <StackPanel>
+                                                    <TextBlock Text="v2.1.0 更新内容"
+                                                               FontSize="12" FontWeight="Bold"
+                                                               Foreground="#E51B1B1F" Margin="0,0,0,6" />
+                                                    <TextBlock Text="• 修复智能匹配偶发失效问题" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
+                                                    <TextBlock Text="• 优化应用检测响应速度" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
+                                                    <TextBlock Text="• 改进模型切换稳定性" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
+                                                    <TextBlock Text="• 新增未检测到应用时的引导提示" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
+                                                </StackPanel>
+                                            </Border>
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
@@ -365,6 +406,47 @@
                                         </Grid>
                                     </Border>
 
+                                    <!-- Smart match secondary confirm overlay -->
+                                    <Border Grid.Row="1"
+                                            x:Name="SmartConfirmPanel"
+                                            Visibility="{Binding SmartConfirmVisibility}"
+                                            VerticalAlignment="Top"
+                                            Panel.ZIndex="50"
+                                            Margin="60,4,16,0"
+                                            CornerRadius="8"
+                                            Background="#F7F9FBFF"
+                                            BorderBrush="#14000000"
+                                            BorderThickness="1"
+                                            Padding="14,11"
+                                            Effect="{StaticResource MenuShadow}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0"
+                                                       Text="开启后，所有应用将改用 Token Hub 推荐模型。"
+                                                       FontSize="13"
+                                                       Foreground="#CC1B1B1F"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,12,0" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Content="取消"
+                                                        Padding="12,0"
+                                                        Margin="0,0,6,0"
+                                                        Style="{StaticResource SecondaryButtonStyle}"
+                                                        Click="CancelSmartConfirm_Click" />
+                                                <Button Content="开启"
+                                                        Height="30"
+                                                        Padding="14,0"
+                                                        FontSize="13"
+                                                        Style="{StaticResource PrimaryButtonStyle}"
+                                                        Click="ConfirmSmartMatch_Click" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
                                     <!-- App List -->
                                     <ScrollViewer Grid.Row="1"
                                                   VerticalScrollBarVisibility="Hidden"
@@ -546,7 +628,8 @@
                                     <Grid Grid.Column="2" />
 
                                     <!-- More Button -->
-                                    <Button Grid.Column="3"
+                                    <Button x:Name="MoreButton"
+                                            Grid.Column="3"
                                             Width="20"
                                             Height="20"
                                             Background="Transparent"
@@ -559,6 +642,21 @@
                                                Width="20"
                                                Height="20" />
                                     </Button>
+                                    <!-- Account menu dropdown -->
+                                    <Popup x:Name="AccountMenuPopup"
+                                           PlacementTarget="{Binding ElementName=MoreButton}"
+                                           Placement="Top"
+                                           VerticalOffset="-4"
+                                           StaysOpen="False"
+                                           AllowsTransparency="True"
+                                           PopupAnimation="Fade">
+                                        <Border Style="{StaticResource FlyoutMenuBorderStyle}" Width="140" Margin="8">
+                                            <StackPanel>
+                                                <Button Content="我的账户" Style="{StaticResource FlyoutMenuItemStyle}" Tag="account" Click="WebLink_Click" />
+                                                <Button Content="登出" Style="{StaticResource FlyoutMenuItemDangerStyle}" Click="Logout_Click" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Popup>
 
                                     <!-- Recharge Button -->
                                     <Button Grid.Column="4"

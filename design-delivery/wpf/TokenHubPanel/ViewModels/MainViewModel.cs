@@ -266,6 +266,21 @@ namespace TokenHubPanel.ViewModels
             set { _phoneNumber = value; OnPropertyChanged(); }
         }
 
+        // === Recharge ===
+        private double _rechargeAmount = 50;
+        public double RechargeAmount
+        {
+            get => _rechargeAmount;
+            set
+            {
+                _rechargeAmount = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(RechargeAmountText));
+            }
+        }
+        public string RechargeAmountText => $"¥{RechargeAmount:F2}";
+        public string RechargeOrderId { get; set; } = "lenovo_75f4bae6_121";
+
         // === Discovery ===
         private string _discoveryToolName = "QClaw";
         public string DiscoveryToolName

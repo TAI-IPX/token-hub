@@ -23,6 +23,9 @@ namespace TokenHubPanel
         private enum OnbStep { Login, AuthPending, FirstRun, ReadyToConfig }
         private OnbStep _onbStep = OnbStep.Login;
 
+        private static Brush BrushFromHex(string hex) =>
+            (Brush)(new BrushConverter().ConvertFromString(hex) ?? Brushes.Transparent);
+
         public MainWindow()
         {
             InitializeComponent();
@@ -42,7 +45,6 @@ namespace TokenHubPanel
                         OnStateChanged();
                         break;
                     case nameof(MainViewModel.IsSmartMode):
-                        AnimateToggle();
                         UpdateToolListModelNames();
                         break;
                     case nameof(MainViewModel.CurrentPage):
@@ -65,7 +67,6 @@ namespace TokenHubPanel
             UpdatePageVisibility();
             UpdateNotificationVisibility();
             UpdateBalanceBadge();
-            SyncToggleVisual();
             OnStateChanged();
         }
 
@@ -96,7 +97,7 @@ namespace TokenHubPanel
             PanelBorder.BorderThickness = isDiscovery ? new Thickness(0) : new Thickness(1);
             PanelBorder.Background = isDiscovery
                 ? Brushes.Transparent
-                : (Brush)new BrushConverter().ConvertFrom("#F0F8FBFF");
+                : BrushFromHex("#F0F8FBFF");
             PanelBorder.Effect = isDiscovery ? null : (System.Windows.Media.Effects.Effect)FindResource("PanelShadow");
         }
 
@@ -254,56 +255,10 @@ namespace TokenHubPanel
             {
                 BalanceBadgeText.Text = _vm.BalanceBadgeText;
                 string bgColor = _vm.BalanceBadgeBrush;
-                BalanceBadge.Background = (Brush)new BrushConverter().ConvertFrom(bgColor);
+                BalanceBadge.Background = BrushFromHex(bgColor);
 
                 string fgColor = _vm.Balance < 1 ? "#B42318" : "#8A5700";
-                BalanceBadgeText.Foreground = (Brush)new BrushConverter().ConvertFrom(fgColor);
-            }
-        }
-
-        private void SyncToggleVisual()
-        {
-            UpdateToggleVisual(_vm.IsSmartMode, false);
-        }
-
-        private void AnimateToggle()
-        {
-            UpdateToggleVisual(_vm.IsSmartMode, true);
-        }
-
-        private void UpdateToggleVisual(bool isOn, bool animate)
-        {
-            var duration = animate ? TimeSpan.FromMilliseconds(180) : TimeSpan.Zero;
-
-            var targetBg = isOn
-                ? (Brush)new BrushConverter().ConvertFrom("#005FB8")
-                : (Brush)new BrushConverter().ConvertFrom("#8A929D");
-
-            var targetMargin = isOn
-                ? new Thickness(23, 3, 0, 0)
-                : new Thickness(3, 3, 0, 0);
-
-            if (animate)
-            {
-                var bgAnim = new ColorAnimation
-                {
-                    To = isOn ? Color.FromRgb(0, 95, 184) : Color.FromRgb(138, 146, 157),
-                    Duration = duration
-                };
-                ToggleTrack.Background = targetBg; // For simplicity, set directly
-
-                var marginAnim = new ThicknessAnimation
-                {
-                    To = targetMargin,
-                    Duration = duration,
-                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
-                };
-                ToggleKnob.BeginAnimation(Border.MarginProperty, marginAnim);
-            }
-            else
-            {
-                ToggleTrack.Background = targetBg;
-                ToggleKnob.Margin = targetMargin;
+                BalanceBadgeText.Foreground = BrushFromHex(fgColor);
             }
         }
 
@@ -366,7 +321,22 @@ namespace TokenHubPanel
             _vm.SetState(state);
         }
 
-        private void ToggleSwitch_Click(object sender, MouseButtonEventArgs e)
+        private void SmartToggle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            ToggleSmartModeWithConfirm();
+        }
+
+        private void SmartToggle_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Space && e.Key != Key.Enter)
+                return;
+
+            e.Handled = true;
+            ToggleSmartModeWithConfirm();
+        }
+
+        private void ToggleSmartModeWithConfirm()
         {
             if (_vm.IsSmartMode)
             {
@@ -594,13 +564,13 @@ namespace TokenHubPanel
                 {
                     if (selected)
                     {
-                        b.BorderBrush = (Brush)new BrushConverter().ConvertFrom("#005FB8");
-                        b.Background = (Brush)new BrushConverter().ConvertFrom("#005FB8");
+                        b.BorderBrush = BrushFromHex("#005FB8");
+                        b.Background = BrushFromHex("#005FB8");
                     }
                     else
                     {
-                        b.BorderBrush = (Brush)new BrushConverter().ConvertFrom("#9B000000");
-                        b.Background = (Brush)new BrushConverter().ConvertFrom("#05000000");
+                        b.BorderBrush = BrushFromHex("#9B000000");
+                        b.Background = BrushFromHex("#05000000");
                     }
 
                     for (int j = 0; j < VisualTreeHelper.GetChildrenCount(b); j++)
@@ -609,7 +579,7 @@ namespace TokenHubPanel
                         if (inner is Ellipse el && el.Name == "RadioBullet")
                         {
                             el.Fill = selected ? Brushes.White : Brushes.Transparent;
-                            el.Stroke = selected ? (Brush)new BrushConverter().ConvertFrom("#0F000000") : Brushes.Transparent;
+                            el.Stroke = selected ? BrushFromHex("#0F000000") : Brushes.Transparent;
                             el.StrokeThickness = selected ? 1 : 0;
                         }
                     }
@@ -664,33 +634,6 @@ namespace TokenHubPanel
         {
             AccountMenuPopup.IsOpen = false;
             _vm.SetState(DemoState.Login);
-        }
-
-        private void SettingToggle_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is Border border)
-            {
-                bool isOn = border.Background.ToString() != "#FF8A929D";
-                var brush = isOn
-                    ? (Brush)new BrushConverter().ConvertFrom("#8A929D")
-                    : (Brush)new BrushConverter().ConvertFrom("#005FB8");
-                border.Background = brush;
-
-                // Find the knob inside
-                var knob = border.Child as Border;
-                if (knob != null)
-                {
-                    knob.HorizontalAlignment = HorizontalAlignment.Left;
-                    var anim = new ThicknessAnimation
-                    {
-                        To = isOn
-                            ? new Thickness(3, 3, 0, 0)
-                            : new Thickness(23, 3, 0, 0),
-                        Duration = TimeSpan.FromMilliseconds(180)
-                    };
-                    knob.BeginAnimation(Border.MarginProperty, anim);
-                }
-            }
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

@@ -462,25 +462,13 @@
                                                            Margin="0,2,0,0" />
                                             </StackPanel>
 
-                                            <!-- Custom Toggle Switch -->
-                                            <Border x:Name="ToggleTrack"
-                                                    Grid.Column="1"
-                                                    Width="42"
-                                                    Height="22"
-                                                    CornerRadius="99"
-                                                    Background="#8A929D"
-                                                    VerticalAlignment="Center"
-                                                    Cursor="Hand"
-                                                    MouseLeftButtonDown="ToggleSwitch_Click">
-                                                <Border x:Name="ToggleKnob"
-                                                        Width="16"
-                                                        Height="16"
-                                                        CornerRadius="99"
-                                                        Background="White"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="3,3,0,0"
-                                                        Effect="{StaticResource ToggleKnobShadow}" />
-                                            </Border>
+                                            <ToggleButton Grid.Column="1"
+                                                          Style="{StaticResource WindowsNativeSwitchStyle}"
+                                                          IsChecked="{Binding IsSmartMode, Mode=OneWay}"
+                                                          VerticalAlignment="Center"
+                                                          ToolTip="智能模型匹配"
+                                                          PreviewMouseLeftButtonDown="SmartToggle_PreviewMouseLeftButtonDown"
+                                                          PreviewKeyDown="SmartToggle_PreviewKeyDown" />
                                         </Grid>
                                     </Border>
 
@@ -1056,21 +1044,11 @@
                                                 <TextBlock Text="开机自启" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
                                                 <TextBlock Text="登录 Windows 后自动运行" FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0" />
                                             </StackPanel>
-                                            <Border Grid.Column="1"
-                                                    Width="42" Height="22"
-                                                    CornerRadius="99"
-                                                    Background="{StaticResource AccentBrush}"
-                                                    VerticalAlignment="Center"
-                                                    Cursor="Hand"
-                                                    Margin="0,0,0,0"
-                                                    MouseLeftButtonDown="SettingToggle_Click">
-                                                <Border Width="16" Height="16"
-                                                        CornerRadius="99"
-                                                        Background="White"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="23,3,0,0"
-                                                        Effect="{StaticResource ToggleKnobShadow}" />
-                                            </Border>
+                                            <ToggleButton Grid.Column="1"
+                                                          Style="{StaticResource WindowsNativeSwitchStyle}"
+                                                          IsChecked="True"
+                                                          VerticalAlignment="Center"
+                                                          ToolTip="开机自启" />
                                         </Grid>
                                     </Border>
 
@@ -1088,20 +1066,11 @@
                                                 <TextBlock Text="系统通知" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
                                                 <TextBlock Text="发现新应用和切换异常时提醒" FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0" />
                                             </StackPanel>
-                                            <Border Grid.Column="1"
-                                                    Width="42" Height="22"
-                                                    CornerRadius="99"
-                                                    Background="{StaticResource AccentBrush}"
-                                                    VerticalAlignment="Center"
-                                                    Cursor="Hand"
-                                                    MouseLeftButtonDown="SettingToggle_Click">
-                                                <Border Width="16" Height="16"
-                                                        CornerRadius="99"
-                                                        Background="White"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="23,3,0,0"
-                                                        Effect="{StaticResource ToggleKnobShadow}" />
-                                            </Border>
+                                            <ToggleButton Grid.Column="1"
+                                                          Style="{StaticResource WindowsNativeSwitchStyle}"
+                                                          IsChecked="True"
+                                                          VerticalAlignment="Center"
+                                                          ToolTip="系统通知" />
                                         </Grid>
                                     </Border>
 
@@ -1119,20 +1088,11 @@
                                                 <TextBlock Text="自动检测新应用" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
                                                 <TextBlock Text="安装应用后自动加入列表" FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0" />
                                             </StackPanel>
-                                            <Border Grid.Column="1"
-                                                    Width="42" Height="22"
-                                                    CornerRadius="99"
-                                                    Background="{StaticResource AccentBrush}"
-                                                    VerticalAlignment="Center"
-                                                    Cursor="Hand"
-                                                    MouseLeftButtonDown="SettingToggle_Click">
-                                                <Border Width="16" Height="16"
-                                                        CornerRadius="99"
-                                                        Background="White"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="23,3,0,0"
-                                                        Effect="{StaticResource ToggleKnobShadow}" />
-                                            </Border>
+                                            <ToggleButton Grid.Column="1"
+                                                          Style="{StaticResource WindowsNativeSwitchStyle}"
+                                                          IsChecked="True"
+                                                          VerticalAlignment="Center"
+                                                          ToolTip="自动检测新应用" />
                                         </Grid>
                                     </Border>
 
@@ -1152,20 +1112,11 @@
                                                            FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0"
                                                            TextWrapping="Wrap" />
                                             </StackPanel>
-                                            <Border Grid.Column="1"
-                                                    Width="42" Height="22"
-                                                    CornerRadius="99"
-                                                    Background="{StaticResource AccentBrush}"
-                                                    VerticalAlignment="Center"
-                                                    Cursor="Hand"
-                                                    MouseLeftButtonDown="SettingToggle_Click">
-                                                <Border Width="16" Height="16"
-                                                        CornerRadius="99"
-                                                        Background="White"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="23,3,0,0"
-                                                        Effect="{StaticResource ToggleKnobShadow}" />
-                                            </Border>
+                                            <ToggleButton Grid.Column="1"
+                                                          Style="{StaticResource WindowsNativeSwitchStyle}"
+                                                          IsChecked="True"
+                                                          VerticalAlignment="Center"
+                                                          ToolTip="接管前二次确认" />
                                         </Grid>
                                     </Border>
 

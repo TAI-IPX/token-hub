@@ -136,6 +136,85 @@
         <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
 
+    <!-- Windows 11 style ToggleSwitch for WPF ToggleButton -->
+    <Style x:Key="WindowsNativeSwitchStyle" TargetType="ToggleButton">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="Background" Value="#00000000" />
+        <Setter Property="BorderBrush" Value="#8A929D" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid Width="{TemplateBinding Width}"
+                          Height="{TemplateBinding Height}"
+                          SnapsToDevicePixels="True">
+                        <Border x:Name="SwitchTrack"
+                                CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" />
+                        <Ellipse x:Name="SwitchKnob"
+                                 Width="12"
+                                 Height="12"
+                                 Fill="#8A929D"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Margin="4,0,0,0" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="SwitchTrack" Property="Background" Value="#0F000000" />
+                            <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#6F7782" />
+                            <Setter TargetName="SwitchKnob" Property="Fill" Value="#6F7782" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#005FB8" />
+                            <Setter TargetName="SwitchTrack" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="SwitchKnob" Property="Width" Value="14" />
+                            <Setter TargetName="SwitchKnob" Property="Height" Value="14" />
+                            <Setter TargetName="SwitchKnob" Property="Margin" Value="3,0,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="SwitchTrack" Property="Background" Value="#005FB8" />
+                            <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#005FB8" />
+                            <Setter TargetName="SwitchKnob" Property="Fill" Value="White" />
+                            <Setter TargetName="SwitchKnob" Property="Margin" Value="24,0,0,0" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="SwitchTrack" Property="Background" Value="#004C99" />
+                            <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#004C99" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True" />
+                                <Condition Property="IsPressed" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="SwitchTrack" Property="Background" Value="#003E7E" />
+                            <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#003E7E" />
+                            <Setter TargetName="SwitchKnob" Property="Margin" Value="23,0,0,0" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- TitleBar Button -->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
         <Setter Property="Width" Value="20" />

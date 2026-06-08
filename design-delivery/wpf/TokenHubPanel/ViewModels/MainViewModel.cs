@@ -62,6 +62,7 @@ namespace TokenHubPanel.ViewModels
                 OnPropertyChanged(nameof(SettingsButtonVisibility));
                 OnPropertyChanged(nameof(NoApps)); OnPropertyChanged(nameof(ShowNoAppsEmpty));
                 OnPropertyChanged(nameof(NoAppsEmptyVisibility)); OnPropertyChanged(nameof(ToolListVisibility));
+                OnPropertyChanged(nameof(SmartModeVisibility));
                 OnPropertyChanged(nameof(SmartConfirmVisibility));
             }
         }
@@ -232,6 +233,7 @@ namespace TokenHubPanel.ViewModels
                 OnPropertyChanged(nameof(ShowNoAppsEmpty));
                 OnPropertyChanged(nameof(NoAppsEmptyVisibility));
                 OnPropertyChanged(nameof(ToolListVisibility));
+                OnPropertyChanged(nameof(SmartModeVisibility));
             }
         }
 
@@ -254,6 +256,7 @@ namespace TokenHubPanel.ViewModels
         public bool ShowNoAppsEmpty => NoApps;
         public Visibility NoAppsEmptyVisibility => NoApps ? Visibility.Visible : Visibility.Collapsed;
         public Visibility ToolListVisibility => !NoApps ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility SmartModeVisibility => NoApps ? Visibility.Collapsed : Visibility.Visible;
 
         // Smart confirm overlay
         public Visibility SmartConfirmVisibility => ShowSmartConfirm ? Visibility.Visible : Visibility.Collapsed;

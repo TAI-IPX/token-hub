@@ -200,52 +200,22 @@
                                     </Button.Template>
                                 </Button>
                                 <!-- Settings gear (hidden when not logged in) -->
-                                <Button Width="32"
-                                        Height="32"
+                                <Button Width="20"
+                                        Height="20"
+                                        Margin="0,0,12,0"
                                         Visibility="{Binding SettingsButtonVisibility}"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Cursor="Hand"
+                                        Style="{StaticResource SecondaryTitleIconButtonStyle}"
                                         Click="SettingsButton_Click"
                                         ToolTip="设置">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Background" Value="Transparent"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#0D000000"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}" CornerRadius="4">
-                                                <Image Source="Assets/panel-settings@3x.png" Width="20" Height="20"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Button.Template>
+                                    <Image Source="Assets/panel-settings@3x.png" Width="20" Height="20"/>
                                 </Button>
                                 <!-- Close -->
-                                <Button Width="32"
-                                        Height="32"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Cursor="Hand"
+                                <Button Width="20"
+                                        Height="20"
+                                        Style="{StaticResource SecondaryTitleIconButtonStyle}"
                                         Click="CloseButton_Click"
                                         ToolTip="关闭">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}" CornerRadius="4">
-                                                <Image Source="Assets/panel-close@3x.png" Width="20" Height="20"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#0D000000"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Button.Template>
+                                    <Image Source="Assets/panel-close@3x.png" Width="20" Height="20"/>
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -268,15 +238,20 @@
                                 <Border x:Name="LoginPanel"
                                         Padding="16"
                                         Background="Transparent">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                    <DockPanel LastChildFill="True">
 
-                                        <StackPanel Grid.Row="0">
-                                            <!-- Illustration clipped to 48px (shows middle band of image) -->
+                                        <!-- CTA button docked to bottom -->
+                                        <Button DockPanel.Dock="Bottom"
+                                                Content="登录并自动配置"
+                                                Margin="0,32,0,0"
+                                                Style="{StaticResource OnboardingButtonStyle}"
+                                                Click="LoginButton_Click" />
+
+                                        <!-- InfoBlock -->
+                                        <StackPanel VerticalAlignment="Top">
+                                            <!-- Illustration clipped to 48px -->
                                             <Border Height="48"
+                                                    CornerRadius="8"
                                                     ClipToBounds="True"
                                                     HorizontalAlignment="Left"
                                                     Margin="0,0,0,16">
@@ -286,81 +261,41 @@
                                                        HorizontalAlignment="Left"
                                                        Margin="0,-16,0,0" />
                                             </Border>
-
                                             <!-- Title -->
                                             <TextBlock Text="自动完成服务配置"
                                                        FontSize="24"
                                                        FontWeight="Bold"
                                                        Foreground="#E01B1B1F"
                                                        Margin="0,0,0,16" />
-
                                             <!-- Description -->
                                             <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。"
                                                        FontSize="14"
+                                                       LineHeight="22"
                                                        Foreground="#731B1B1F"
                                                        TextWrapping="Wrap"
                                                        Margin="0,0,0,16" />
-
-                                            <!-- Bullet list -->
-                                            <TextBlock Text="• 自动完成必要设置"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F"
-                                                       Margin="0,0,0,4" />
-                                            <TextBlock Text="• 自动为应用选择合适的模型"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F"
-                                                       Margin="0,0,0,4" />
-                                            <TextBlock Text="• 配置完成后即可使用"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F" />
+                                            <!-- Bullets -->
+                                            <TextBlock FontSize="14"
+                                                       LineHeight="22"
+                                                       Foreground="#731B1B1F">
+                                                <Run Text="• 自动完成必要设置" /><LineBreak />
+                                                <Run Text="• 自动为应用选择合适的模型" /><LineBreak />
+                                                <Run Text="• 配置完成后即可使用" />
+                                            </TextBlock>
                                         </StackPanel>
-
-                                        <!-- CTA button -->
-                                        <Button Grid.Row="1"
-                                                Content="登录并自动配置"
-                                                Margin="0,32,0,0"
-                                                Style="{StaticResource OnboardingButtonStyle}"
-                                                Click="LoginButton_Click" />
-                                    </Grid>
+                                    </DockPanel>
                                 </Border>
 
                                 <!-- CONFIGURING STATE -->
                                 <Border x:Name="ConfiguringPanel"
                                         Padding="16"
                                         Background="Transparent">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                    <DockPanel LastChildFill="True">
 
-                                        <StackPanel Grid.Row="0" VerticalAlignment="Center">
-                                            <TextBlock Text="正在完成服务配置"
-                                                       FontSize="24"
-                                                       FontWeight="Bold"
-                                                       Foreground="#E01B1B1F"
-                                                       Margin="0,0,0,16" />
-                                            <TextBlock Text="正在创建 Token Hub 访问凭证并接入本机服务，请稍候"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F"
-                                                       TextWrapping="Wrap"
-                                                       Margin="0,0,0,16" />
-                                            <TextBlock Text="• 联想账号认证完成"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F"
-                                                       Margin="0,0,0,4" />
-                                            <TextBlock Text="• 正在创建访问凭证"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F"
-                                                       Margin="0,0,0,4" />
-                                            <TextBlock Text="• 正在启用多模型服务"
-                                                       FontSize="14"
-                                                       Foreground="#731B1B1F" />
-                                        </StackPanel>
-
-                                        <!-- Progress bar -->
-                                        <Border Grid.Row="1"
+                                        <!-- Progress bar docked to bottom -->
+                                        <Border DockPanel.Dock="Bottom"
                                                 Height="3"
+                                                Margin="0,16,0,0"
                                                 CornerRadius="99"
                                                 Background="#14000000">
                                             <Border x:Name="ProgressBarFill"
@@ -370,7 +305,29 @@
                                                     CornerRadius="99"
                                                     Background="{StaticResource AccentBrush}" />
                                         </Border>
-                                    </Grid>
+
+                                        <!-- InfoBlock vertically centered -->
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="正在完成服务配置"
+                                                       FontSize="24"
+                                                       FontWeight="Bold"
+                                                       Foreground="#E01B1B1F"
+                                                       Margin="0,0,0,16" />
+                                            <TextBlock Text="正在创建 Token Hub 访问凭证并接入本机服务，请稍候"
+                                                       FontSize="14"
+                                                       LineHeight="22"
+                                                       Foreground="#731B1B1F"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,16" />
+                                            <TextBlock FontSize="14"
+                                                       LineHeight="22"
+                                                       Foreground="#731B1B1F">
+                                                <Run Text="• 联想账号认证完成" /><LineBreak />
+                                                <Run Text="• 正在创建访问凭证" /><LineBreak />
+                                                <Run Text="• 正在启用多模型服务" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
                                 </Border>
 
                                 <!-- AUTH-PENDING STATE -->
@@ -462,7 +419,7 @@
                                             Height="56"
                                             Padding="16,0"
                                             Background="Transparent"
-                                            Opacity="{Binding DetectionDependentOpacity}">
+                                            Visibility="{Binding SmartModeVisibility}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -483,7 +440,6 @@
                                             <ToggleButton Grid.Column="1"
                                                           Style="{StaticResource WindowsNativeSwitchStyle}"
                                                           IsChecked="{Binding IsSmartMode, Mode=OneWay}"
-                                                          IsEnabled="{Binding HasDetectedApps}"
                                                           VerticalAlignment="Center"
                                                           ToolTip="智能模型匹配"
                                                           PreviewMouseLeftButtonDown="SmartToggle_PreviewMouseLeftButtonDown"
@@ -791,7 +747,7 @@
                                             Width="52"
                                             Height="32"
                                             FontSize="13"
-                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            Style="{StaticResource RechargeButtonStyle}"
                                             VerticalAlignment="Center"
                                             Click="RechargeButton_Click" />
                                 </Grid>

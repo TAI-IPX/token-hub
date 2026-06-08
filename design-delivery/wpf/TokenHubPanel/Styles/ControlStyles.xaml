@@ -183,6 +183,48 @@
         </Setter>
     </Style>
 
+    <!-- Recharge button: neutral by default, primary only when balance is insufficient -->
+    <Style x:Key="RechargeButtonStyle" TargetType="Button">
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Foreground" Value="#CC1B1B1F" />
+        <Setter Property="Background" Value="#B3FFFFFF" />
+        <Setter Property="BorderBrush" Value="#1A000000" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#EEF1F6" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#DEE2E9" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsLowBalance}" Value="True">
+                            <Setter Property="Background" Value="#005FB8" />
+                            <Setter Property="BorderBrush" Value="#14FFFFFF" />
+                            <Setter Property="Foreground" Value="White" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Full-width primary button for onboarding -->
     <Style x:Key="OnboardingButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
         <Setter Property="HorizontalAlignment" Value="Stretch" />

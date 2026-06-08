@@ -16,8 +16,10 @@ namespace TokenHubPanel
     public partial class MainWindow : Window
     {
         private readonly MainViewModel _vm;
+        private DemoSwitcherWindow? _demoSwitcher;
         private DispatcherTimer? _configTimer;
         private DispatcherTimer? _toastTimer;
+        private bool _syncingDemoState;
 
         // Onboarding sub-step (only meaningful while CurrentState == Login)
         private enum OnbStep { Login, AuthPending, FirstRun, ReadyToConfig }
@@ -33,6 +35,7 @@ namespace TokenHubPanel
 
             SubscribeViewModelEvents();
             InitializeUI();
+            Loaded += MainWindow_Loaded;
         }
 
         private void SubscribeViewModelEvents()
@@ -68,19 +71,34 @@ namespace TokenHubPanel
             UpdateNotificationVisibility();
             UpdateBalanceBadge();
             OnStateChanged();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
             PositionNearTray();
+            ShowDemoSwitcher();
         }
 
         private void PositionNearTray()
         {
             var workArea = SystemParameters.WorkArea;
-            Left = workArea.Right - ActualWidth - 12;
-            Top = workArea.Bottom - ActualHeight - 12;
+            Left = workArea.Right - ActualWidth - 24;
+            Top = workArea.Bottom - ActualHeight - 24;
+        }
+
+        private void ShowDemoSwitcher()
+        {
+            if (_demoSwitcher != null)
+                return;
+
+            _demoSwitcher = new DemoSwitcherWindow(this);
+            _demoSwitcher.Show();
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            PositionNearTray();
+            if (IsLoaded)
+                PositionNearTray();
         }
 
         private void InnerClipBorder_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -329,8 +347,25 @@ namespace TokenHubPanel
 
         private void StateCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _syncingDemoState) return;
             var idx = ((ComboBox)sender).SelectedIndex;
+            ApplyDemoStateByIndex(idx);
+        }
+
+        public void SetDemoStateByIndex(int idx)
+        {
+            if (StateCombo.SelectedIndex != idx)
+            {
+                _syncingDemoState = true;
+                StateCombo.SelectedIndex = idx;
+                _syncingDemoState = false;
+            }
+
+            ApplyDemoStateByIndex(idx);
+        }
+
+        private void ApplyDemoStateByIndex(int idx)
+        {
             var state = idx switch
             {
                 0 => DemoState.Login,

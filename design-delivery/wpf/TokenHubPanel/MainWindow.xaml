@@ -501,8 +501,9 @@
                                                         Style="{StaticResource SecondaryButtonStyle}"
                                                         Click="CancelSmartConfirm_Click" />
                                                 <Button Content="开启"
-                                                        Width="52"
+                                                        MinWidth="64"
                                                         Height="30"
+                                                        Padding="14,0"
                                                         FontSize="13"
                                                         Style="{StaticResource PrimaryButtonStyle}"
                                                         Click="ConfirmSmartMatch_Click" />

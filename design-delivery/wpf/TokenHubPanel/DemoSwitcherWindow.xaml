@@ -1,0 +1,71 @@
+<Window x:Class="TokenHubPanel.DemoSwitcherWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Demo State"
+        FontFamily="Microsoft YaHei"
+        FontSize="12"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        AllowsTransparency="True"
+        Background="Transparent"
+        SizeToContent="WidthAndHeight"
+        Topmost="True"
+        ShowInTaskbar="False">
+    <Border MaxWidth="620"
+            Background="#2A161C26"
+            CornerRadius="8"
+            Padding="10"
+            BorderBrush="#61FFFFFF"
+            BorderThickness="1">
+        <StackPanel>
+            <TextBlock Text="Demo State"
+                       Foreground="White"
+                       FontSize="12"
+                       FontWeight="Bold"
+                       Margin="0,0,0,8" />
+            <WrapPanel>
+                <Button Content="未登录"
+                        Tag="0"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="配置中"
+                        Tag="1"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="智能关"
+                        Tag="2"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="智能开"
+                        Tag="3"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="待选模型"
+                        Tag="4"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="额度不足"
+                        Tag="5"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="通知: 智能开"
+                        Tag="6"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="通知: 智能关"
+                        Tag="7"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="新版本"
+                        Tag="8"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+                <Button Content="无应用"
+                        Tag="9"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="DemoStateButton_Click" />
+            </WrapPanel>
+        </StackPanel>
+    </Border>
+</Window>

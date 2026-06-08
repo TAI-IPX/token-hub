@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:TokenHubPanel.ViewModels"
         xmlns:models="clr-namespace:TokenHubPanel.Models"
         Title="联想 Token Hub"
+        Icon="Assets/desktop-token-hub-icon@3x.png"
         FontFamily="Microsoft YaHei"
         FontSize="14"
         WindowStyle="None"

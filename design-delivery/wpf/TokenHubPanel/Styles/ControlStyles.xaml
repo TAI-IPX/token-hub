@@ -286,6 +286,37 @@
         </Setter>
     </Style>
 
+    <!-- Secondary page title bar icon button -->
+    <Style x:Key="SecondaryTitleIconButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="SecondaryTitleIconBorder"
+                            CornerRadius="4"
+                            Background="Transparent"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="SecondaryTitleIconBorder" Property="Background" Value="#0D000000" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="SecondaryTitleIconBorder" Property="Background" Value="#14000000" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Tool List Item -->
     <Style x:Key="ToolListItemStyle" TargetType="Button">
         <Setter Property="Height" Value="48" />

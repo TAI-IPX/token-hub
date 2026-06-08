@@ -83,6 +83,12 @@ namespace TokenHubPanel
             PositionNearTray();
         }
 
+        private void InnerClipBorder_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ((Border)sender).Clip = new RectangleGeometry(
+                new Rect(0, 0, e.NewSize.Width, e.NewSize.Height), 7, 7);
+        }
+
         private void OnStateChanged()
         {
             // Entering Login state from a demo switch resets onboarding to the login step.
@@ -121,7 +127,7 @@ namespace TokenHubPanel
             var isReady = _vm.IsReady;
             var isDiscovering = _vm.IsDiscovering;
 
-            TitleBarBorder.Visibility = isDiscovering ? Visibility.Collapsed : Visibility.Visible;
+            UpdateTitleBarVisibility();
             ContentHost.Visibility = isDiscovering ? Visibility.Collapsed : Visibility.Visible;
 
             // Onboarding sub-panels (only when in Login state)
@@ -210,6 +216,7 @@ namespace TokenHubPanel
             HomePage.Visibility     = page == PanelPage.Home     ? Visibility.Visible : Visibility.Collapsed;
             ModelsPage.Visibility   = page == PanelPage.Models   ? Visibility.Visible : Visibility.Collapsed;
             SettingsPage.Visibility = page == PanelPage.Settings ? Visibility.Visible : Visibility.Collapsed;
+            UpdateTitleBarVisibility();
 
             UIElement? target = page switch
             {
@@ -222,6 +229,14 @@ namespace TokenHubPanel
 
             if (page == PanelPage.Models)
                 Dispatcher.BeginInvoke((Action)SyncCurrentModelSelection, DispatcherPriority.Loaded);
+        }
+
+        private void UpdateTitleBarVisibility()
+        {
+            TitleBarBorder.Visibility =
+                !_vm.IsDiscovering && _vm.CurrentPage == PanelPage.Home
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
         private static void FadePage(UIElement target)

@@ -1340,9 +1340,9 @@
                                 <Grid>
                                     <Button Content="查看配置"
                                             HorizontalAlignment="Right"
-                                            Width="72"
+                                            MinWidth="84"
                                             Height="30"
-                                            Padding="0"
+                                            Padding="16,0"
                                             FontSize="13"
                                             Style="{StaticResource PrimaryButtonStyle}"
                                             Cursor="Hand"

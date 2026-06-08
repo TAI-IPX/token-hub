@@ -21,19 +21,8 @@
     </Window.DataContext>
 
     <Grid>
-        <!-- Desktop background subtle hint -->
-        <Image Source="Assets/wallpaper-bloom-white@3x.png"
-               Stretch="UniformToFill"
-               Opacity="0.12" />
-
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <!-- State Selector (separate from the tray panel) -->
-            <Border Grid.Row="0"
+        <!-- State Selector (kept hidden for legacy combo-driven demos) -->
+        <Border Visibility="Collapsed"
                     Background="#2A161C26"
                     CornerRadius="8"
                     Padding="10"
@@ -68,10 +57,9 @@
                 </StackPanel>
             </Border>
 
-            <!-- The Tray Panel -->
-            <!-- Outer: shadow + border only, no ClipToBounds (clipping kills shadow) -->
-            <Border x:Name="PanelBorder"
-                    Grid.Row="1"
+        <!-- The Tray Panel -->
+        <!-- Outer: shadow + border only, no ClipToBounds (clipping kills shadow) -->
+        <Border x:Name="PanelBorder"
                     Width="440"
                     Height="384"
                     CornerRadius="8"
@@ -513,8 +501,8 @@
                                                         Style="{StaticResource SecondaryButtonStyle}"
                                                         Click="CancelSmartConfirm_Click" />
                                                 <Button Content="开启"
+                                                        Width="52"
                                                         Height="30"
-                                                        Padding="14,0"
                                                         FontSize="13"
                                                         Style="{StaticResource PrimaryButtonStyle}"
                                                         Click="ConfirmSmartMatch_Click" />
@@ -1371,7 +1359,6 @@
                     </Border>
                 </Grid>
                 </Border><!-- /inner clip border -->
-            </Border>
-        </Grid>
+        </Border>
     </Grid>
 </Window>

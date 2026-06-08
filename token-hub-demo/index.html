@@ -3,42 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>联想 Token Hub · Windows 设计交付 Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=figma-delivery-20260605p" />
+    <title>联想 Token Hub · 托盘版原型</title>
+    <link rel="stylesheet" href="./styles.css?v=smart-direct-20260604" />
   </head>
   <body>
-    <svg class="icon-sprite" aria-hidden="true">
-      <symbol id="icon-apps" viewBox="0 0 20 20">
-        <path d="M4.5 4.5h5v5h-5zM10.5 4.5h5v5h-5zM4.5 10.5h5v5h-5zM10.5 10.5h5v5h-5z" />
-      </symbol>
-      <symbol id="icon-arrow-left" viewBox="0 0 20 20">
-        <path d="M8.8 4.4 3.7 9.5a.7.7 0 0 0 0 1l5.1 5.1 1-1-3.9-3.9h10.4V9.3H5.9l3.9-3.9z" />
-      </symbol>
-      <symbol id="icon-chevron-down" viewBox="0 0 20 20">
-        <path d="M5.2 7.5 10 12.3l4.8-4.8 1 1L10.5 14a.7.7 0 0 1-1 0L4.2 8.5z" />
-      </symbol>
-      <symbol id="icon-chevron-right" viewBox="0 0 20 20">
-        <path d="m7.4 4.2 5.3 5.3a.7.7 0 0 1 0 1l-5.3 5.3-1-1 4.8-4.8-4.8-4.8z" />
-      </symbol>
-      <symbol id="icon-close" viewBox="0 0 20 20">
-        <path d="m5.3 4.3 4.7 4.7 4.7-4.7 1 1-4.7 4.7 4.7 4.7-1 1-4.7-4.7-4.7 4.7-1-1 4.7-4.7-4.7-4.7z" />
-      </symbol>
-      <symbol id="icon-external" viewBox="0 0 20 20">
-        <path d="M6 4.5h3v1.4H6.2c-.7 0-1.2.5-1.2 1.2v6.7c0 .7.5 1.2 1.2 1.2h6.7c.7 0 1.2-.5 1.2-1.2V11h1.4v3c0 1.3-1.1 2.4-2.4 2.4H6A2.4 2.4 0 0 1 3.6 14V7A2.4 2.4 0 0 1 6 4.5Zm5.2 0h4.3v4.3h-1.4V6.9l-5.2 5.2-1-1 5.2-5.2h-1.9z" />
-      </symbol>
-      <symbol id="icon-refresh" viewBox="0 0 20 20">
-        <path d="M15.6 5.5V2.9h1.4v5h-5V6.5h2.7A5.6 5.6 0 0 0 4.5 9.7H3.1a7 7 0 0 1 12.5-4.2Zm-11.2 9v2.6H3v-5h5v1.4H5.3a5.6 5.6 0 0 0 10.2-3.2h1.4a7 7 0 0 1-12.5 4.2Z" />
-      </symbol>
-      <symbol id="icon-settings" viewBox="0 0 20 20">
-        <path d="M10 6.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm0 1.4a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6Zm6.4 1.4-.9-.3a5.8 5.8 0 0 0-.6-1.4l.4-.9-1.3-1.3-.9.4c-.4-.2-.9-.4-1.4-.6l-.3-.9H8.6l-.3.9c-.5.1-1 .3-1.4.6l-.9-.4L4.7 7l.4.9c-.2.4-.4.9-.6 1.4l-.9.3v1.8l.9.3c.1.5.3 1 .6 1.4l-.4.9L6 15.3l.9-.4c.4.2.9.4 1.4.6l.3.9h2.8l.3-.9c.5-.1 1-.3 1.4-.6l.9.4 1.3-1.3-.4-.9c.2-.4.4-.9.6-1.4l.9-.3V9.6Z" />
-      </symbol>
-      <symbol id="icon-spark" viewBox="0 0 20 20">
-        <path d="M10.7 2.5 12 7.8l4.9 2.2-4.9 2.2-1.3 5.3-2.2-4.9-5.4-2.6 5.4-2.6z" />
-      </symbol>
-      <symbol id="icon-wallet" viewBox="0 0 20 20">
-        <path d="M4.2 5.2h11.1c1 0 1.8.8 1.8 1.8v6.8c0 1-.8 1.8-1.8 1.8H4.2c-1 0-1.8-.8-1.8-1.8V7c0-1 .8-1.8 1.8-1.8Zm0 1.4a.4.4 0 0 0-.4.4v6.8c0 .2.2.4.4.4h11.1c.2 0 .4-.2.4-.4v-2.2h-4.1A2.6 2.6 0 0 1 9 9c0-1.4 1.2-2.6 2.6-2.6h4.1V7a.4.4 0 0 0-.4-.4Zm11.5 2.8V8h-4.1a1.2 1.2 0 0 0 0 2.4h4.1Z" />
-      </symbol>
-    </svg>
     <main class="desktop" aria-label="Windows 11 桌面">
       <div class="desktop-copy">
         <span>Windows 11</span>
@@ -46,109 +14,105 @@
       </div>
       <button class="desktop-app-icon" id="desktop-app-icon" aria-label="打开联想 Token Hub">
         <span>
-          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
         </span>
         <strong>联想 Token Hub</strong>
       </button>
       <div class="desktop-demo-controls">
         <button class="demo-menu-trigger" data-demo-menu="true" aria-label="选择演示场景" aria-expanded="false">
-          <span class="hamburger" aria-hidden="true">&#9776;</span>
+          <span class="hamburger" aria-hidden="true">☰</span>
           <strong id="demo-current-label" hidden>正常使用 - 智能匹配关</strong>
         </button>
         <div class="demo-control-buttons" id="demo-menu" hidden>
           <button data-demo-state="login-required">首次使用 - 未登录</button>
-          <button data-demo-state="configuring">首次使用 - 配置中</button>
           <button data-demo-state="smart-off">正常使用 - 智能匹配关</button>
           <button data-demo-state="smart-on">正常使用 - 智能匹配开</button>
           <button data-demo-state="unconfigured">待选择模型 - 多应用未配置</button>
+          <button data-demo-state="external-config">外部配置 - 部分应用不由 Token Hub 管理</button>
           <button data-demo-state="low-balance">额度不足 - 引导充值</button>
           <button data-demo-state="auto-discovery">通知 - 智能匹配开，发现新应用</button>
           <button data-demo-state="manual-discovery">通知 - 智能匹配关，发现新应用</button>
+          <button data-demo-state="external-discovery">通知 - 发现外部配置</button>
         </div>
       </div>
     </main>
 
     <section class="tray-panel open" id="tray-panel" aria-label="联想 Token Hub">
       <div class="panel-page active" data-panel-page="home">
-        <!-- Title Bar 组件 -->
-        <header class="panel-titlebar">
-          <div class="titlebar-left">
-            <img src="./assets/3x/panel-logo@3x.png" class="titlebar-logo" alt="" />
-            <span class="titlebar-title">联想 TokenHub</span>
-            <button class="titlebar-dropdown" data-app-menu="true" aria-label="应用菜单" aria-expanded="false"><svg class="ui-icon" aria-hidden="true"><use href="#icon-chevron-down" /></svg></button>
+        <header class="panel-header">
+          <div class="app-menu-wrap">
+            <div class="app-brand app-menu-button locked" data-app-menu="true" role="button" tabindex="0" aria-expanded="false" aria-controls="app-menu">
+              <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+              <h1>联想 Token Hub</h1>
+              <span class="menu-chevron" aria-hidden="true"></span>
+            </div>
+            <nav class="app-menu" id="app-menu" hidden aria-label="联想 Token Hub 菜单">
+              <button data-web-link="dashboard"><span class="menu-item-main"><i>▥</i>数据看板</span><span>↗</span></button>
+              <button data-web-link="logs"><span class="menu-item-main"><i>≋</i>使用日志</span><span>↗</span></button>
+              <button data-web-link="keys"><span class="menu-item-main"><i>⚿</i>密钥管理</span><span>↗</span></button>
+              <button data-web-link="marketplace"><span class="menu-item-main"><i>◇</i>模型广场</span><span>↗</span></button>
+            </nav>
           </div>
-          <div class="titlebar-right">
-            <button class="titlebar-btn" data-settings="true" aria-label="设置"><img src="./assets/3x/panel-settings@3x.png" alt="" /></button>
-            <button class="titlebar-btn titlebar-close" data-close-panel="true" aria-label="关闭"><img src="./assets/3x/panel-close@3x.png" alt="" /></button>
+          <div class="panel-actions">
+            <button class="icon-button settings-button" data-settings="true" aria-label="设置" title="设置">⚙</button>
+            <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
           </div>
-          <nav class="app-menu" id="app-menu" hidden aria-label="联想 Token Hub 菜单">
-            <button data-web-link="dashboard">数据看板</button>
-            <button data-web-link="logs">使用日志</button>
-            <button data-web-link="keys">密钥管理</button>
-            <button data-web-link="marketplace">模型广场</button>
-          </nav>
         </header>
 
         <section class="onboarding-card" id="onboarding-card"></section>
 
-        <!-- App List 组件 -->
         <div class="ready-content" id="ready-content">
           <section class="smart-mode">
             <div class="smart-mode-main">
               <div class="smart-mode-copy">
+                <span class="feature-icon compact">✦</span>
                 <div>
                   <strong>智能模型匹配</strong>
-                  <p>按应用特性自动选择模型</p>
+                  <p>开启后，应用将使用 Token Hub 提供的推荐模型。</p>
                 </div>
               </div>
               <button class="toggle" data-smart-toggle="true" aria-label="智能模型匹配"></button>
             </div>
-            <div class="smart-inline-confirm" id="smart-confirm" hidden>
-              <p>开启后，所有应用将改用 Token Hub 推荐模型。</p>
-              <div>
-                <button data-cancel-smart-confirm="true">取消</button>
-                <button class="primary" data-confirm-smart-match="true">开启</button>
-              </div>
-            </div>
           </section>
 
-          <section class="app-list-section">
-            <div class="app-list-header">
+          <section class="section-block">
+            <div class="section-heading">
               <h2>应用列表</h2>
-              <button class="app-list-refresh" data-refresh-apps="true" aria-label="重新检测应用"><img src="./assets/3x/icon-action@3x.svg" alt="" /></button>
+              <button class="icon-button refresh" data-refresh-apps="true" aria-label="重新检测应用" title="重新检测应用">↻</button>
             </div>
-            <div class="app-list" id="tool-list"></div>
+            <div class="tool-list" id="tool-list"></div>
           </section>
-        </div>
 
-        <section class="account-list" id="account-bar"></section>
+          <section class="account-list" id="account-bar"></section>
+        </div>
       </div>
 
       <div class="panel-page" data-panel-page="models">
-        <header class="detail-header-v2">
-          <div class="detail-header-left">
-            <button class="detail-back" data-back-home="true" aria-label="返回"><svg class="ui-icon"><use href="#icon-arrow-left" /></svg></button>
+        <header class="detail-header">
+          <button class="back-button" data-back-home="true" aria-label="返回">←</button>
+          <div>
             <h1 id="detail-tool-name"></h1>
+            <p>选择此应用使用的模型</p>
           </div>
-          <button class="detail-close" data-close-panel="true" aria-label="关闭"><img src="./assets/3x/panel-close@3x.png" alt="" /></button>
+          <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
         </header>
-        <section class="model-list-v2" id="model-list"></section>
+        <div class="detail-accent"></div>
+        <section class="model-list" id="model-list"></section>
       </div>
 
       <div class="panel-page" data-panel-page="settings">
-        <header class="detail-header-v2 settings-header">
-          <div class="detail-header-left">
-            <button class="detail-back" data-back-home="true" aria-label="返回"><svg class="ui-icon"><use href="#icon-arrow-left" /></svg></button>
+        <header class="detail-header">
+          <button class="back-button" data-back-home="true" aria-label="返回">←</button>
+          <div>
             <h1>设置</h1>
           </div>
-          <button class="detail-close" data-close-panel="true" aria-label="关闭"><img src="./assets/3x/panel-close@3x.png" alt="" /></button>
+          <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
         </header>
         <div class="detail-accent"></div>
         <section class="settings-list">
           <div class="setting-row"><div><strong>开机自启</strong><small>登录 Windows 后自动运行</small></div><button class="toggle active" aria-label="开机自启"></button></div>
           <div class="setting-row"><div><strong>系统通知</strong><small>发现新应用和切换异常时提醒</small></div><button class="toggle active" aria-label="系统通知"></button></div>
           <div class="setting-row"><div><strong>自动检测新应用</strong><small>安装应用后自动加入列表</small></div><button class="toggle active" aria-label="自动检测新应用"></button></div>
-          <div class="setting-row"><div><strong>接管前二次确认</strong><small>开启智能匹配前确认是否由 Token Hub 管理应用配置</small></div><button class="toggle active" aria-label="接管前二次确认"></button></div>
         </section>
       </div>
       <div class="refresh-toast" id="refresh-toast" aria-live="polite"></div>
@@ -159,14 +123,14 @@
     <section class="auth-window" id="auth-window" hidden aria-label="联想账号登录">
       <header class="auth-titlebar">
         <div>
-          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
           <strong>联想账号登录</strong>
         </div>
-        <button class="window-close" data-close-auth="true" aria-label="关闭"><svg class="ui-icon"><use href="#icon-close" /></svg></button>
+        <button class="window-close" data-close-auth="true" aria-label="关闭">×</button>
       </header>
       <main class="auth-webview">
         <div class="auth-brand">
-          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
           <strong>联想账号</strong>
         </div>
         <section class="auth-card">
@@ -188,20 +152,37 @@
     <section class="auth-window recharge-window" id="recharge-window" hidden aria-label="充值">
       <header class="auth-titlebar">
         <div>
-          <img src="./assets/3x/desktop-token-hub-icon@3x.png" alt="" />
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
           <strong>充值</strong>
         </div>
-        <button class="window-close" data-close-recharge="true" aria-label="关闭"><svg class="ui-icon"><use href="#icon-close" /></svg></button>
+        <button class="window-close" data-close-recharge="true" aria-label="关闭">×</button>
       </header>
       <main class="recharge-webview" id="recharge-content"></main>
     </section>
 
-    <footer class="taskbar" aria-label="Windows 任务栏"></footer>
+    <footer class="taskbar" aria-label="Windows 任务栏">
+      <div class="taskbar-center">
+        <button class="windows-start" aria-label="开始"><span></span><span></span><span></span><span></span></button>
+        <button class="taskbar-app" aria-label="文件资源管理器">▰</button>
+        <button class="taskbar-app" aria-label="Microsoft Teams">T</button>
+        <button class="taskbar-app" aria-label="Windows 安全中心">♢</button>
+      </div>
+      <div class="system-tray">
+        <span>⌃</span>
+        <button class="tray-app-button active" id="tray-app-button" aria-label="联想 Token Hub 托盘菜单">
+          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+        </button>
+        <span>⌁</span>
+        <span>▥</span>
+        <time>10:01<br /><small>2026/6/2</small></time>
+        <span>☾</span>
+      </div>
+    </footer>
 
     <div class="tray-context-menu" id="tray-context-menu" hidden role="menu" aria-label="联想 Token Hub 托盘菜单">
       <button data-exit-app="true" role="menuitem">退出应用</button>
     </div>
 
-    <script src="./app.js?v=figma-delivery-20260605p"></script>
+    <script src="./app.js?v=smart-direct-20260604"></script>
   </body>
 </html>

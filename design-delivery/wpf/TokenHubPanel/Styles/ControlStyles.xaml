@@ -168,6 +168,8 @@
                                  Margin="4,0,0,0" />
                     </Grid>
                     <ControlTemplate.Triggers>
+
+                        <!-- ── Static color states (instant) ── -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="SwitchTrack" Property="Background" Value="#0F000000" />
                             <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#6F7782" />
@@ -177,11 +179,12 @@
                             <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#005FB8" />
                             <Setter TargetName="SwitchTrack" Property="BorderThickness" Value="2" />
                         </Trigger>
+                        <!-- Press: grow knob slightly; Margin omitted — animation holds it -->
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="SwitchKnob" Property="Width" Value="14" />
                             <Setter TargetName="SwitchKnob" Property="Height" Value="14" />
-                            <Setter TargetName="SwitchKnob" Property="Margin" Value="3,0,0,0" />
                         </Trigger>
+                        <!-- Checked: colors + initial Margin for binding-driven state (no event) -->
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="SwitchTrack" Property="Background" Value="#005FB8" />
                             <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#005FB8" />
@@ -203,12 +206,42 @@
                             </MultiTrigger.Conditions>
                             <Setter TargetName="SwitchTrack" Property="Background" Value="#003E7E" />
                             <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#003E7E" />
-                            <Setter TargetName="SwitchKnob" Property="Margin" Value="23,0,0,0" />
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.45" />
                             <Setter Property="Cursor" Value="Arrow" />
                         </Trigger>
+
+                        <!-- ── Knob slide animations ── -->
+                        <EventTrigger RoutedEvent="Checked">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ThicknessAnimation Storyboard.TargetName="SwitchKnob"
+                                                        Storyboard.TargetProperty="Margin"
+                                                        To="24,0,0,0"
+                                                        Duration="0:0:0.18">
+                                        <ThicknessAnimation.EasingFunction>
+                                            <CubicEase EasingMode="EaseInOut"/>
+                                        </ThicknessAnimation.EasingFunction>
+                                    </ThicknessAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="Unchecked">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ThicknessAnimation Storyboard.TargetName="SwitchKnob"
+                                                        Storyboard.TargetProperty="Margin"
+                                                        To="4,0,0,0"
+                                                        Duration="0:0:0.18">
+                                        <ThicknessAnimation.EasingFunction>
+                                            <CubicEase EasingMode="EaseInOut"/>
+                                        </ThicknessAnimation.EasingFunction>
+                                    </ThicknessAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

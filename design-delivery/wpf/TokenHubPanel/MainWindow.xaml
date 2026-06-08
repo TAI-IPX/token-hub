@@ -871,6 +871,18 @@
                                                     MouseLeftButtonDown="ModelItem_Click"
                                                     Loaded="ModelRow_Loaded"
                                                     Tag="{Binding Id}">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Opacity" Value="1" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.IsSmartMode, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                <Setter Property="Opacity" Value="0.38" />
+                                                                <Setter Property="Cursor" Value="Arrow" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" />

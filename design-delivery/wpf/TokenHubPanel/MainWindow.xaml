@@ -102,7 +102,7 @@
                             Grid.Row="0"
                             Height="48"
                             Background="#70F6F8FC"
-                            Padding="0,0,0,0">
+                            Padding="16,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -111,7 +111,7 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Left: Logo + Title + Dropdown -->
-                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Image Source="Assets/panel-logo@3x.png"
                                        Width="24" Height="24"
                                        Margin="0,0,8,0" />
@@ -156,8 +156,7 @@
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         VerticalAlignment="Center"
-                                        HorizontalAlignment="Right"
-                                        Margin="0,0,12,0">
+                                        HorizontalAlignment="Right">
                                 <!-- 新版本 badge (only when logged in and update available) -->
                                 <Button Visibility="{Binding NewVersionBadgeVisibility}"
                                         Height="22"
@@ -1205,7 +1204,7 @@
                             <!-- Notification Header -->
                             <Border Grid.Row="0"
                                     Height="32"
-                                    Padding="14,0,0,0"
+                                    Padding="16,0,0,0"
                                     BorderThickness="0,0,0,1"
                                     Background="#70FFFFFF">
                                 <Border.BorderBrush>
@@ -1255,9 +1254,10 @@
                                            Source="Assets/app-qclaw@3x.png"
                                            Width="48" Height="48"
                                            VerticalAlignment="Top"
-                                           Margin="0,0,16,0" />
+                                           Margin="0" />
 
-                                    <StackPanel Grid.Column="1">
+                                    <StackPanel Grid.Column="1"
+                                                Margin="16,0,0,0">
                                         <TextBlock Text="QClaw 已完成模型匹配"
                                                    FontSize="16"
                                                    FontWeight="Bold"
@@ -1267,40 +1267,39 @@
                                                    Foreground="#991B1B1F"
                                                    Margin="0,4,0,0"
                                                    TextWrapping="Wrap" />
+                                        <WrapPanel Margin="0,8,0,0">
+                                            <Border Height="18"
+                                                    Padding="6,0"
+                                                    CornerRadius="4"
+                                                    Background="#1A0F6CBD"
+                                                    Margin="0,0,4,0">
+                                                <TextBlock Text="文本生成"
+                                                           FontSize="10"
+                                                           Foreground="#FF0F6CBD"
+                                                           VerticalAlignment="Center" />
+                                            </Border>
+                                            <Border Height="18"
+                                                    Padding="6,0"
+                                                    CornerRadius="4"
+                                                    Background="#1A0F6CBD"
+                                                    Margin="0,0,4,0">
+                                                <TextBlock Text="轻量快速"
+                                                           FontSize="10"
+                                                           Foreground="#FF0F6CBD"
+                                                           VerticalAlignment="Center" />
+                                            </Border>
+                                            <Border Height="18"
+                                                    Padding="6,0"
+                                                    CornerRadius="4"
+                                                    Background="#1A0F6CBD">
+                                                <TextBlock Text="DeepSeek"
+                                                           FontSize="10"
+                                                           Foreground="#FF0F6CBD"
+                                                           VerticalAlignment="Center" />
+                                            </Border>
+                                        </WrapPanel>
                                     </StackPanel>
                                 </Grid>
-
-                                <WrapPanel Margin="0,8,0,0">
-                                    <Border Height="18"
-                                            Padding="6,0"
-                                            CornerRadius="4"
-                                            Background="#1A0F6CBD"
-                                            Margin="0,0,4,0">
-                                        <TextBlock Text="文本生成"
-                                                   FontSize="10"
-                                                   Foreground="#FF0F6CBD"
-                                                   VerticalAlignment="Center" />
-                                    </Border>
-                                    <Border Height="18"
-                                            Padding="6,0"
-                                            CornerRadius="4"
-                                            Background="#1A0F6CBD"
-                                            Margin="0,0,4,0">
-                                        <TextBlock Text="轻量快速"
-                                                   FontSize="10"
-                                                   Foreground="#FF0F6CBD"
-                                                   VerticalAlignment="Center" />
-                                    </Border>
-                                    <Border Height="18"
-                                            Padding="6,0"
-                                            CornerRadius="4"
-                                            Background="#1A0F6CBD">
-                                        <TextBlock Text="DeepSeek"
-                                                   FontSize="10"
-                                                   Foreground="#FF0F6CBD"
-                                                   VerticalAlignment="Center" />
-                                    </Border>
-                                </WrapPanel>
                             </StackPanel>
 
                             <!-- Manual Discovery Body (smart match OFF) -->
@@ -1317,9 +1316,10 @@
                                            Source="Assets/app-qclaw@3x.png"
                                            Width="48" Height="48"
                                            VerticalAlignment="Top"
-                                           Margin="0,0,16,0" />
+                                           Margin="0" />
 
-                                    <StackPanel Grid.Column="1">
+                                    <StackPanel Grid.Column="1"
+                                                Margin="16,0,0,0">
                                         <TextBlock Text="发现新应用 QClaw"
                                                    FontSize="16"
                                                    FontWeight="Bold"
@@ -1337,15 +1337,17 @@
                             <Border x:Name="NotificationActions"
                                     Grid.Row="2"
                                     Padding="16">
-                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                <Grid>
                                     <Button Content="查看配置"
+                                            HorizontalAlignment="Right"
+                                            Width="72"
                                             Height="30"
-                                            Padding="16,0"
+                                            Padding="0"
                                             FontSize="13"
                                             Style="{StaticResource PrimaryButtonStyle}"
                                             Cursor="Hand"
                                             Click="GoToToolFromNotification_Click" />
-                                </StackPanel>
+                                </Grid>
                             </Border>
                         </Grid>
                     </Border>

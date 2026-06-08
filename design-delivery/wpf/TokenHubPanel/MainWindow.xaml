@@ -69,12 +69,13 @@
             </Border>
 
             <!-- The Tray Panel -->
+            <!-- Outer: shadow + border only, no ClipToBounds (clipping kills shadow) -->
             <Border x:Name="PanelBorder"
                     Grid.Row="1"
                     Width="440"
                     Height="384"
                     CornerRadius="8"
-                    BorderBrush="#2E000000"
+                    BorderBrush="#0F000000"
                     BorderThickness="1"
                     UseLayoutRounding="True"
                     SnapsToDevicePixels="True"
@@ -82,6 +83,10 @@
                 <Border.Background>
                     <SolidColorBrush Color="#F0F8FBFF" />
                 </Border.Background>
+
+                <!-- Inner: clips all child content to the same 8px radius -->
+                <Border CornerRadius="7"
+                        ClipToBounds="True">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -1361,6 +1366,7 @@
                                    Foreground="White" />
                     </Border>
                 </Grid>
+                </Border><!-- /inner clip border -->
             </Border>
         </Grid>
     </Grid>

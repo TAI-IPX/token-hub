@@ -159,16 +159,16 @@ namespace TokenHubPanel
             // Footer: account bar only when ready (logged-out footer is permanently hidden per design)
             AccountFooter.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
 
-            // Progress animations
+            // Progress bars
             if (isConfiguring)
-                StartProgressAnimation();
+                ConfiguringProgress.IsIndeterminate = true;
             else
-                StopProgressAnimation();
+                ConfiguringProgress.IsIndeterminate = false;
 
             if (isLogin && _onbStep == OnbStep.AuthPending)
-                StartAuthProgressAnimation();
+                AuthPendingProgress.IsIndeterminate = true;
             else
-                StopAuthProgressAnimation();
+                AuthPendingProgress.IsIndeterminate = false;
         }
 
         private void StartConfigTimerIfNeeded()
@@ -186,46 +186,6 @@ namespace TokenHubPanel
                 };
                 _configTimer.Start();
             }
-        }
-
-        private void StartProgressAnimation()
-        {
-            StopProgressAnimation();
-
-            var anim = new ThicknessAnimation
-            {
-                From = new Thickness(-72, 0, 0, 0),
-                To = new Thickness(168, 0, 0, 0),
-                Duration = TimeSpan.FromSeconds(1.6),
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-
-            ProgressBarFill.BeginAnimation(Border.MarginProperty, anim);
-        }
-
-        private void StopProgressAnimation()
-        {
-            ProgressBarFill.BeginAnimation(Border.MarginProperty, null);
-        }
-
-        private void StartAuthProgressAnimation()
-        {
-            StopAuthProgressAnimation();
-            var anim = new ThicknessAnimation
-            {
-                From = new Thickness(-72, 0, 0, 0),
-                To = new Thickness(168, 0, 0, 0),
-                Duration = TimeSpan.FromSeconds(1.6),
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-            AuthProgressFill.BeginAnimation(Border.MarginProperty, anim);
-        }
-
-        private void StopAuthProgressAnimation()
-        {
-            AuthProgressFill.BeginAnimation(Border.MarginProperty, null);
         }
 
         private void UpdatePageVisibility()

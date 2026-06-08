@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using TokenHubPanel.Models;
 using TokenHubPanel.ViewModels;
@@ -15,7 +16,6 @@ namespace TokenHubPanel
     public partial class MainWindow : Window
     {
         private readonly MainViewModel _vm;
-        private DispatcherTimer? _progressAnimTimer;
         private DispatcherTimer? _configTimer;
         private DispatcherTimer? _toastTimer;
 
@@ -52,6 +52,9 @@ namespace TokenHubPanel
                     case nameof(MainViewModel.BalanceBadgeText):
                     case nameof(MainViewModel.BalanceBadgeBrush):
                         UpdateBalanceBadge();
+                        break;
+                    case nameof(MainViewModel.SmartConfirmVisibility):
+                        AnimateSmartConfirm(_vm.ShowSmartConfirm);
                         break;
                 }
             };
@@ -191,12 +194,45 @@ namespace TokenHubPanel
         private void UpdatePageVisibility()
         {
             var page = _vm.CurrentPage;
-            HomePage.Visibility = page == PanelPage.Home ? Visibility.Visible : Visibility.Collapsed;
-            ModelsPage.Visibility = page == PanelPage.Models ? Visibility.Visible : Visibility.Collapsed;
+            HomePage.Visibility     = page == PanelPage.Home     ? Visibility.Visible : Visibility.Collapsed;
+            ModelsPage.Visibility   = page == PanelPage.Models   ? Visibility.Visible : Visibility.Collapsed;
             SettingsPage.Visibility = page == PanelPage.Settings ? Visibility.Visible : Visibility.Collapsed;
+
+            UIElement? target = page switch
+            {
+                PanelPage.Home     => HomePage,
+                PanelPage.Models   => ModelsPage,
+                PanelPage.Settings => SettingsPage,
+                _                  => null
+            };
+            if (target != null) FadePage(target);
 
             if (page == PanelPage.Models)
                 Dispatcher.BeginInvoke((Action)SyncCurrentModelSelection, DispatcherPriority.Loaded);
+        }
+
+        private static void FadePage(UIElement target)
+        {
+            target.Opacity = 0;
+            target.BeginAnimation(OpacityProperty,
+                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(160)));
+        }
+
+        private void AnimateSmartConfirm(bool show)
+        {
+            if (show)
+            {
+                SmartConfirmPanel.Opacity = 0;
+                SmartConfirmPanel.Visibility = Visibility.Visible;
+                SmartConfirmPanel.BeginAnimation(OpacityProperty,
+                    new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(160)));
+            }
+            else
+            {
+                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(120));
+                fadeOut.Completed += (_, _) => SmartConfirmPanel.Visibility = Visibility.Collapsed;
+                SmartConfirmPanel.BeginAnimation(OpacityProperty, fadeOut);
+            }
         }
 
         private void UpdateNotificationVisibility()
@@ -422,14 +458,20 @@ namespace TokenHubPanel
 
         private void ShowToast(string message)
         {
-            ToastText.Text = message;
-            ToastBorder.Visibility = Visibility.Visible;
             _toastTimer?.Stop();
+            ToastText.Text = message;
+            ToastBorder.Opacity = 0;
+            ToastBorder.Visibility = Visibility.Visible;
+            ToastBorder.BeginAnimation(OpacityProperty,
+                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(160)));
+
             _toastTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2.2) };
             _toastTimer.Tick += (s, args) =>
             {
                 _toastTimer?.Stop();
-                ToastBorder.Visibility = Visibility.Collapsed;
+                var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(160));
+                fadeOut.Completed += (_, _) => ToastBorder.Visibility = Visibility.Collapsed;
+                ToastBorder.BeginAnimation(OpacityProperty, fadeOut);
             };
             _toastTimer.Start();
         }
@@ -467,6 +509,12 @@ namespace TokenHubPanel
 
         private void RefreshApps_Click(object sender, RoutedEventArgs e)
         {
+            var spinAnim = new DoubleAnimation(0, 360, TimeSpan.FromSeconds(0.65))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            RefreshRotate.BeginAnimation(RotateTransform.AngleProperty, spinAnim);
+
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.65) };
             timer.Tick += (s, args) =>
             {

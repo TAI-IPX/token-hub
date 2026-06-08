@@ -487,7 +487,7 @@
                                     <!-- Smart match secondary confirm overlay -->
                                     <Border Grid.Row="1"
                                             x:Name="SmartConfirmPanel"
-                                            Visibility="{Binding SmartConfirmVisibility}"
+                                            Visibility="Collapsed"
                                             VerticalAlignment="Top"
                                             Panel.ZIndex="50"
                                             Margin="60,4,16,0"
@@ -559,9 +559,14 @@
                                                             Cursor="Hand"
                                                             Click="RefreshApps_Click"
                                                             ToolTip="重新检测应用">
-                                                        <Image Source="Assets/icon-action@3x.png"
-                                                               Width="16"
-                                                               Height="16" />
+                                                        <Image x:Name="RefreshIcon"
+                                                               Source="Assets/icon-action@3x.png"
+                                                               Width="16" Height="16"
+                                                               RenderTransformOrigin="0.5,0.5">
+                                                            <Image.RenderTransform>
+                                                                <RotateTransform x:Name="RefreshRotate" />
+                                                            </Image.RenderTransform>
+                                                        </Image>
                                                     </Button>
                                                 </Grid>
                                             </Border>

@@ -315,17 +315,17 @@ namespace TokenHubPanel.ViewModels
         public ObservableCollection<string> DiscoveryTags { get; } = new();
 
         // === Commands ===
-        public ICommand ToggleSmartCommand { get; }
-        public ICommand SelectToolCommand { get; }
-        public ICommand BackToHomeCommand { get; }
-        public ICommand LoginCommand { get; }
-        public ICommand OpenSettingsCommand { get; }
-        public ICommand DismissNotificationCommand { get; }
-        public ICommand GoToToolCommand { get; }
-        public ICommand SelectModelCommand { get; }
-        public ICommand SetStateCommand { get; }
-        public ICommand RefreshAppsCommand { get; }
-        public ICommand RechargeCommand { get; }
+        public ICommand ToggleSmartCommand { get; private set; } = null!;
+        public ICommand SelectToolCommand { get; private set; } = null!;
+        public ICommand BackToHomeCommand { get; private set; } = null!;
+        public ICommand LoginCommand { get; private set; } = null!;
+        public ICommand OpenSettingsCommand { get; private set; } = null!;
+        public ICommand DismissNotificationCommand { get; private set; } = null!;
+        public ICommand GoToToolCommand { get; private set; } = null!;
+        public ICommand SelectModelCommand { get; private set; } = null!;
+        public ICommand SetStateCommand { get; private set; } = null!;
+        public ICommand RefreshAppsCommand { get; private set; } = null!;
+        public ICommand RechargeCommand { get; private set; } = null!;
 
         public MainViewModel()
         {

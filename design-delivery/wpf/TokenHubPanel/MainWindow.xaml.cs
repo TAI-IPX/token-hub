@@ -68,6 +68,19 @@ namespace TokenHubPanel
             UpdateNotificationVisibility();
             UpdateBalanceBadge();
             OnStateChanged();
+            PositionNearTray();
+        }
+
+        private void PositionNearTray()
+        {
+            var workArea = SystemParameters.WorkArea;
+            Left = workArea.Right - ActualWidth - 12;
+            Top = workArea.Bottom - ActualHeight - 12;
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            PositionNearTray();
         }
 
         private void OnStateChanged()

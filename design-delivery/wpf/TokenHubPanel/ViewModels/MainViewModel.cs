@@ -58,7 +58,8 @@ namespace TokenHubPanel.ViewModels
                 OnPropertyChanged(nameof(ShowFooter)); OnPropertyChanged(nameof(ShowAccountBar));
                 OnPropertyChanged(nameof(IsNotLoggedIn));
                 OnPropertyChanged(nameof(NewVersionAvailable)); OnPropertyChanged(nameof(ShowNewVersionBadge));
-                OnPropertyChanged(nameof(NewVersionBadgeVisibility)); OnPropertyChanged(nameof(SettingsButtonVisibility));
+                OnPropertyChanged(nameof(NewVersionBadgeVisibility)); OnPropertyChanged(nameof(CheckUpdateButtonVisibility));
+                OnPropertyChanged(nameof(SettingsButtonVisibility));
                 OnPropertyChanged(nameof(NoApps)); OnPropertyChanged(nameof(ShowNoAppsEmpty));
                 OnPropertyChanged(nameof(NoAppsEmptyVisibility)); OnPropertyChanged(nameof(ToolListVisibility));
                 OnPropertyChanged(nameof(SmartConfirmVisibility));
@@ -210,14 +211,28 @@ namespace TokenHubPanel.ViewModels
         public bool NewVersionAvailable
         {
             get => _newVersionAvailable;
-            set { _newVersionAvailable = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowNewVersionBadge)); }
+            set
+            {
+                _newVersionAvailable = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowNewVersionBadge));
+                OnPropertyChanged(nameof(NewVersionBadgeVisibility));
+                OnPropertyChanged(nameof(CheckUpdateButtonVisibility));
+            }
         }
 
         private bool _noApps;
         public bool NoApps
         {
             get => _noApps;
-            set { _noApps = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowNoAppsEmpty)); }
+            set
+            {
+                _noApps = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowNoAppsEmpty));
+                OnPropertyChanged(nameof(NoAppsEmptyVisibility));
+                OnPropertyChanged(nameof(ToolListVisibility));
+            }
         }
 
         private bool _showSmartConfirmPending;
@@ -230,6 +245,7 @@ namespace TokenHubPanel.ViewModels
         // ShowNewVersionBadge: only when logged in AND new version available
         public bool ShowNewVersionBadge => IsLoggedIn && NewVersionAvailable;
         public Visibility NewVersionBadgeVisibility => ShowNewVersionBadge ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility CheckUpdateButtonVisibility => ShowNewVersionBadge ? Visibility.Collapsed : Visibility.Visible;
 
         // Settings button hidden when not logged in
         public Visibility SettingsButtonVisibility => IsLoggedIn ? Visibility.Visible : Visibility.Collapsed;
@@ -421,6 +437,9 @@ namespace TokenHubPanel.ViewModels
                 if (param is string toolId)
                 {
                     SelectedToolId = toolId;
+                    var tool = Tools.FirstOrDefault(t => t.Id == toolId);
+                    if (tool != null)
+                        tool.IsNew = false;
                     OnPropertyChanged(nameof(CurrentModels));
                     CurrentPage = PanelPage.Models;
                 }
@@ -440,7 +459,7 @@ namespace TokenHubPanel.ViewModels
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        CurrentState = DemoState.SmartOff;
+                        SetState(DemoState.SmartOff);
                     });
                     timer.Dispose();
                 };
@@ -456,7 +475,7 @@ namespace TokenHubPanel.ViewModels
             {
                 if (IsDiscovering)
                 {
-                    CurrentState = DemoState.SmartOff;
+                    CurrentState = IsSmartMode ? DemoState.SmartOn : DemoState.SmartOff;
                 }
             });
 
@@ -465,10 +484,13 @@ namespace TokenHubPanel.ViewModels
                 if (param is string toolId)
                 {
                     SelectedToolId = toolId;
+                    var tool = Tools.FirstOrDefault(t => t.Id == toolId);
+                    if (tool != null)
+                        tool.IsNew = false;
                     OnPropertyChanged(nameof(CurrentModels));
                     CurrentPage = PanelPage.Models;
                     if (IsDiscovering)
-                        CurrentState = DemoState.SmartOff;
+                        CurrentState = IsSmartMode ? DemoState.SmartOn : DemoState.SmartOff;
                 }
             });
 
@@ -590,6 +612,24 @@ namespace TokenHubPanel.ViewModels
                     DiscoveryModelName = "DeepSeek V4 Flash";
                     Tools.First(t => t.Id == "qclaw").IsNew = true;
                     break;
+
+                case DemoState.NewVersion:
+                    CurrentState = DemoState.NewVersion;
+                    IsSmartMode = false;
+                    Balance = 128.5;
+                    ResetSelections();
+                    NewVersionAvailable = true;
+                    NoApps = false;
+                    break;
+
+                case DemoState.NoApp:
+                    CurrentState = DemoState.NoApp;
+                    IsSmartMode = false;
+                    Balance = 128.5;
+                    ResetSelections();
+                    NewVersionAvailable = false;
+                    NoApps = true;
+                    break;
             }
 
             RefreshToolList();
@@ -610,7 +650,9 @@ namespace TokenHubPanel.ViewModels
 
         private void RefreshToolList()
         {
-            OnPropertyChanged(nameof(GetModelName));
+            foreach (var tool in Tools)
+                tool.ModelName = GetModelName(tool.Id);
+
             var temp = SelectedToolId;
             SelectedToolId = null;
             SelectedToolId = temp;
@@ -631,6 +673,8 @@ namespace TokenHubPanel.ViewModels
 
         public string GetSelectedModelId(string toolId)
         {
+            if (Management.TryGetValue(toolId, out var mgmt) && mgmt == "unconfigured")
+                return string.Empty;
             if (!IsSmartMode && Selections.TryGetValue(toolId, out var modelId))
                 return modelId;
             if (IsSmartMode && Selections.TryGetValue(toolId, out var smartId))

@@ -12,6 +12,19 @@
         AllowsTransparency="True"
         Background="Transparent">
     <Window.Resources>
+        <DrawingBrush x:Key="FakeQrBrush"
+                      TileMode="Tile"
+                      Viewport="0,0,16,16"
+                      ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="White" Geometry="M0,0 L16,0 L16,16 L0,16 Z" />
+                    <GeometryDrawing Brush="#111111" Geometry="M0,0 L8,0 L16,8 L16,16 Z" />
+                    <GeometryDrawing Brush="#CC111111" Geometry="M0,16 L6,16 L16,6 L16,0 Z" />
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
         <!-- Amount card -->
         <Style x:Key="AmountCardStyle" TargetType="Button">
             <Setter Property="Height" Value="68" />
@@ -55,7 +68,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Tab" Background="Transparent" CornerRadius="99">
+                        <Border x:Name="Tab" Background="Transparent" CornerRadius="4">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -185,7 +198,7 @@
 
                         <!-- Footer -->
                         <Border BorderBrush="#E8EBEF" BorderThickness="0,1,0,0" Margin="0,22,0,0" Padding="0,16,0,0">
-                            <Button Content="确认付款" HorizontalAlignment="Right" Height="34" Padding="16,0" FontSize="13"
+                            <Button Content="确认付款" HorizontalAlignment="Right" Height="32" MinWidth="92" Padding="16,0" FontSize="13"
                                     Style="{StaticResource PrimaryButtonStyle}" Click="ToConfirm_Click" />
                         </Border>
                     </StackPanel>
@@ -218,7 +231,7 @@
                             </Grid>
                         </StackPanel>
                         <Border BorderBrush="#E8EBEF" BorderThickness="0,1,0,0" Margin="0,28,0,0" Padding="0,16,0,0">
-                            <Button Content="去支付" HorizontalAlignment="Right" Height="34" Padding="16,0" FontSize="13"
+                            <Button Content="去支付" HorizontalAlignment="Right" Height="32" MinWidth="92" Padding="16,0" FontSize="13"
                                     Style="{StaticResource PrimaryButtonStyle}" Click="ToPay_Click" />
                         </Border>
                     </StackPanel>
@@ -238,7 +251,7 @@
                         </StackPanel>
 
                         <!-- Tabs -->
-                        <Border Background="#F0F1F3" CornerRadius="99" Padding="4" Margin="0,16,0,0" HorizontalAlignment="Center" Width="240">
+                        <Border Background="#F0F1F3" CornerRadius="6" Padding="4" Margin="0,16,0,0" HorizontalAlignment="Center" Width="240">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -250,15 +263,12 @@
                         </Border>
 
                         <!-- QR / Detail box -->
-                        <Border MinHeight="276" BorderBrush="#E1E5EB" BorderThickness="1" CornerRadius="14" Margin="0,16,0,0">
+                        <Border MinHeight="250" BorderBrush="#1A000000" BorderThickness="1" CornerRadius="8" Background="#B8FFFFFF" Margin="0,16,0,0">
                             <Grid>
                                 <!-- QR -->
                                 <StackPanel x:Name="QrBox" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <Border Width="184" Height="184" Background="White" BorderBrush="#E1E5EB" BorderThickness="12" CornerRadius="10"
+                                    <Border Width="184" Height="184" Background="{StaticResource FakeQrBrush}" BorderBrush="White" BorderThickness="12" CornerRadius="10"
                                             Effect="{StaticResource MenuShadow}" HorizontalAlignment="Center">
-                                        <Viewbox>
-                                            <TextBlock Text="&#xE8B8;" FontFamily="Segoe MDL2 Assets" Foreground="#111111" />
-                                        </Viewbox>
                                     </Border>
                                     <TextBlock Text="等待支付..." FontSize="13" FontWeight="Bold" Foreground="#62666D" HorizontalAlignment="Center" Margin="0,13,0,0" />
                                     <TextBlock Text="扫描 聚合码" FontSize="13" Foreground="#62666D" HorizontalAlignment="Center" Margin="0,3,0,0" />
@@ -287,7 +297,7 @@
                         </Border>
 
                         <Border BorderBrush="#E8EBEF" BorderThickness="0,1,0,0" Margin="0,22,0,0" Padding="0,16,0,0">
-                            <Button Content="模拟支付完成" HorizontalAlignment="Right" Height="34" Padding="16,0" FontSize="13"
+                            <Button Content="模拟支付完成" HorizontalAlignment="Right" Height="32" MinWidth="92" Padding="16,0" FontSize="13"
                                     Style="{StaticResource PrimaryButtonStyle}" Click="CompletePay_Click" />
                         </Border>
                     </StackPanel>

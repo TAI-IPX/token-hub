@@ -84,9 +84,17 @@ namespace TokenHubPanel
         private void UpdatePanelHeight()
         {
             var state = _vm.CurrentState;
-            PanelBorder.Height = (state == DemoState.Login || state == DemoState.Configuring
-                || state == DemoState.AutoDiscovery || state == DemoState.ManualDiscovery)
-                ? 318 : 384;
+            var isDiscovery = state == DemoState.AutoDiscovery || state == DemoState.ManualDiscovery;
+
+            PanelBorder.Width = isDiscovery ? 364 : 440;
+            PanelBorder.Height = isDiscovery
+                ? double.NaN
+                : (state == DemoState.Login || state == DemoState.Configuring ? 318 : 384);
+            PanelBorder.BorderThickness = isDiscovery ? new Thickness(0) : new Thickness(1);
+            PanelBorder.Background = isDiscovery
+                ? Brushes.Transparent
+                : (Brush)new BrushConverter().ConvertFrom("#F0F8FBFF");
+            PanelBorder.Effect = isDiscovery ? null : (System.Windows.Media.Effects.Effect)FindResource("PanelShadow");
         }
 
         private void UpdatePanelStateVisibility()
@@ -94,6 +102,10 @@ namespace TokenHubPanel
             var isLogin = _vm.CurrentState == DemoState.Login;
             var isConfiguring = _vm.CurrentState == DemoState.Configuring;
             var isReady = _vm.IsReady;
+            var isDiscovering = _vm.IsDiscovering;
+
+            TitleBarBorder.Visibility = isDiscovering ? Visibility.Collapsed : Visibility.Visible;
+            ContentHost.Visibility = isDiscovering ? Visibility.Collapsed : Visibility.Visible;
 
             // Onboarding sub-panels (only when in Login state)
             LoginPanel.Visibility = (isLogin && _onbStep == OnbStep.Login) ? Visibility.Visible : Visibility.Collapsed;
@@ -182,6 +194,9 @@ namespace TokenHubPanel
             HomePage.Visibility = page == PanelPage.Home ? Visibility.Visible : Visibility.Collapsed;
             ModelsPage.Visibility = page == PanelPage.Models ? Visibility.Visible : Visibility.Collapsed;
             SettingsPage.Visibility = page == PanelPage.Settings ? Visibility.Visible : Visibility.Collapsed;
+
+            if (page == PanelPage.Models)
+                Dispatcher.BeginInvoke((Action)SyncCurrentModelSelection, DispatcherPriority.Loaded);
         }
 
         private void UpdateNotificationVisibility()
@@ -274,9 +289,11 @@ namespace TokenHubPanel
                 var child = VisualTreeHelper.GetChild(parent, i);
                 if (child is ContentPresenter cp)
                 {
-                    var templateRoot = VisualTreeHelper.GetChild(cp, 0);
-                    if (templateRoot != null)
+                    if (VisualTreeHelper.GetChildrenCount(cp) > 0)
+                    {
+                        var templateRoot = VisualTreeHelper.GetChild(cp, 0);
                         SetToolModelName(templateRoot, tool);
+                    }
                 }
                 else if (child is TextBlock tb && tb.Name == "ModelNameText")
                 {
@@ -470,11 +487,28 @@ namespace TokenHubPanel
 
         private void ModelItem_Click(object sender, MouseButtonEventArgs e)
         {
+            if (_vm.IsSmartMode)
+                return;
+
             if (sender is Border border && border.Tag is string modelId)
             {
                 _vm.SelectModelCommand.Execute(modelId);
                 UpdateModelRadioSelection(modelId);
             }
+        }
+
+        private void ModelRow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is Border border && border.Tag is string modelId && _vm.SelectedToolId != null)
+                SetRadioVisualInTemplate(border, modelId == _vm.GetSelectedModelId(_vm.SelectedToolId));
+        }
+
+        private void SyncCurrentModelSelection()
+        {
+            if (_vm.SelectedToolId == null)
+                return;
+
+            UpdateModelRadioSelection(_vm.GetSelectedModelId(_vm.SelectedToolId));
         }
 
         private void UpdateModelRadioSelection(string selectedModelId)
@@ -531,8 +565,16 @@ namespace TokenHubPanel
                             el.StrokeThickness = selected ? 1 : 0;
                         }
                     }
-                    return;
                 }
+                else if (child is Border badge && badge.Name == "ModelBadge")
+                {
+                    badge.Visibility = selected ? Visibility.Visible : Visibility.Collapsed;
+                }
+                else if (child is TextBlock tb && tb.Name == "ModelBadgeText")
+                {
+                    tb.Text = _vm.IsSmartMode ? "智能匹配" : "当前模型";
+                }
+
                 SetRadioVisualInTemplate(child, selected);
             }
         }
@@ -590,6 +632,7 @@ namespace TokenHubPanel
                 var knob = border.Child as Border;
                 if (knob != null)
                 {
+                    knob.HorizontalAlignment = HorizontalAlignment.Left;
                     var anim = new ThicknessAnimation
                     {
                         To = isOn

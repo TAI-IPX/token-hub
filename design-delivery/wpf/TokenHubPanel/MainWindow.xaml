@@ -89,7 +89,8 @@
                     </Grid.RowDefinitions>
 
                     <!-- ============ TITLE BAR ============ -->
-                    <Border Grid.Row="0"
+                    <Border x:Name="TitleBarBorder"
+                            Grid.Row="0"
                             Height="48"
                             Background="#70F6F8FC"
                             Padding="0,0,16,0">
@@ -256,7 +257,7 @@
                     </Border>
 
                     <!-- ============ CONTENT AREA ============ -->
-                    <Grid Grid.Row="1">
+                    <Grid x:Name="ContentHost" Grid.Row="1">
 
                         <!-- ===== HOME PAGE ===== -->
                         <Grid x:Name="HomePage">
@@ -558,7 +559,7 @@
                                                             Cursor="Hand"
                                                             Click="RefreshApps_Click"
                                                             ToolTip="重新检测应用">
-                                                        <Image Source="Assets/icon-action@3x.svg"
+                                                        <Image Source="Assets/icon-action@3x.png"
                                                                Width="16"
                                                                Height="16" />
                                                     </Button>
@@ -600,23 +601,49 @@
                                                                            Height="28" />
                                                                 </Border>
 
-                                                                <!-- Tool Name -->
-                                                                <TextBlock Grid.Column="1"
-                                                                           Text="{Binding Name}"
-                                                                           FontSize="14"
-                                                                           Foreground="#991B1B1F"
-                                                                           VerticalAlignment="Center"
-                                                                           TextTrimming="CharacterEllipsis" />
+                                                                <!-- Tool Name + new-discovery badge -->
+                                                                <StackPanel Grid.Column="1"
+                                                                            Orientation="Horizontal"
+                                                                            VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding Name}"
+                                                                               FontSize="14"
+                                                                               Foreground="#991B1B1F"
+                                                                               VerticalAlignment="Center"
+                                                                               TextTrimming="CharacterEllipsis"
+                                                                               MaxWidth="168" />
+                                                                    <Border Height="16"
+                                                                            CornerRadius="8"
+                                                                            Padding="5,0"
+                                                                            Margin="6,0,0,0"
+                                                                            Background="{StaticResource NewTagBgBrush}">
+                                                                        <Border.Style>
+                                                                            <Style TargetType="Border">
+                                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding IsNew}" Value="True">
+                                                                                        <Setter Property="Visibility" Value="Visible" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Border.Style>
+                                                                        <TextBlock Text="新发现"
+                                                                                   FontSize="10"
+                                                                                   FontWeight="Medium"
+                                                                                   Foreground="{StaticResource NewTagBrush}"
+                                                                                   VerticalAlignment="Center" />
+                                                                    </Border>
+                                                                </StackPanel>
 
                                                                 <!-- Right side: model name + chevron -->
                                                                 <StackPanel Grid.Column="2"
                                                                             Orientation="Horizontal"
                                                                             VerticalAlignment="Center">
                                                                     <TextBlock x:Name="ModelNameText"
+                                                                               Text="{Binding ModelName}"
                                                                                FontSize="11"
                                                                                Foreground="#FF5E626A"
                                                                                VerticalAlignment="Center" />
-                                                                    <Image Source="Assets/icon-chevron-right@3x.svg"
+                                                                    <Image Source="Assets/icon-chevron-right@3x.png"
                                                                            Width="20"
                                                                            Height="20"
                                                                            Margin="8,0,0,0" />
@@ -715,7 +742,7 @@
                                             VerticalAlignment="Center"
                                             Margin="0,0,12,0"
                                             Click="MoreButton_Click">
-                                        <Image Source="Assets/icon-more@3x.svg"
+                                        <Image Source="Assets/icon-more@3x.png"
                                                Width="20"
                                                Height="20" />
                                     </Button>
@@ -873,11 +900,13 @@
                                                     CornerRadius="4"
                                                     Cursor="Hand"
                                                     MouseLeftButtonDown="ModelItem_Click"
+                                                    Loaded="ModelRow_Loaded"
                                                     Tag="{Binding Id}">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" />
                                                         <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
 
                                                     <!-- Radio Button 20x20 -->
@@ -935,6 +964,22 @@
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
                                                     </StackPanel>
+                                                    <Border x:Name="ModelBadge"
+                                                            Grid.Column="2"
+                                                            Height="22"
+                                                            CornerRadius="4"
+                                                            Padding="8,0"
+                                                            Margin="10,0,0,0"
+                                                            Background="{StaticResource AccentTagBgBrush}"
+                                                            VerticalAlignment="Center"
+                                                            Visibility="Collapsed">
+                                                        <TextBlock x:Name="ModelBadgeText"
+                                                                   Text="当前模型"
+                                                                   FontSize="11"
+                                                                   FontWeight="Medium"
+                                                                   Foreground="{StaticResource AccentTagBrush}"
+                                                                   VerticalAlignment="Center" />
+                                                    </Border>
                                                 </Grid>
                                                 </Border>
                                         </DataTemplate>
@@ -1017,8 +1062,8 @@
                                                 <Border Width="16" Height="16"
                                                         CornerRadius="99"
                                                         Background="White"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="0,0,3,0"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="23,3,0,0"
                                                         Effect="{StaticResource ToggleKnobShadow}" />
                                             </Border>
                                         </Grid>
@@ -1048,8 +1093,8 @@
                                                 <Border Width="16" Height="16"
                                                         CornerRadius="99"
                                                         Background="White"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="0,0,3,0"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="23,3,0,0"
                                                         Effect="{StaticResource ToggleKnobShadow}" />
                                             </Border>
                                         </Grid>
@@ -1079,8 +1124,8 @@
                                                 <Border Width="16" Height="16"
                                                         CornerRadius="99"
                                                         Background="White"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="0,0,3,0"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="23,3,0,0"
                                                         Effect="{StaticResource ToggleKnobShadow}" />
                                             </Border>
                                         </Grid>
@@ -1112,8 +1157,8 @@
                                                 <Border Width="16" Height="16"
                                                         CornerRadius="99"
                                                         Background="White"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="0,0,3,0"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="23,3,0,0"
                                                         Effect="{StaticResource ToggleKnobShadow}" />
                                             </Border>
                                         </Grid>
@@ -1142,7 +1187,7 @@
                                                     Foreground="#CC1B1B1F"
                                                     Cursor="Hand"
                                                     Click="CheckUpdate_Click"
-                                                    Visibility="{Binding ToolListVisibility}">
+                                                    Visibility="{Binding CheckUpdateButtonVisibility}">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
                                                         <Border Background="#B3FFFFFF" CornerRadius="4"
@@ -1179,7 +1224,7 @@
                             Background="#E6F8FBFF"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
-                            Margin="0,0,-8,8"
+                            Margin="0"
                             Visibility="Collapsed"
                             Effect="{StaticResource NotificationShadow}">
                         <Grid>

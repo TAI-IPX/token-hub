@@ -130,7 +130,7 @@ namespace TokenHubPanel
             PanelBorder.Width = isDiscovery ? 364 : 440;
             PanelBorder.Height = isDiscovery
                 ? double.NaN
-                : (state == DemoState.Login || state == DemoState.Configuring ? 318 : 384);
+                : 384;
             PanelBorder.BorderThickness = isDiscovery ? new Thickness(0) : new Thickness(1);
             PanelBorder.Background = isDiscovery
                 ? Brushes.Transparent

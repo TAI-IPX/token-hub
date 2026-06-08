@@ -270,41 +270,55 @@
                                         Background="Transparent">
                                     <Grid>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Grid.Row="0">
-                                            <!-- Illustration (80px height, full image, no crop) -->
-                                            <Border CornerRadius="8"
-                                                    Height="80"
+                                            <!-- Illustration clipped to 48px (shows middle band of image) -->
+                                            <Border Height="48"
                                                     ClipToBounds="True"
                                                     HorizontalAlignment="Left"
                                                     Margin="0,0,0,16">
                                                 <Image Source="Assets/onboarding-illustration@3x.png"
-                                                       Stretch="Uniform"
                                                        Height="80"
-                                                       HorizontalAlignment="Left" />
+                                                       VerticalAlignment="Top"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="0,-16,0,0" />
                                             </Border>
 
-                                            <!-- Heading -->
-                                            <TextBlock Text="登录联想账号"
+                                            <!-- Title -->
+                                            <TextBlock Text="自动完成服务配置"
                                                        FontSize="24"
                                                        FontWeight="Bold"
                                                        Foreground="#E01B1B1F"
                                                        Margin="0,0,0,16" />
 
                                             <!-- Description -->
-                                            <TextBlock Text="接下来将打开账号登录窗口。完成登录后，将自动继续配置"
+                                            <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。"
                                                        FontSize="14"
                                                        Foreground="#731B1B1F"
-                                                       TextWrapping="Wrap" />
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,16" />
+
+                                            <!-- Bullet list -->
+                                            <TextBlock Text="• 自动完成必要设置"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F"
+                                                       Margin="0,0,0,4" />
+                                            <TextBlock Text="• 自动为应用选择合适的模型"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F"
+                                                       Margin="0,0,0,4" />
+                                            <TextBlock Text="• 配置完成后即可使用"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F" />
                                         </StackPanel>
 
-                                        <!-- Login Button pinned to bottom -->
-                                        <Button Grid.Row="2"
-                                                Content="登录"
+                                        <!-- CTA button -->
+                                        <Button Grid.Row="1"
+                                                Content="登录并自动配置"
+                                                Margin="0,32,0,0"
                                                 Style="{StaticResource OnboardingButtonStyle}"
                                                 Click="LoginButton_Click" />
                                     </Grid>
@@ -320,29 +334,35 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                        <StackPanel Grid.Row="0"
-                                                    VerticalAlignment="Center"
-                                                    Margin="0,40,0,0">
+                                        <StackPanel Grid.Row="0" VerticalAlignment="Center">
                                             <TextBlock Text="正在完成服务配置"
                                                        FontSize="24"
                                                        FontWeight="Bold"
-                                                       Foreground="#E01B1B1F" />
-                                            <TextBlock FontSize="14"
+                                                       Foreground="#E01B1B1F"
+                                                       Margin="0,0,0,16" />
+                                            <TextBlock Text="正在创建 Token Hub 访问凭证并接入本机服务，请稍候"
+                                                       FontSize="14"
                                                        Foreground="#731B1B1F"
-                                                       Margin="0,16,0,24"
-                                                       TextWrapping="Wrap">
-                                                <Run Text="正在创建 TokenHub 访问凭证并接入本机服务" />
-                                                <LineBreak />
-                                                <Run Text="请稍后" />
-                                            </TextBlock>
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,16" />
+                                            <TextBlock Text="• 联想账号认证完成"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F"
+                                                       Margin="0,0,0,4" />
+                                            <TextBlock Text="• 正在创建访问凭证"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F"
+                                                       Margin="0,0,0,4" />
+                                            <TextBlock Text="• 正在启用多模型服务"
+                                                       FontSize="14"
+                                                       Foreground="#731B1B1F" />
                                         </StackPanel>
 
-                                        <!-- Progress bar with animation -->
+                                        <!-- Progress bar -->
                                         <Border Grid.Row="1"
                                                 Height="3"
                                                 CornerRadius="99"
-                                                Background="#14000000"
-                                                Margin="0,0,0,16">
+                                                Background="#14000000">
                                             <Border x:Name="ProgressBarFill"
                                                     Height="3"
                                                     Width="240"
@@ -441,7 +461,8 @@
                                     <Border Grid.Row="0"
                                             Height="56"
                                             Padding="16,0"
-                                            Background="Transparent">
+                                            Background="Transparent"
+                                            Opacity="{Binding DetectionDependentOpacity}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -462,6 +483,7 @@
                                             <ToggleButton Grid.Column="1"
                                                           Style="{StaticResource WindowsNativeSwitchStyle}"
                                                           IsChecked="{Binding IsSmartMode, Mode=OneWay}"
+                                                          IsEnabled="{Binding HasDetectedApps}"
                                                           VerticalAlignment="Center"
                                                           ToolTip="智能模型匹配"
                                                           PreviewMouseLeftButtonDown="SmartToggle_PreviewMouseLeftButtonDown"
@@ -656,13 +678,23 @@
                                                            FontWeight="Bold"
                                                            Foreground="#991B1B1F"
                                                            HorizontalAlignment="Center" />
-                                                <TextBlock Text="安装受支持的 AI 应用后，点击右上角刷新重新检测"
+                                                <TextBlock Text="安装受支持的 AI 应用后，点击检测应用重新扫描"
                                                            FontSize="12"
                                                            Foreground="#7B8088"
                                                            Margin="0,6,0,0"
                                                            TextWrapping="Wrap"
                                                            TextAlignment="Center"
                                                            MaxWidth="260" />
+                                                <Button Content="检测应用"
+                                                        Width="96"
+                                                        MinWidth="96"
+                                                        Height="32"
+                                                        Padding="16,0"
+                                                        Margin="0,16,0,0"
+                                                        FontSize="14"
+                                                        HorizontalAlignment="Center"
+                                                        Style="{StaticResource PrimaryButtonStyle}"
+                                                        Click="RefreshApps_Click" />
                                             </StackPanel>
                                         </Grid>
                                     </ScrollViewer>

@@ -540,13 +540,7 @@
                                                           ItemsSource="{Binding Tools}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate DataType="models:AppTool">
-                                                        <Button Height="48"
-                                                                Padding="16,0"
-                                                                Background="Transparent"
-                                                                BorderThickness="0"
-                                                                Cursor="Hand"
-                                                                FontFamily="Microsoft YaHei"
-                                                                HorizontalContentAlignment="Stretch"
+                                                        <Button Style="{StaticResource ToolListItemStyle}"
                                                                 Command="{Binding DataContext.SelectToolCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                 CommandParameter="{Binding Id}">
                                                             <Grid>
@@ -859,9 +853,12 @@
 
                             <!-- Model List -->
                             <ScrollViewer Grid.Row="1"
-                                          VerticalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Auto"
                                           HorizontalScrollBarVisibility="Disabled"
                                           Padding="0,8,0,0">
+                                <ScrollViewer.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource ThinScrollBarStyle}" />
+                                </ScrollViewer.Resources>
                                 <ItemsControl x:Name="ModelListControl"
                                               ItemsSource="{Binding CurrentModels}">
                                     <ItemsControl.ItemTemplate>

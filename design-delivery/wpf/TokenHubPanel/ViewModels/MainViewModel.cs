@@ -368,30 +368,45 @@ namespace TokenHubPanel.ViewModels
             tool1.ModelIds.Add("deepseek-v4-flash");
             tool1.ModelIds.Add("deepseek-v4-pro");
             tool1.ModelIds.Add("qwen3.6-plus");
+            tool1.ModelIds.Add("kimi-k2.6");
+            tool1.ModelIds.Add("glm-5");
+            tool1.ModelIds.Add("MiniMax-M2.5");
             Tools.Add(tool1);
 
             var tool2 = new AppTool { Id = "qclaw", Name = "Q Claw", IconPath = "Assets/app-qclaw@3x.png", Mark = "QC" };
             tool2.ModelIds.Add("deepseek-v4-flash");
             tool2.ModelIds.Add("qwen3.6-flash");
             tool2.ModelIds.Add("kimi-k2.6");
+            tool2.ModelIds.Add("qwen3.6-plus");
+            tool2.ModelIds.Add("glm-5.1");
+            tool2.ModelIds.Add("MiniMax-M2.5");
             Tools.Add(tool2);
 
             var tool3 = new AppTool { Id = "claude-code", Name = "Claude Code", IconPath = "Assets/app-claude@3x.png", Mark = "CC" };
             tool3.ModelIds.Add("deepseek-v4-pro");
             tool3.ModelIds.Add("glm-5.1");
             tool3.ModelIds.Add("qwen3.6-max-preview");
+            tool3.ModelIds.Add("deepseek-v4-flash");
+            tool3.ModelIds.Add("kimi-k2.6");
+            tool3.ModelIds.Add("glm-5");
             Tools.Add(tool3);
 
             var tool4 = new AppTool { Id = "workbuddy", Name = "OpenClaw", IconPath = "Assets/app-openclaw2@3x.png", Mark = "WB" };
             tool4.ModelIds.Add("qwen3.6-plus");
             tool4.ModelIds.Add("kimi-k2.6");
             tool4.ModelIds.Add("MiniMax-M2.5");
+            tool4.ModelIds.Add("deepseek-v4-flash");
+            tool4.ModelIds.Add("qwen3.6-flash");
+            tool4.ModelIds.Add("glm-5");
             Tools.Add(tool4);
 
             var tool5 = new AppTool { Id = "hermes", Name = "Hermes", IconPath = "Assets/app-openclaw2@3x.png", Mark = "HM" };
             tool5.ModelIds.Add("kimi-k2.6");
             tool5.ModelIds.Add("deepseek-v4-pro");
             tool5.ModelIds.Add("glm-5");
+            tool5.ModelIds.Add("deepseek-v4-flash");
+            tool5.ModelIds.Add("qwen3.6-plus");
+            tool5.ModelIds.Add("MiniMax-M2.5");
             Tools.Add(tool5);
 
             // Default selections

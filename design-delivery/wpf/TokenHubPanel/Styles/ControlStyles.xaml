@@ -439,7 +439,7 @@
                                 <Storyboard>
                                     <ColorAnimation Storyboard.TargetName="ToolBg"
                                                     Storyboard.TargetProperty="Color"
-                                                    To="#08000000" Duration="0:0:0.12"/>
+                                                    To="#0A000000" Duration="0:0:0.12"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -723,6 +723,50 @@
     <!-- Flyout menu item — danger variant -->
     <Style x:Key="FlyoutMenuItemDangerStyle" TargetType="Button" BasedOn="{StaticResource FlyoutMenuItemStyle}">
         <Setter Property="Foreground" Value="#C42B1C" />
+    </Style>
+
+    <!-- Win11 thin scrollbar -->
+    <Style x:Key="ThinScrollBarStyle" TargetType="ScrollBar">
+        <Setter Property="Width" Value="6" />
+        <Setter Property="MinWidth" Value="6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Border Background="Transparent" Width="6">
+                        <Track x:Name="PART_Track" IsDirectionReversed="True" HorizontalAlignment="Center" Width="6">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Width="0" Height="0">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate TargetType="RepeatButton" />
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Width="0" Height="0">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate TargetType="RepeatButton" />
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Width="6" Margin="0">
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Border x:Name="ThumbBorder" CornerRadius="99" Background="#59000000" />
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ThumbBorder" Property="Background" Value="#99000000" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Track.Thumb>
+                        </Track>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

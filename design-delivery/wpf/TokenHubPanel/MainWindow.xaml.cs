@@ -119,9 +119,8 @@ namespace TokenHubPanel
             ConfiguringPanel.Visibility = isConfiguring ? Visibility.Visible : Visibility.Collapsed;
             ReadyContent.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
 
-            // Footer: account bar only when ready; logged-out footer only on the login step
+            // Footer: account bar only when ready (logged-out footer is permanently hidden per design)
             AccountFooter.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
-            LoggedOutFooter.Visibility = (isLogin && _onbStep == OnbStep.Login) ? Visibility.Visible : Visibility.Collapsed;
 
             // Progress animations
             if (isConfiguring)

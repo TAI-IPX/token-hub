@@ -281,14 +281,16 @@
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Grid.Row="0">
-                                            <!-- Illustration (80px) -->
+                                            <!-- Illustration (80px height, full image, no crop) -->
                                             <Border CornerRadius="8"
                                                     Height="80"
                                                     ClipToBounds="True"
+                                                    HorizontalAlignment="Left"
                                                     Margin="0,0,0,16">
                                                 <Image Source="Assets/onboarding-illustration@3x.png"
-                                                       Stretch="UniformToFill"
-                                                       Height="80" />
+                                                       Stretch="Uniform"
+                                                       Height="80"
+                                                       HorizontalAlignment="Left" />
                                             </Border>
 
                                             <!-- Heading -->
@@ -767,9 +769,10 @@
                                 </Grid>
                             </Border>
 
-                            <!-- Logged-out Footer -->
+                            <!-- Logged-out Footer — hidden per visual demo (login panel has its own 登录 button) -->
                             <Border x:Name="LoggedOutFooter"
                                     Grid.Row="1"
+                                    Visibility="Collapsed"
                                     Height="64"
                                     Padding="16,0"
                                     Background="#E0F6F8FC"

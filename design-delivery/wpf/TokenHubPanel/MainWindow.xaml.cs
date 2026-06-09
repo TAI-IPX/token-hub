@@ -82,8 +82,8 @@ namespace TokenHubPanel
         private void PositionNearTray()
         {
             var workArea = SystemParameters.WorkArea;
-            Left = workArea.Right - ActualWidth - 24;
-            Top = workArea.Bottom - ActualHeight - 24;
+            Left = workArea.Right - PanelBorder.Margin.Left - PanelBorder.ActualWidth - 16;
+            Top = workArea.Bottom - PanelBorder.Margin.Top - PanelBorder.ActualHeight - 16;
         }
 
         private void ShowDemoSwitcher()

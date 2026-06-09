@@ -3,12 +3,13 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- Shadow Effects -->
+    <!-- Win11 tray flyout shadow — unified with notification style -->
     <DropShadowEffect x:Key="PanelShadow"
-                      BlurRadius="46"
-                      ShadowDepth="22"
+                      BlurRadius="16"
+                      ShadowDepth="8"
                       Direction="270"
                       Color="#0F172A"
-                      Opacity="0.22" />
+                      Opacity="0.16" />
     <DropShadowEffect x:Key="MenuShadow"
                       BlurRadius="8"
                       ShadowDepth="4"

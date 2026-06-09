@@ -62,6 +62,7 @@
         <Border x:Name="PanelBorder"
                     Width="440"
                     Height="384"
+                    Margin="12,12,12,20"
                     CornerRadius="8"
                     BorderBrush="#0F000000"
                     BorderThickness="1"
@@ -75,7 +76,6 @@
                 <!-- Inner: clips all child content to the same 8px radius -->
                 <Border x:Name="InnerClipBorder"
                         CornerRadius="7"
-                        ClipToBounds="True"
                         SizeChanged="InnerClipBorder_SizeChanged">
 
                 <Grid>
@@ -207,7 +207,7 @@
                                         Style="{StaticResource SecondaryTitleIconButtonStyle}"
                                         Click="SettingsButton_Click"
                                         ToolTip="设置">
-                                    <Image Source="Assets/panel-settings@3x.png" Width="18" Height="18"/>
+                                    <Image Source="Assets/panel-settings@3x.png" Width="20" Height="20"/>
                                 </Button>
                                 <!-- Close -->
                                 <Button Width="20"
@@ -469,17 +469,17 @@
                                                        Margin="0,0,12,0" />
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                                 <Button Content="取消"
-                                                        MinWidth="64"
+                                                        Width="52"
                                                         Height="30"
-                                                        Padding="14,0"
+                                                        Padding="0"
                                                         Margin="0,0,6,0"
                                                         FontSize="13"
                                                         Style="{StaticResource SecondaryButtonStyle}"
                                                         Click="CancelSmartConfirm_Click" />
                                                 <Button Content="开启"
-                                                        MinWidth="64"
+                                                        Width="52"
                                                         Height="30"
-                                                        Padding="14,0"
+                                                        Padding="0"
                                                         FontSize="13"
                                                         Style="{StaticResource PrimaryButtonStyle}"
                                                         Click="ConfirmSmartMatch_Click" />
@@ -1170,9 +1170,9 @@
                             Grid.RowSpan="3"
                             Width="364"
                             CornerRadius="8"
-                            BorderBrush="#2E000000"
+                            BorderBrush="#0F000000"
                             BorderThickness="1"
-                            Background="#E6F8FBFF"
+                            Background="#FAF9FBFF"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
                             Margin="0"
@@ -1188,12 +1188,8 @@
                             <!-- Notification Header -->
                             <Border Grid.Row="0"
                                     Height="32"
-                                    Padding="16,0,0,0"
-                                    BorderThickness="0,0,0,1"
-                                    Background="#70FFFFFF">
-                                <Border.BorderBrush>
-                                    <SolidColorBrush Color="#14000000"/>
-                                </Border.BorderBrush>
+                                    Padding="16,0,8,0"
+                                    Background="Transparent">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -1201,23 +1197,24 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Image Source="Assets/desktop-token-hub-icon@3x.png"
-                                               Width="16" Height="16"
-                                               Margin="0,0,8,0" />
-                                        <TextBlock Text="联想TokenHub"
-                                                   FontSize="12"
-                                                   Foreground="#E51B1B1F"
-                                                   VerticalAlignment="Center" />
-                                    </StackPanel>
+                                    <Image Grid.Column="0"
+                                           Source="Assets/desktop-token-hub-icon@3x.png"
+                                           Width="16" Height="16"
+                                           VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="联想TokenHub"
+                                               FontSize="12"
+                                               Foreground="#991B1B1F"
+                                               VerticalAlignment="Center"
+                                               Margin="8,0,0,0" />
 
                                     <Button Grid.Column="2"
-                                            Width="46"
+                                            Width="32"
                                             Height="32"
                                             Background="Transparent"
                                             BorderThickness="0"
                                             FontSize="14"
-                                            Foreground="#CC1B1B1F"
+                                            Foreground="#991B1B1F"
                                             Cursor="Hand"
                                             Content="&#x00D7;"
                                             Click="DismissNotification_Click" />
@@ -1227,7 +1224,7 @@
                             <!-- Auto Discovery Body (smart match ON) -->
                             <Grid x:Name="AutoNotificationBody"
                                   Grid.Row="1"
-                                  Margin="16,0,16,16">
+                                  Margin="8,0,16,16">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
@@ -1237,7 +1234,7 @@
                                        Source="Assets/app-qclaw@3x.png"
                                        Width="48" Height="48"
                                        VerticalAlignment="Top"
-                                       Margin="0,16,0,0" />
+                                       Margin="0,8,0,0" />
 
                                 <StackPanel Grid.Column="1"
                                             Margin="16,16,0,0">
@@ -1287,7 +1284,7 @@
                             <!-- Manual Discovery Body (smart match OFF) -->
                             <Grid x:Name="ManualNotificationBody"
                                   Grid.Row="1"
-                                  Margin="16,0">
+                                  Margin="8,0,16,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
@@ -1297,7 +1294,7 @@
                                        Source="Assets/app-qclaw@3x.png"
                                        Width="48" Height="48"
                                        VerticalAlignment="Top"
-                                       Margin="0,16,0,0" />
+                                       Margin="0,8,0,0" />
 
                                     <StackPanel Grid.Column="1"
                                                 Margin="16,16,0,0">
@@ -1316,18 +1313,18 @@
                             <!-- Notification Actions (Manual only) -->
                             <Border x:Name="NotificationActions"
                                     Grid.Row="2"
-                                    Padding="12,16,16,16">
-                                <Grid>
+                                    Padding="12,8,16,16">
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                     <Button Content="查看配置"
-                                            HorizontalAlignment="Right"
-                                            MinWidth="84"
-                                            Height="30"
-                                            Padding="16,0"
-                                            FontSize="13"
-                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            Height="28"
+                                            Padding="8,0"
+                                            FontSize="12"
+                                            Background="Transparent"
+                                            Foreground="#005FB8"
+                                            BorderThickness="0"
                                             Cursor="Hand"
                                             Click="GoToToolFromNotification_Click" />
-                                </Grid>
+                                </StackPanel>
                             </Border>
                         </Grid>
                     </Border>

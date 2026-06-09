@@ -47,6 +47,22 @@ namespace TokenHubPanel
             Top = savedTop;
         }
 
+        private void CustomInstallButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            CustomToggleText.Foreground = Brush("#005FB8");
+            CustomChevron.Foreground = Brush("#005FB8");
+        }
+
+        private void CustomInstallButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            CustomToggleText.Foreground = Brush("#99000000");
+            CustomChevron.Foreground = Brush("#99000000");
+        }
+
+        private static System.Windows.Media.Brush Brush(string hex) =>
+            (System.Windows.Media.Brush)(new System.Windows.Media.BrushConverter().ConvertFromString(hex)
+                ?? System.Windows.Media.Brushes.Transparent);
+
         private void InstallButton_Click(object sender, RoutedEventArgs e)
         {
             IntroPanel.Visibility = Visibility.Collapsed;

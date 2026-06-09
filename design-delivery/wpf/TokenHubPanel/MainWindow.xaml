@@ -761,7 +761,7 @@
                                                        Foreground="#FF1B1B1F" />
                                             <Border x:Name="BalanceBadge"
                                                     Height="16"
-                                                    CornerRadius="99"
+                                                    CornerRadius="2"
                                                     Padding="5,0"
                                                     Margin="6,0,0,0"
                                                     Visibility="Collapsed"

@@ -223,7 +223,7 @@
                         <Grid Margin="0,24,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="24" />
-                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="4" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="Auto" />
@@ -254,7 +254,16 @@
                                     Cursor="Hand"
                                     Padding="6,0,0,0"
                                     VerticalAlignment="Top"
-                                    Click="CustomInstallButton_Click">
+                                    Click="CustomInstallButton_Click"
+                                    MouseEnter="CustomInstallButton_MouseEnter"
+                                    MouseLeave="CustomInstallButton_MouseLeave">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock x:Name="CustomToggleText"
                                                Text="自定义安装"

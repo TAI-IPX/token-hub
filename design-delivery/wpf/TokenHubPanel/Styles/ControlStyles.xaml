@@ -185,22 +185,23 @@
 
     <!-- Recharge button: neutral by default, primary only when balance is insufficient -->
     <Style x:Key="RechargeButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="32" />
-        <Setter Property="Foreground" Value="#CC1B1B1F" />
-        <Setter Property="Background" Value="#B3FFFFFF" />
-        <Setter Property="BorderBrush" Value="#1A000000" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Foreground" Value="#E5000000" />
+        <Setter Property="Background" Value="#B8FFFFFF" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Padding" Value="12,4" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="bd"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4"
+                            CornerRadius="14"
                             Padding="{TemplateBinding Padding}"
                             SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center"
@@ -209,14 +210,13 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#EEF1F6" />
+                            <Setter TargetName="bd" Property="Background" Value="#D0FFFFFF" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#DEE2E9" />
+                            <Setter TargetName="bd" Property="Background" Value="#E0E0E8" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsLowBalance}" Value="True">
-                            <Setter Property="Background" Value="#005FB8" />
-                            <Setter Property="BorderBrush" Value="#14FFFFFF" />
+                            <Setter TargetName="bd" Property="Background" Value="#005FB8" />
                             <Setter Property="Foreground" Value="White" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
@@ -715,7 +715,7 @@
     <!-- Flyout menu container (Windows 11 Fluent) -->
     <Style x:Key="FlyoutMenuBorderStyle" TargetType="Border">
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Background" Value="#F7F9FBFF" />
+        <Setter Property="Background" Value="#E8F2FA" />
         <Setter Property="BorderBrush" Value="#14000000" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="4" />
@@ -771,6 +771,42 @@
     <!-- Flyout menu item — danger variant -->
     <Style x:Key="FlyoutMenuItemDangerStyle" TargetType="Button" BasedOn="{StaticResource FlyoutMenuItemStyle}">
         <Setter Property="Foreground" Value="#C42B1C" />
+    </Style>
+
+    <!-- Notification icon button (Figma node 673:9093: icon_setting/icon_close normal + hover) -->
+    <Style x:Key="NotificationIconButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="{StaticResource NotificationIconButtonSize}" />
+        <Setter Property="Height" Value="{StaticResource NotificationIconButtonSize}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{StaticResource NotificationIconButtonTextBrush}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="NotificationIconButtonBackground"
+                            Background="Transparent"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="NotificationIconButtonBackground"
+                                    Property="Background"
+                                    Value="{StaticResource NotificationIconButtonHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="NotificationIconButtonBackground"
+                                    Property="Background"
+                                    Value="{StaticResource NotificationIconButtonPressedBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

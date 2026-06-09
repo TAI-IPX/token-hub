@@ -71,12 +71,13 @@
                     SnapsToDevicePixels="True"
                     Effect="{StaticResource NotificationShadow}">
                 <Border.Background>
-                    <SolidColorBrush Color="#FAF9FBFF" />
+                    <SolidColorBrush Color="#FFE8F2FA" />
                 </Border.Background>
 
                 <!-- Inner: clips all child content to the same 8px radius -->
                 <Border x:Name="InnerClipBorder"
                         CornerRadius="7"
+                        Background="#E8F2FA"
                         SizeChanged="InnerClipBorder_SizeChanged">
 
                 <Grid>
@@ -90,8 +91,8 @@
                     <Border x:Name="TitleBarBorder"
                             Grid.Row="0"
                             Height="48"
-                            Background="#70F6F8FC"
-                            Padding="4,0,4,0">
+                            Background="#E8F2FA"
+                            Padding="4,0,16,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -110,8 +111,8 @@
                                            Foreground="#FF1B1B1F"
                                            VerticalAlignment="Center" />
                                 <Button x:Name="AppMenuButton"
-                                        Width="16"
-                                        Height="16"
+                                        Width="18"
+                                        Height="18"
                                         Margin="4,0,0,0"
                                         Background="Transparent"
                                         BorderThickness="0"
@@ -130,8 +131,8 @@
                                         </ControlTemplate>
                                     </Button.Template>
                                     <Image Source="Assets/panel-dropdown@3x.png"
-                                           Width="16"
-                                           Height="16" />
+                                           Width="18"
+                                           Height="18" />
                                 </Button>
                                 <!-- App menu dropdown -->
                                 <Popup x:Name="AppMenuPopup"
@@ -160,75 +161,110 @@
                                         HorizontalAlignment="Right">
                                 <!-- 新版本 badge (only when logged in and update available) -->
                                 <Button Visibility="{Binding NewVersionBadgeVisibility}"
-                                        Height="22"
-                                        Padding="8,0"
-                                        Margin="0"
+                                        Height="28"
+                                        Padding="6,4,10,4"
+                                        Margin="0,0,12,0"
                                         BorderThickness="0"
                                         Cursor="Hand"
-                                        Click="SettingsButton_Click"
+                                        Click="NewVersionBadge_Click"
                                         ToolTipService.InitialShowDelay="150"
                                         ToolTipService.Placement="Bottom"
                                         ToolTipService.VerticalOffset="6">
                                     <Button.Background>
-                                        <SolidColorBrush Color="#1A005FB8"/>
+                                        <SolidColorBrush Color="#B8FFFFFF"/>
                                     </Button.Background>
                                     <Button.ToolTip>
                                         <ToolTip Background="Transparent" BorderThickness="0" Padding="0" HasDropShadow="False">
                                             <Border Width="240"
                                                     CornerRadius="8"
-                                                    Background="#FAF9FBFF"
-                                                    BorderBrush="#14000000"
+                                                    Margin="6"
+                                                    Background="#FCFCFD"
+                                                    BorderBrush="#08000000"
                                                     BorderThickness="1"
-                                                    Padding="14,12"
-                                                    Effect="{StaticResource MenuShadow}">
+                                                    Padding="16,12"
+                                                    Effect="{StaticResource ConfirmDialogShadow}">
                                                 <StackPanel>
                                                     <TextBlock Text="v2.1.0 更新内容"
-                                                               FontSize="12" FontWeight="Bold"
-                                                               Foreground="#E51B1B1F" Margin="0,0,0,6" />
-                                                    <TextBlock Text="• 修复智能匹配偶发失效问题" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
-                                                    <TextBlock Text="• 优化应用检测响应速度" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
-                                                    <TextBlock Text="• 改进模型切换稳定性" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
-                                                    <TextBlock Text="• 新增未检测到应用时的引导提示" FontSize="12" Foreground="#B31B1B1F" Margin="0,2,0,0" />
+                                                               FontSize="13" FontWeight="SemiBold"
+                                                               Foreground="#E51B1B1F" Margin="0,0,0,8" />
+                                                    <TextBlock Text="• 修复智能匹配偶发失效问题" FontSize="12" Foreground="#991B1B1F" Margin="0,2,0,0" />
+                                                    <TextBlock Text="• 优化应用检测响应速度" FontSize="12" Foreground="#991B1B1F" Margin="0,2,0,0" />
+                                                    <TextBlock Text="• 改进模型切换稳定性" FontSize="12" Foreground="#991B1B1F" Margin="0,2,0,0" />
+                                                    <TextBlock Text="• 新增未检测到应用时的引导提示" FontSize="12" Foreground="#991B1B1F" Margin="0,2,0,0" />
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>
                                     </Button.ToolTip>
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="4"
+                                            <Border x:Name="bd"
+                                                    Background="{TemplateBinding Background}"
+                                                    CornerRadius="14"
                                                     Padding="{TemplateBinding Padding}">
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <Border Width="13" Height="13" CornerRadius="7"
-                                                            Background="#005FB8" Margin="0,0,4,0">
-                                                        <TextBlock Text="i" FontSize="9" FontWeight="Bold"
-                                                                   Foreground="White" HorizontalAlignment="Center"
-                                                                   VerticalAlignment="Center"/>
-                                                    </Border>
-                                                    <TextBlock Text="新版本" FontSize="11" FontWeight="SemiBold"
-                                                               Foreground="#005FB8" VerticalAlignment="Center"/>
+                                                    <Image Source="Assets/icon-update@3x.png"
+                                                           Width="16" Height="16"
+                                                           Margin="0,0,2,0" />
+                                                    <TextBlock Text="新版本"
+                                                               FontSize="12"
+                                                               FontWeight="Regular"
+                                                               Foreground="#FF000000"
+                                                               VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#D0FFFFFF" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Button.Template>
                                 </Button>
                                 <!-- Settings gear (hidden when not logged in) -->
-                                <Button Width="40"
-                                        Height="40"
-                                        Margin="0"
+                                <Button Width="20"
+                                        Height="20"
+                                        Margin="0,0,12,0"
                                         Visibility="{Binding SettingsButtonVisibility}"
-                                        Style="{StaticResource Win11TitleBarIconButtonStyle}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
                                         Click="SettingsButton_Click"
                                         ToolTip="设置">
-                                    <Image Source="Assets/panel-settings@3x.png" Width="40" Height="40"/>
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Image Source="Assets/panel-settings@3x.png" Width="20" Height="20"/>
                                 </Button>
                                 <!-- Close -->
-                                <Button Width="40"
-                                        Height="40"
-                                        Style="{StaticResource Win11TitleBarIconButtonStyle}"
+                                <Button Width="20"
+                                        Height="20"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
                                         Click="CloseButton_Click"
                                         ToolTip="关闭">
-                                    <Image Source="Assets/panel-close@3x.png" Width="40" Height="40"/>
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Image Source="Assets/panel-close@3x.png" Width="20" Height="20"/>
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -256,41 +292,35 @@
                                         <!-- CTA button docked to bottom -->
                                         <Button DockPanel.Dock="Bottom"
                                                 Content="登录并自动配置"
-                                                Margin="0,32,0,0"
+                                                Margin="0,20,0,0"
                                                 Style="{StaticResource OnboardingButtonStyle}"
                                                 Click="LoginButton_Click" />
 
                                         <!-- InfoBlock -->
                                         <StackPanel VerticalAlignment="Top">
-                                            <!-- Illustration clipped to 48px -->
-                                            <Border Height="48"
-                                                    CornerRadius="8"
-                                                    ClipToBounds="True"
-                                                    HorizontalAlignment="Left"
-                                                    Margin="0,0,0,16">
-                                                <Image Source="Assets/onboarding-illustration@3x.png"
-                                                       Height="80"
-                                                       VerticalAlignment="Top"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="0,-16,0,0" />
-                                            </Border>
+                                            <!-- Logo from Figma prototype -->
+                                            <Image Source="Assets/login-hero.png"
+                                                   Width="52"
+                                                   Height="52"
+                                                   HorizontalAlignment="Left"
+                                                   Margin="0,0,0,20" />
                                             <!-- Title -->
                                             <TextBlock Text="自动完成服务配置"
-                                                       FontSize="24"
+                                                       FontSize="18"
                                                        FontWeight="Bold"
-                                                       Foreground="#E01B1B1F"
-                                                       Margin="0,0,0,16" />
+                                                       Foreground="#E0000000"
+                                                       Margin="0,0,0,8" />
                                             <!-- Description -->
-                                            <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。"
-                                                       FontSize="14"
-                                                       LineHeight="22"
-                                                       Foreground="#731B1B1F"
+                                            <TextBlock Text="登录联想账号后，自动为已安装的 AI 应用完成模型配置。"
+                                                       FontSize="13"
+                                                       LineHeight="20"
+                                                       Foreground="#99000000"
                                                        TextWrapping="Wrap"
-                                                       Margin="0,0,0,16" />
+                                                       Margin="0,0,0,10" />
                                             <!-- Bullets -->
-                                            <TextBlock FontSize="14"
-                                                       LineHeight="22"
-                                                       Foreground="#731B1B1F">
+                                            <TextBlock FontSize="13"
+                                                       LineHeight="20"
+                                                       Foreground="#99000000">
                                                 <Run Text="• 自动完成必要设置" /><LineBreak />
                                                 <Run Text="• 自动为应用选择合适的模型" /><LineBreak />
                                                 <Run Text="• 配置完成后即可使用" />
@@ -438,10 +468,10 @@
                                                 <TextBlock Text="智能模型匹配"
                                                            FontSize="14"
                                                            FontWeight="Bold"
-                                                           Foreground="#E01B1B1F" />
+                                                           Foreground="#FF1B1B1F" />
                                                 <TextBlock Text="按应用特性自动选择模型"
                                                            FontSize="12"
-                                                           Foreground="#FF5E626A"
+                                                           Foreground="#99000000"
                                                            Margin="0,2,0,0" />
                                             </StackPanel>
 
@@ -463,11 +493,11 @@
                                             Panel.ZIndex="50"
                                             Margin="16,4,16,0"
                                             CornerRadius="8"
-                                            Background="#FAF9FBFF"
+                                            Background="#E8F2FA"
                                             BorderBrush="#0F000000"
                                             BorderThickness="1"
                                             Padding="16"
-                                            Effect="{StaticResource NotificationShadow}">
+                                            Effect="{StaticResource ConfirmDialogShadow}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -523,7 +553,7 @@
                                                                Text="应用列表"
                                                                FontSize="14"
                                                                FontWeight="Bold"
-                                                               Foreground="#E01B1B1F"
+                                                               Foreground="#E0000000"
                                                                VerticalAlignment="Center" />
                                                     <Button Grid.Column="1"
                                                             Width="20"
@@ -593,7 +623,7 @@
                                                                             VerticalAlignment="Center">
                                                                     <TextBlock Text="{Binding Name}"
                                                                                FontSize="14"
-                                                                               Foreground="#991B1B1F"
+                                                                               Foreground="#E0000000"
                                                                                VerticalAlignment="Center"
                                                                                TextTrimming="CharacterEllipsis"
                                                                                MaxWidth="168" />
@@ -679,7 +709,7 @@
                                     Grid.Row="1"
                                     Height="64"
                                     Padding="16,0"
-                                    Background="#E0F6F8FC"
+                                    Background="#DFECF7"
                                     BorderBrush="#14000000"
                                     BorderThickness="0,1,0,0">
                                 <Grid>
@@ -702,8 +732,7 @@
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding PhoneNumber}"
-                                                       FontSize="14"
-                                                       FontWeight="Bold"
+                                                       FontSize="13"
                                                        Foreground="#FF1B1B1F" />
                                             <Border x:Name="BalanceBadge"
                                                     Height="16"
@@ -721,7 +750,7 @@
                                         </StackPanel>
                                         <TextBlock Text="{Binding BalanceText}"
                                                    FontSize="12"
-                                                   Foreground="#991B1B1F"
+                                                   Foreground="#66000000"
                                                    Margin="0,2,0,0" />
                                     </StackPanel>
 
@@ -773,9 +802,6 @@
                                     <!-- Recharge Button -->
                                     <Button Grid.Column="4"
                                             Content="充值"
-                                            Width="52"
-                                            Height="32"
-                                            FontSize="13"
                                             Style="{StaticResource RechargeButtonStyle}"
                                             VerticalAlignment="Center"
                                             Click="RechargeButton_Click" />
@@ -788,7 +814,7 @@
                                     Visibility="Collapsed"
                                     Height="64"
                                     Padding="16,0"
-                                    Background="#E0F6F8FC"
+                                    Background="#DFECF7"
                                     BorderBrush="#14000000"
                                     BorderThickness="0,1,0,0">
                                 <Grid>
@@ -847,8 +873,8 @@
                             <!-- Detail Header -->
                             <Border Grid.Row="0"
                                     Height="48"
-                                    Padding="4,0,4,0"
-                                    Background="#70F6F8FC"
+                                    Padding="4,0,16,0"
+                                    Background="#E8F2FA"
                                     BorderBrush="#14000000"
                                     BorderThickness="0,0,0,1">
                                 <Grid>
@@ -877,13 +903,27 @@
                                                VerticalAlignment="Center" />
 
                                     <Button Grid.Column="2"
-                                            Width="40"
-                                            Height="40"
-                                            Style="{StaticResource Win11TitleBarIconButtonStyle}"
+                                            Width="20"
+                                            Height="20"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
                                             Click="CloseButton_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
                                         <Image Source="Assets/panel-close@3x.png"
-                                               Width="40"
-                                               Height="40" />
+                                               Width="20"
+                                               Height="20" />
                                     </Button>
                                 </Grid>
                             </Border>
@@ -1021,8 +1061,8 @@
                             <!-- Settings Header -->
                             <Border Grid.Row="0"
                                     Height="48"
-                                    Padding="4,0,4,0"
-                                    Background="#70F6F8FC"
+                                    Padding="4,0,16,0"
+                                    Background="#E8F2FA"
                                     BorderBrush="#14000000"
                                     BorderThickness="0,0,0,1">
                                 <Grid>
@@ -1051,13 +1091,27 @@
                                                VerticalAlignment="Center" />
 
                                     <Button Grid.Column="2"
-                                            Width="40"
-                                            Height="40"
-                                            Style="{StaticResource Win11TitleBarIconButtonStyle}"
+                                            Width="20"
+                                            Height="20"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
                                             Click="CloseButton_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
                                         <Image Source="Assets/panel-close@3x.png"
-                                               Width="40"
-                                               Height="40" />
+                                               Width="20"
+                                               Height="20" />
                                     </Button>
                                 </Grid>
                             </Border>
@@ -1194,182 +1248,39 @@
                                             <!-- 立即更新 (when new version, accent) -->
                                             <Button Grid.Column="1"
                                                     Content="立即更新"
-                                                    Height="30" Padding="14,0" FontSize="13"
-                                                    Style="{StaticResource PrimaryButtonStyle}"
+                                                    Height="30" Padding="10,0" FontSize="13"
+                                                    Background="#005FB8"
+                                                    Foreground="White"
+                                                    BorderBrush="#14FFFFFF"
+                                                    BorderThickness="1"
                                                     Cursor="Hand"
                                                     Click="DoUpdate_Click"
-                                                    Visibility="{Binding NewVersionBadgeVisibility}" />
+                                                    Visibility="{Binding NewVersionBadgeVisibility}">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd"
+                                                                Background="{TemplateBinding Background}"
+                                                                CornerRadius="4"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#004C99" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#003E7E" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
                                         </Grid>
                                     </Border>
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
                     </Grid>
-
-                    <!-- ===== NOTIFICATION POPUP ===== -->
-                    <Border x:Name="NotificationPanel"
-                            Grid.Row="0"
-                            Grid.RowSpan="3"
-                            Width="364"
-                            CornerRadius="8"
-                            BorderBrush="#0F000000"
-                            BorderThickness="1"
-                            Background="#FAF9FBFF"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Margin="0"
-                            Visibility="Collapsed"
-                            Effect="{StaticResource NotificationShadow}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <!-- Notification Header -->
-                            <Border Grid.Row="0"
-                                    Height="32"
-                                    Padding="16,0,8,0"
-                                    Background="Transparent">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Image Grid.Column="0"
-                                           Source="Assets/desktop-token-hub-icon@3x.png"
-                                           Width="16" Height="16"
-                                           VerticalAlignment="Center" />
-                                    <TextBlock Grid.Column="1"
-                                               Text="联想TokenHub"
-                                               FontSize="12"
-                                               Foreground="#991B1B1F"
-                                               VerticalAlignment="Center"
-                                               Margin="8,0,0,0" />
-
-                                    <Button Grid.Column="2"
-                                            Width="32"
-                                            Height="32"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            FontSize="14"
-                                            Foreground="#991B1B1F"
-                                            Cursor="Hand"
-                                            Content="&#x00D7;"
-                                            Click="DismissNotification_Click" />
-                                </Grid>
-                            </Border>
-
-                            <!-- Auto Discovery Body (smart match ON) -->
-                            <Grid x:Name="AutoNotificationBody"
-                                  Grid.Row="1"
-                                  Margin="8,0,16,16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Image Grid.Column="0"
-                                       Source="Assets/app-qclaw@3x.png"
-                                       Width="48" Height="48"
-                                       VerticalAlignment="Top"
-                                       Margin="0,8,0,0" />
-
-                                <StackPanel Grid.Column="1"
-                                            Margin="16,16,0,0">
-                                    <TextBlock Text="QClaw 已完成模型匹配"
-                                               FontSize="16"
-                                               FontWeight="Bold"
-                                               Foreground="#E51B1B1F" />
-                                    <TextBlock Text="已根据应用特性自动选择 DeepSeek V4 Flash，现在可以直接使用。"
-                                               FontSize="14"
-                                               Foreground="#991B1B1F"
-                                               Margin="0,4,0,0"
-                                               TextWrapping="Wrap" />
-                                    <WrapPanel Margin="0,8,0,0">
-                                        <Border Height="17"
-                                                Padding="3,4"
-                                                CornerRadius="2"
-                                                Background="#CFE3F3"
-                                                Margin="0,0,4,0">
-                                            <TextBlock Text="文本生成"
-                                                       FontSize="10"
-                                                       Foreground="#FF0F6CBD"
-                                                       VerticalAlignment="Center" />
-                                        </Border>
-                                        <Border Height="17"
-                                                Padding="3,4"
-                                                CornerRadius="2"
-                                                Background="#CFE3F3"
-                                                Margin="0,0,4,0">
-                                            <TextBlock Text="轻量快速"
-                                                       FontSize="10"
-                                                       Foreground="#FF0F6CBD"
-                                                       VerticalAlignment="Center" />
-                                        </Border>
-                                        <Border Height="17"
-                                                Padding="3,4"
-                                                CornerRadius="2"
-                                                Background="#CFE3F3">
-                                            <TextBlock Text="DeepSeek"
-                                                       FontSize="10"
-                                                       Foreground="#FF0F6CBD"
-                                                       VerticalAlignment="Center" />
-                                        </Border>
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Grid>
-
-                            <!-- Manual Discovery Body (smart match OFF) -->
-                            <Grid x:Name="ManualNotificationBody"
-                                  Grid.Row="1"
-                                  Margin="8,0,16,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Image Grid.Column="0"
-                                       Source="Assets/app-qclaw@3x.png"
-                                       Width="48" Height="48"
-                                       VerticalAlignment="Top"
-                                       Margin="0,8,0,0" />
-
-                                    <StackPanel Grid.Column="1"
-                                                Margin="16,16,0,0">
-                                        <TextBlock Text="发现新应用 QClaw"
-                                                   FontSize="16"
-                                                   FontWeight="Bold"
-                                                   Foreground="#E51B1B1F" />
-                                        <TextBlock Text="为 QClaw 选择模型即可马上使用"
-                                                   FontSize="14"
-                                                   Foreground="#991B1B1F"
-                                                   Margin="0,4,0,0"
-                                                   TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Grid>
-
-                            <!-- Notification Actions (Manual only) -->
-                            <Border x:Name="NotificationActions"
-                                    Grid.Row="2"
-                                    Padding="12,8,16,16">
-                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                    <Button Content="查看配置"
-                                            Height="28"
-                                            Padding="8,0"
-                                            FontSize="12"
-                                            Background="Transparent"
-                                            Foreground="#005FB8"
-                                            BorderThickness="0"
-                                            Cursor="Hand"
-                                            Click="GoToToolFromNotification_Click" />
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </Border>
 
                     <!-- ===== TOAST ===== -->
                     <Border x:Name="ToastBorder"
@@ -1391,5 +1302,213 @@
                 </Grid>
                 </Border><!-- /inner clip border -->
         </Border>
+
+        <!-- ===== NOTIFICATION POPUP ===== -->
+        <!-- Lives at root Grid level — outside InnerClipBorder's Clip geometry -->
+        <Border x:Name="NotificationPanel"
+                Width="{StaticResource NotificationCardWidth}"
+                CornerRadius="{StaticResource NotificationCornerRadius}"
+                BorderBrush="{StaticResource NotificationStrokeBrush}"
+                BorderThickness="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="16,8,16,24"
+                Visibility="Collapsed"
+                RenderTransformOrigin="0.5,0.5"
+                MouseLeftButtonUp="NotificationPanel_MouseLeftButtonUp"
+                Effect="{StaticResource NotificationShadow}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{StaticResource NotificationSurfaceBrush}" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource NotificationSurfaceHoverBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Border.RenderTransform>
+                <ScaleTransform x:Name="NotificationScale" ScaleX="1" ScaleY="1" />
+            </Border.RenderTransform>
+            <Grid Margin="{StaticResource NotificationContentMargin}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0"
+                       Source="Assets/notification-app-icon@3x.png"
+                       Width="{StaticResource NotificationAppIconSize}"
+                       Height="{StaticResource NotificationAppIconSize}"
+                       VerticalAlignment="Top"
+                       Margin="0,10,0,0" />
+
+                <!-- Auto Discovery Body (smart match ON) -->
+                <StackPanel x:Name="AutoNotificationBody"
+                            Grid.Column="1"
+                            Margin="{StaticResource NotificationTextColumnMargin}">
+                    <TextBlock FontSize="{StaticResource NotificationTitleFontSize}"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource NotificationTitleTextBrush}"
+                               LineHeight="{StaticResource NotificationTitleLineHeight}"
+                               TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding DiscoveryToolName}" />
+                        <Run Text=" 已完成模型匹配" />
+                    </TextBlock>
+                    <TextBlock FontSize="{StaticResource NotificationBodyFontSize}"
+                               Foreground="{StaticResource NotificationBodyTextBrush}"
+                               Margin="{StaticResource NotificationBodyTextMargin}"
+                               LineHeight="{StaticResource NotificationBodyLineHeight}"
+                               TextTrimming="CharacterEllipsis">
+                        <Run Text="已智能匹配 " />
+                        <Run Text="{Binding DiscoveryModelName}" />
+                        <Run Text="，可直接使用" />
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{Binding DiscoveryTags}"
+                                  Margin="{StaticResource NotificationTagListMargin}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Style.Triggers>
+                                    <Trigger Property="HasItems" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border MinHeight="{StaticResource NotificationTagHeight}"
+                                        Padding="{StaticResource NotificationTagPadding}"
+                                        CornerRadius="{StaticResource NotificationTagCornerRadius}"
+                                        Background="{StaticResource NotificationTagBackgroundBrush}"
+                                        Margin="{StaticResource NotificationTagMargin}">
+                                    <TextBlock Text="{Binding}"
+                                               FontSize="{StaticResource NotificationTagFontSize}"
+                                               LineHeight="{StaticResource NotificationTagLineHeight}"
+                                               Foreground="{StaticResource NotificationTagTextBrush}"
+                                               VerticalAlignment="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- Manual Discovery Body (smart match OFF) -->
+                <StackPanel x:Name="ManualNotificationBody"
+                            Grid.Column="1"
+                            Margin="{StaticResource NotificationTextColumnMargin}">
+                    <TextBlock FontSize="{StaticResource NotificationTitleFontSize}"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource NotificationTitleTextBrush}"
+                               LineHeight="{StaticResource NotificationTitleLineHeight}"
+                               TextTrimming="CharacterEllipsis">
+                        <Run Text="发现新应用 " />
+                        <Run Text="{Binding DiscoveryToolName}" />
+                    </TextBlock>
+                    <TextBlock Text="点击选择模型即可使用"
+                               FontSize="{StaticResource NotificationBodyFontSize}"
+                               Foreground="{StaticResource NotificationBodyTextBrush}"
+                               Margin="{StaticResource NotificationBodyTextMargin}"
+                               LineHeight="{StaticResource NotificationBodyLineHeight}"
+                               TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <!-- More (⋯) button -->
+                <Button x:Name="NotificationSettingButton"
+                        Grid.Column="2"
+                        VerticalAlignment="Top"
+                        Margin="{StaticResource NotificationFirstActionButtonMargin}"
+                        Style="{StaticResource NotificationIconButtonStyle}"
+                        Click="NotificationSettingButton_Click">
+                    <Image Width="16" Height="16"
+                           Source="Assets/notification-more@3x.png"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                </Button>
+
+                <!-- Close (×) button -->
+                <Button x:Name="NotificationCloseButton"
+                        Grid.Column="3"
+                        VerticalAlignment="Top"
+                        Margin="{StaticResource NotificationActionButtonMargin}"
+                        Style="{StaticResource NotificationIconButtonStyle}"
+                        Click="DismissNotification_Click">
+                    <Image Width="16" Height="16"
+                           Source="Assets/notification-close@3x.png"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                </Button>
+
+                <Border x:Name="NotificationActions" Visibility="Collapsed" />
+            </Grid>
+        </Border>
+
+        <!-- ===== TRAY CONTEXT MENU (Figma 632:641) ===== -->
+        <Popup x:Name="TrayMenuPopup"
+               Placement="Absolute"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade">
+            <Border Width="156"
+                    CornerRadius="7"
+                    Background="#E8F2FA"
+                    BorderBrush="#1A000000"
+                    BorderThickness="1"
+                    Effect="{StaticResource TrayMenuShadow}">
+                <StackPanel x:Name="TrayMenuItems" Margin="5,3">
+                    <!-- 刷新应用 -->
+                    <Border x:Name="TrayMenuItem1"
+                            Height="30"
+                            CornerRadius="3"
+                            Padding="14,0"
+                            Background="Transparent"
+                            Cursor="Hand"
+                            MouseLeftButtonDown="TrayMenuRefresh_Click"
+                            MouseEnter="TrayMenuItem_MouseEnter"
+                            MouseLeave="TrayMenuItem_MouseLeave">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Assets/tray-icon@3x.png" Width="16" Height="16" Margin="0,0,10,0" />
+                            <TextBlock Text="刷新应用" FontSize="12" Foreground="#E4000000" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                    <!-- 设置 -->
+                    <Border x:Name="TrayMenuItem2"
+                            Height="30"
+                            CornerRadius="3"
+                            Padding="14,0"
+                            Background="Transparent"
+                            Cursor="Hand"
+                            MouseLeftButtonDown="TrayMenuSettings_Click"
+                            MouseEnter="TrayMenuItem_MouseEnter"
+                            MouseLeave="TrayMenuItem_MouseLeave">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Assets/tray-settings@3x.png" Width="16" Height="16" Margin="0,0,10,0" />
+                            <TextBlock Text="设置" FontSize="12" Foreground="#E4000000" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                    <!-- 退出 -->
+                    <Border x:Name="TrayMenuItem3"
+                            Height="30"
+                            CornerRadius="3"
+                            Padding="14,0"
+                            Background="Transparent"
+                            Cursor="Hand"
+                            MouseLeftButtonDown="TrayMenuExit_Click"
+                            MouseEnter="TrayMenuItem_MouseEnter"
+                            MouseLeave="TrayMenuItem_MouseLeave">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Assets/tray-close@3x.png" Width="16" Height="16" Margin="0,0,10,0" />
+                            <TextBlock Text="退出" FontSize="12" Foreground="#E4000000" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

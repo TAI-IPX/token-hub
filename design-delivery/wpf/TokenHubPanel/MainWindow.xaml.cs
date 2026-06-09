@@ -22,6 +22,7 @@ namespace TokenHubPanel
         private DispatcherTimer? _configTimer;
         private DispatcherTimer? _toastTimer;
         private bool _syncingDemoState;
+        private bool _notificationVisible;
 
         // Onboarding sub-step (only meaningful while CurrentState == Login)
         private enum OnbStep { Login, AuthPending, FirstRun, ReadyToConfig }
@@ -29,6 +30,50 @@ namespace TokenHubPanel
 
         private static Brush BrushFromHex(string hex) =>
             (Brush)(new BrushConverter().ConvertFromString(hex) ?? Brushes.Transparent);
+
+        private void PositionForNotification()
+        {
+            var workArea = SystemParameters.WorkArea;
+            // 10px from right and bottom edges
+            Left = workArea.Right  - ActualWidth  - 10;
+            Top  = workArea.Bottom - ActualHeight - 10;
+        }
+
+        // Animate Window.Left using CompositionTarget.Rendering (WPF has no built-in window position animation)
+        private EventHandler? _slideRenderHandler;
+        private void SlideWindowIn(double finalLeft, double finalTop)
+        {
+            // Remove any existing slide handler
+            if (_slideRenderHandler != null)
+            {
+                CompositionTarget.Rendering -= _slideRenderHandler;
+                _slideRenderHandler = null;
+            }
+
+            double startLeft = SystemParameters.WorkArea.Right + 20; // off-screen right
+            Left = startLeft;
+            Top  = finalTop;
+
+            var startTime = DateTime.UtcNow;
+            const double durationMs = 500.0;
+
+            _slideRenderHandler = (s, e) =>
+            {
+                double elapsed = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                double t = Math.Min(elapsed / durationMs, 1.0);
+                // Cubic ease-out
+                t = 1.0 - Math.Pow(1.0 - t, 3.0);
+                Left = startLeft + (finalLeft - startLeft) * t;
+
+                if (elapsed >= durationMs)
+                {
+                    CompositionTarget.Rendering -= _slideRenderHandler;
+                    _slideRenderHandler = null;
+                    Left = finalLeft;
+                }
+            };
+            CompositionTarget.Rendering += _slideRenderHandler;
+        }
 
         public MainWindow()
         {
@@ -99,10 +144,23 @@ namespace TokenHubPanel
 
         private void CreateTrayIcon()
         {
+            // Load tray icon from assets
+            var iconPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "tray-icon@3x.png");
+            System.Drawing.Icon trayIcon;
+            try
+            {
+                using var bmp = new System.Drawing.Bitmap(iconPath);
+                trayIcon = System.Drawing.Icon.FromHandle(bmp.GetHicon());
+            }
+            catch
+            {
+                trayIcon = System.Drawing.Icon.ExtractAssociatedIcon(
+                    System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TokenHubPanel.exe"));
+            }
+
             _trayIcon = new WinForms.NotifyIcon
             {
-                Icon = System.Drawing.Icon.ExtractAssociatedIcon(
-                    System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TokenHubPanel.exe")),
+                Icon = trayIcon,
                 Text = "联想 TokenHub",
                 Visible = true
             };
@@ -115,21 +173,67 @@ namespace TokenHubPanel
                     PositionNearTray();
                 }
             };
-            // Win11-style context menu via WinForms ContextMenuStrip
-            var menu = new WinForms.ContextMenuStrip();
-            menu.RenderMode = WinForms.ToolStripRenderMode.System;
-            menu.Items.Add("数据看板", null, (s, e) => OpenWebLink("dashboard"));
-            menu.Items.Add("使用日志", null, (s, e) => OpenWebLink("logs"));
-            menu.Items.Add("密钥管理", null, (s, e) => OpenWebLink("keys"));
-            menu.Items.Add("模型广场", null, (s, e) => OpenWebLink("marketplace"));
-            menu.Items.Add(new WinForms.ToolStripSeparator());
-            var checkUpdate = menu.Items.Add("检查更新");
-            checkUpdate.Click += (s, e) => { Dispatcher.Invoke(() => { Show(); Activate(); _vm.CurrentPage = ViewModels.PanelPage.Settings; }); };
-            menu.Items.Add(new WinForms.ToolStripSeparator());
-            var exit = menu.Items.Add("退出");
-            exit.Click += (s, e) => Dispatcher.Invoke(ExitApplication);
-            _trayIcon.ContextMenuStrip = menu;
+            // Figma 632:641 — WPF Popup context menu (stylable)
+            _trayIcon.MouseClick += (s, e) =>
+            {
+                if (e.Button == WinForms.MouseButtons.Right)
+                {
+                    Dispatcher.Invoke(() => ShowTrayMenu());
+                }
+            };
         }
+
+        private void ShowTrayMenu()
+        {
+            // Position like native system tray menu: above taskbar, not covering tray icon
+            var mousePos = WinForms.Control.MousePosition;
+            var workArea = SystemParameters.WorkArea;
+            const double menuWidth = 156;
+            const double menuHeight = 96;
+            const double gap = 8;
+
+            TrayMenuPopup.Placement = System.Windows.Controls.Primitives.PlacementMode.Absolute;
+            // Horizontal: right edge at mouse, left edge to the left
+            TrayMenuPopup.HorizontalOffset = Math.Max(0, (mousePos.X / DpiScaleX) - menuWidth);
+            // Vertical: bottom of menu sits above taskbar with gap
+            TrayMenuPopup.VerticalOffset = Math.Max(0, workArea.Bottom - menuHeight - gap);
+            TrayMenuPopup.IsOpen = true;
+        }
+
+        private void TrayMenuRefresh_Click(object sender, MouseButtonEventArgs e)
+        {
+            TrayMenuPopup.IsOpen = false;
+            RefreshApps_Click(sender, e);
+        }
+
+        private void TrayMenuSettings_Click(object sender, MouseButtonEventArgs e)
+        {
+            TrayMenuPopup.IsOpen = false;
+            Show();
+            Activate();
+            _vm.CurrentPage = ViewModels.PanelPage.Settings;
+        }
+
+        private void TrayMenuExit_Click(object sender, MouseButtonEventArgs e)
+        {
+            TrayMenuPopup.IsOpen = false;
+            ExitApplication();
+        }
+
+        private void TrayMenuItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border)
+                border.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0D000000"));
+        }
+
+        private void TrayMenuItem_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border border)
+                border.Background = Brushes.Transparent;
+        }
+
+        private double DpiScaleX => PresentationSource.FromVisual(this)?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
+        private double DpiScaleY => PresentationSource.FromVisual(this)?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
 
         private void OpenWebLink(string key)
         {
@@ -188,7 +292,10 @@ namespace TokenHubPanel
             var state = _vm.CurrentState;
             var isDiscovery = state == DemoState.AutoDiscovery || state == DemoState.ManualDiscovery;
 
-            PanelBorder.Width = isDiscovery ? 364 : 360;
+            PanelBorder.Width = 360;
+            PanelBorder.Margin = isDiscovery
+                ? new Thickness(0)
+                : new Thickness(12, 12, 12, 20);
             PanelBorder.Height = isDiscovery
                 ? double.NaN
                 : _vm.PanelHeight;
@@ -197,6 +304,13 @@ namespace TokenHubPanel
                 ? Brushes.Transparent
                 : BrushFromHex("#F0F8FBFF");
             PanelBorder.Effect = isDiscovery ? null : (System.Windows.Media.Effects.Effect)FindResource("PanelShadow");
+
+            // Ensure InnerClipBorder doesn't paint its solid background through the transparent PanelBorder,
+            // and disable hit-testing on PanelBorder so it can't block NotificationPanel clicks.
+            InnerClipBorder.Background = isDiscovery
+                ? Brushes.Transparent
+                : new SolidColorBrush(Color.FromRgb(0xE8, 0xF2, 0xFA));
+            PanelBorder.IsHitTestVisible = !isDiscovery;
         }
 
         private void UpdatePanelStateVisibility()
@@ -305,11 +419,115 @@ namespace TokenHubPanel
         private void UpdateNotificationVisibility()
         {
             bool show = _vm.IsDiscovering;
-            NotificationPanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
 
             AutoNotificationBody.Visibility = _vm.IsAutoDiscovery ? Visibility.Visible : Visibility.Collapsed;
             ManualNotificationBody.Visibility = _vm.IsManualDiscovery ? Visibility.Visible : Visibility.Collapsed;
-            NotificationActions.Visibility = _vm.IsManualDiscovery ? Visibility.Visible : Visibility.Collapsed;
+            NotificationActions.Visibility = Visibility.Collapsed;
+
+            if (show)
+            {
+                ShowNotificationPanel();
+            }
+            else if (_notificationVisible)
+            {
+                CloseNotificationPanel(dismissNotification: false);
+            }
+            else
+            {
+                NotificationPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ShowNotificationPanel()
+        {
+            if (_notificationVisible)
+                return;
+
+            _notificationVisible = true;
+
+            // Hide main panel — notification is standalone
+            PanelBorder.Visibility = Visibility.Collapsed;
+
+            NotificationPanel.Visibility = Visibility.Visible;
+            // Clear any held animation clock left by previous click so local values take effect
+            NotificationScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+            NotificationScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+            NotificationScale.ScaleX = 1;
+            NotificationScale.ScaleY = 1;
+            NotificationPanel.Opacity = 0;
+
+            Show();
+
+            // Defer to after SizeToContent has resized the window so ActualWidth/Height are correct
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, () =>
+            {
+                var workArea = SystemParameters.WorkArea;
+                // NotificationPanel has Margin="16,8,16,24" for shadow clearance.
+                // Align card right edge with main panel (workArea.Right - 16):
+                //   card right = window right - rightMargin(16) = workArea.Right - 16  →  finalLeft = workArea.Right - ActualWidth
+                // Card bottom 10px from taskbar:
+                //   card bottom = window bottom - bottomMargin(24) = workArea.Bottom - 10  →  finalTop = workArea.Bottom - ActualHeight + 14
+                double finalLeft = workArea.Right  - ActualWidth;
+                double finalTop  = workArea.Bottom - ActualHeight + 14;
+                Top = finalTop;
+
+                SlideWindowIn(finalLeft, finalTop);
+                NotificationPanel.BeginAnimation(OpacityProperty,
+                    new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300))
+                    {
+                        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                    });
+            });
+        }
+
+        private void CloseNotificationPanel(Action? afterClose = null, bool dismissNotification = true)
+        {
+            if (!_notificationVisible || NotificationPanel.Visibility != Visibility.Visible)
+            {
+                if (dismissNotification && _vm.IsDiscovering)
+                    _vm.DismissNotificationCommand.Execute(null);
+                afterClose?.Invoke();
+                return;
+            }
+
+            // Mark invisible immediately — prevents re-entry if afterClose triggers a state change
+            // that calls UpdateNotificationVisibility → CloseNotificationPanel again before fade ends.
+            _notificationVisible = false;
+
+            // Stop any in-progress entrance slide
+            if (_slideRenderHandler != null)
+            {
+                CompositionTarget.Rendering -= _slideRenderHandler;
+                _slideRenderHandler = null;
+            }
+
+            var fadeOut = new DoubleAnimation(NotificationPanel.Opacity, 0, TimeSpan.FromMilliseconds(180))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+            };
+
+            fadeOut.Completed += (_, _) =>
+            {
+                NotificationPanel.Visibility = Visibility.Collapsed;
+                NotificationPanel.Opacity = 1;
+                // Release held animation clock (FillBehavior.HoldEnd from click scale) so
+                // ScaleX/Y local assignment is honoured next time ShowNotificationPanel runs.
+                NotificationScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+                NotificationScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+                NotificationScale.ScaleX = 1;
+                NotificationScale.ScaleY = 1;
+
+                // Restore main panel and reposition window near tray
+                PanelBorder.Visibility = Visibility.Visible;
+                UpdateLayout();
+                PositionNearTray();
+
+                if (dismissNotification && _vm.IsDiscovering)
+                    _vm.DismissNotificationCommand.Execute(null);
+                afterClose?.Invoke();
+            };
+
+            NotificationPanel.BeginAnimation(OpacityProperty, fadeOut);
         }
 
         private void UpdateBalanceBadge()
@@ -505,8 +723,21 @@ namespace TokenHubPanel
 
         private void DoUpdate_Click(object sender, RoutedEventArgs e)
         {
-            _vm.NewVersionAvailable = false;
-            ShowToast("正在后台更新，完成后自动重启");
+            OpenUpdateDialog();
+        }
+
+        private void NewVersionBadge_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUpdateDialog();
+        }
+
+        public void OpenUpdateDialog()
+        {
+            var dialog = new UpdateDialog
+            {
+                UpdateDescription = "v2.1.0"
+            };
+            dialog.ShowDialog();
         }
 
         private void ShowToast(string message)
@@ -541,7 +772,8 @@ namespace TokenHubPanel
 
         private void DismissNotification_Click(object sender, RoutedEventArgs e)
         {
-            _vm.DismissNotificationCommand.Execute(null);
+            e.Handled = true;
+            CloseNotificationPanel();
         }
 
         private void GoToToolFromNotification_Click(object sender, RoutedEventArgs e)
@@ -726,6 +958,49 @@ namespace TokenHubPanel
                 AppMenuPopup.IsOpen = false;
             if (AccountMenuPopup.IsOpen)
                 AccountMenuPopup.IsOpen = false;
+        }
+
+        private void NotificationPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (IsFromButton(e.OriginalSource as DependencyObject))
+                return;
+
+            // Use separate animation instances — reusing the same object causes Completed to fire twice
+            // (once per BeginAnimation clock) which double-invokes the afterClose action.
+            var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
+            var scaleX = new DoubleAnimation(1.0, 0.9, TimeSpan.FromMilliseconds(120)) { EasingFunction = ease };
+            var scaleY = new DoubleAnimation(1.0, 0.9, TimeSpan.FromMilliseconds(120)) { EasingFunction = ease };
+
+            // Completed only on scaleX — fires exactly once
+            scaleX.Completed += (_, _) =>
+            {
+                if (_vm.IsManualDiscovery)
+                    CloseNotificationPanel(
+                        afterClose: () => _vm.GoToToolCommand.Execute("qclaw"),
+                        dismissNotification: false);
+                else
+                    CloseNotificationPanel(dismissNotification: false);
+            };
+
+            NotificationScale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleX);
+            NotificationScale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleY);
+        }
+
+        private void NotificationSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            CloseNotificationPanel(afterClose: () => _vm.CurrentPage = PanelPage.Settings);
+        }
+
+        private static bool IsFromButton(DependencyObject? source)
+        {
+            while (source != null)
+            {
+                if (source is Button)
+                    return true;
+                source = VisualTreeHelper.GetParent(source);
+            }
+            return false;
         }
     }
 }

@@ -65,6 +65,9 @@
                         Tag="9"
                         Style="{StaticResource DemoStateButtonStyle}"
                         Click="DemoStateButton_Click" />
+                <Button Content="弹更新窗口"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="ShowUpdateDialog_Click" />
             </WrapPanel>
         </StackPanel>
     </Border>

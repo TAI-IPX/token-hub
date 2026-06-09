@@ -17,11 +17,25 @@
                       Color="#000000"
                       Opacity="0.14" />
     <DropShadowEffect x:Key="NotificationShadow"
-                      BlurRadius="12"
-                      ShadowDepth="12"
+                      BlurRadius="16"
+                      ShadowDepth="8"
                       Direction="270"
-                      Color="#0F172A"
-                      Opacity="0.16" />
+                      Color="#000000"
+                      Opacity="0.14" />
+    <!-- Win11 confirm dialog shadow — very subtle, tight fit -->
+    <DropShadowEffect x:Key="ConfirmDialogShadow"
+                      BlurRadius="8"
+                      ShadowDepth="2"
+                      Direction="270"
+                      Color="#000000"
+                      Opacity="0.20" />
+    <!-- Figma 632:641 tray context menu shadow -->
+    <DropShadowEffect x:Key="TrayMenuShadow"
+                      BlurRadius="21"
+                      ShadowDepth="2"
+                      Direction="270"
+                      Color="#000000"
+                      Opacity="0.14" />
     <DropShadowEffect x:Key="ToggleKnobShadow"
                       BlurRadius="2"
                       ShadowDepth="1"
@@ -84,6 +98,28 @@
     <SolidColorBrush x:Key="AccentTagBrush" Color="#176FC4" />
     <SolidColorBrush x:Key="FooterBgBrush" Color="#F6F8FC" />
 
+    <!-- Notification tokens: source Figma node 673:9093, Frame 001/Frame 002 -->
+    <Color x:Key="NotificationSurfaceColor">#F3F3F3</Color>
+    <Color x:Key="NotificationSurfaceHoverColor">#EFEFEF</Color>
+    <Color x:Key="NotificationStrokeColor">#66757575</Color>
+    <Color x:Key="NotificationTitleTextColor">#000000</Color>
+    <Color x:Key="NotificationBodyTextColor">#99000000</Color>
+    <Color x:Key="NotificationIconButtonTextColor">#991B1B1F</Color>
+    <Color x:Key="NotificationIconButtonHoverColor">#0D000000</Color>
+    <Color x:Key="NotificationIconButtonPressedColor">#14000000</Color>
+    <Color x:Key="NotificationTagBackgroundColor">#CFE3F3</Color>
+    <Color x:Key="NotificationTagTextColor">#005FB8</Color>
+    <SolidColorBrush x:Key="NotificationSurfaceBrush" Color="{StaticResource NotificationSurfaceColor}" />
+    <SolidColorBrush x:Key="NotificationSurfaceHoverBrush" Color="{StaticResource NotificationSurfaceHoverColor}" />
+    <SolidColorBrush x:Key="NotificationStrokeBrush" Color="{StaticResource NotificationStrokeColor}" />
+    <SolidColorBrush x:Key="NotificationTitleTextBrush" Color="{StaticResource NotificationTitleTextColor}" />
+    <SolidColorBrush x:Key="NotificationBodyTextBrush" Color="{StaticResource NotificationBodyTextColor}" />
+    <SolidColorBrush x:Key="NotificationIconButtonTextBrush" Color="{StaticResource NotificationIconButtonTextColor}" />
+    <SolidColorBrush x:Key="NotificationIconButtonHoverBrush" Color="{StaticResource NotificationIconButtonHoverColor}" />
+    <SolidColorBrush x:Key="NotificationIconButtonPressedBrush" Color="{StaticResource NotificationIconButtonPressedColor}" />
+    <SolidColorBrush x:Key="NotificationTagBackgroundBrush" Color="{StaticResource NotificationTagBackgroundColor}" />
+    <SolidColorBrush x:Key="NotificationTagTextBrush" Color="{StaticResource NotificationTagTextColor}" />
+
     <!-- Dimensions -->
     <sys:Double x:Key="PanelWidth">360</sys:Double>
     <sys:Double x:Key="PanelHeightNormal">384</sys:Double>
@@ -104,8 +140,31 @@
     <sys:Double x:Key="ControlCornerRadius">4</sys:Double>
     <sys:Double x:Key="TagHeight">16</sys:Double>
     <sys:Double x:Key="SmartModeHeight">56</sys:Double>
+    <sys:Double x:Key="NotificationCardWidth">360</sys:Double>
+    <sys:Double x:Key="NotificationCardHeight">113</sys:Double>
+    <sys:Double x:Key="NotificationAppIconSize">20</sys:Double>
+    <sys:Double x:Key="NotificationIconButtonSize">16</sys:Double>
+    <sys:Double x:Key="NotificationIconImageSize">16</sys:Double>
+    <sys:Double x:Key="NotificationTitleFontSize">16</sys:Double>
+    <sys:Double x:Key="NotificationTitleLineHeight">26</sys:Double>
+    <sys:Double x:Key="NotificationBodyFontSize">14</sys:Double>
+    <sys:Double x:Key="NotificationBodyLineHeight">22</sys:Double>
+    <sys:Double x:Key="NotificationTagFontSize">11</sys:Double>
+    <sys:Double x:Key="NotificationTagLineHeight">11</sys:Double>
+    <sys:Double x:Key="NotificationTagHeight">17</sys:Double>
+    <sys:Double x:Key="NotificationEntranceOffset">8</sys:Double>
     <CornerRadius x:Key="PanelCornerRadius">8</CornerRadius>
     <CornerRadius x:Key="ControlCornerRadiusObj">4</CornerRadius>
+    <CornerRadius x:Key="NotificationCornerRadius">8</CornerRadius>
+    <CornerRadius x:Key="NotificationTagCornerRadius">2</CornerRadius>
+    <Thickness x:Key="NotificationContentMargin">15,9,11,22</Thickness>
+    <Thickness x:Key="NotificationTextColumnMargin">13,7,0,0</Thickness>
+    <Thickness x:Key="NotificationActionButtonMargin">0,0,0,0</Thickness>
+    <Thickness x:Key="NotificationFirstActionButtonMargin">0,0,8,0</Thickness>
+    <Thickness x:Key="NotificationBodyTextMargin">0,0,0,0</Thickness>
+    <Thickness x:Key="NotificationTagListMargin">0,8,0,0</Thickness>
+    <Thickness x:Key="NotificationTagPadding">4,3</Thickness>
+    <Thickness x:Key="NotificationTagMargin">0,0,8,0</Thickness>
 
     <!-- Font -->
     <FontFamily x:Key="DefaultFont">Microsoft YaHei</FontFamily>

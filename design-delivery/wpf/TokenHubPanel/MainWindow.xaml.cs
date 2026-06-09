@@ -21,8 +21,10 @@ namespace TokenHubPanel
         private WinForms.NotifyIcon? _trayIcon;
         private DispatcherTimer? _configTimer;
         private DispatcherTimer? _toastTimer;
+        private DispatcherTimer? _trayMenuOutsideClickTimer;
         private bool _syncingDemoState;
         private bool _notificationVisible;
+        private bool _trayMenuAwaitingButtonRelease;
 
         // Onboarding sub-step (only meaningful while CurrentState == Login)
         private enum OnbStep { Login, AuthPending, FirstRun, ReadyToConfig }
@@ -77,6 +79,9 @@ namespace TokenHubPanel
 
         public MainWindow()
         {
+            // Prevent app shutdown when the last visible window (e.g. dialog) closes
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
             InitializeComponent();
             _vm = (MainViewModel)DataContext;
 
@@ -155,7 +160,8 @@ namespace TokenHubPanel
             catch
             {
                 trayIcon = System.Drawing.Icon.ExtractAssociatedIcon(
-                    System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TokenHubPanel.exe"));
+                    System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TokenHubPanel.exe"))
+                    ?? System.Drawing.SystemIcons.Application;
             }
 
             _trayIcon = new WinForms.NotifyIcon
@@ -198,17 +204,59 @@ namespace TokenHubPanel
             // Vertical: bottom of menu sits above taskbar with gap
             TrayMenuPopup.VerticalOffset = Math.Max(0, workArea.Bottom - menuHeight - gap);
             TrayMenuPopup.IsOpen = true;
+            StartTrayMenuOutsideClickWatcher();
+        }
+
+        private void StartTrayMenuOutsideClickWatcher()
+        {
+            _trayMenuAwaitingButtonRelease = true;
+            _trayMenuOutsideClickTimer?.Stop();
+            _trayMenuOutsideClickTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(40) };
+            _trayMenuOutsideClickTimer.Tick += (_, _) =>
+            {
+                if (!TrayMenuPopup.IsOpen)
+                {
+                    _trayMenuOutsideClickTimer?.Stop();
+                    return;
+                }
+
+                var buttons = WinForms.Control.MouseButtons;
+                if (_trayMenuAwaitingButtonRelease)
+                {
+                    if (buttons == WinForms.MouseButtons.None)
+                        _trayMenuAwaitingButtonRelease = false;
+                    return;
+                }
+
+                if (buttons == WinForms.MouseButtons.None)
+                    return;
+
+                var mousePos = WinForms.Control.MousePosition;
+                var mouseX = mousePos.X / DpiScaleX;
+                var mouseY = mousePos.Y / DpiScaleY;
+                var menuBounds = new Rect(TrayMenuPopup.HorizontalOffset, TrayMenuPopup.VerticalOffset, 156, 96);
+                if (!menuBounds.Contains(new Point(mouseX, mouseY)))
+                    CloseTrayMenu();
+            };
+            _trayMenuOutsideClickTimer.Start();
+        }
+
+        private void CloseTrayMenu()
+        {
+            TrayMenuPopup.IsOpen = false;
+            _trayMenuOutsideClickTimer?.Stop();
+            _trayMenuAwaitingButtonRelease = false;
         }
 
         private void TrayMenuRefresh_Click(object sender, MouseButtonEventArgs e)
         {
-            TrayMenuPopup.IsOpen = false;
+            CloseTrayMenu();
             RefreshApps_Click(sender, e);
         }
 
         private void TrayMenuSettings_Click(object sender, MouseButtonEventArgs e)
         {
-            TrayMenuPopup.IsOpen = false;
+            CloseTrayMenu();
             Show();
             Activate();
             _vm.CurrentPage = ViewModels.PanelPage.Settings;
@@ -216,7 +264,7 @@ namespace TokenHubPanel
 
         private void TrayMenuExit_Click(object sender, MouseButtonEventArgs e)
         {
-            TrayMenuPopup.IsOpen = false;
+            CloseTrayMenu();
             ExitApplication();
         }
 
@@ -285,6 +333,32 @@ namespace TokenHubPanel
             UpdateNotificationVisibility();
             UpdateBalanceBadge();
             StartConfigTimerIfNeeded();
+            StartLoadingAnimation();
+        }
+
+        private void StartLoadingAnimation()
+        {
+            var isConfiguring = _vm.CurrentState == DemoState.Configuring || _onbStep == OnbStep.AuthPending;
+            if (!isConfiguring) return;
+
+            StartIndeterminateSlide(ConfiguringSlide, 360 - 100);
+            StartIndeterminateSlide(AuthPendingSlide, 360 - 100);
+        }
+
+        private void StartIndeterminateSlide(TranslateTransform? transform, double range)
+        {
+            if (transform == null) return;
+
+            var anim = new DoubleAnimation
+            {
+                From = 0,
+                To = range,
+                Duration = TimeSpan.FromMilliseconds(1000),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+            };
+            transform.BeginAnimation(TranslateTransform.XProperty, anim);
         }
 
         private void UpdatePanelHeight()
@@ -302,7 +376,7 @@ namespace TokenHubPanel
             PanelBorder.BorderThickness = isDiscovery ? new Thickness(0) : new Thickness(1);
             PanelBorder.Background = isDiscovery
                 ? Brushes.Transparent
-                : BrushFromHex("#F0F8FBFF");
+                : BrushFromHex("#FFE8F2FA");
             PanelBorder.Effect = isDiscovery ? null : (System.Windows.Media.Effects.Effect)FindResource("PanelShadow");
 
             // Ensure InnerClipBorder doesn't paint its solid background through the transparent PanelBorder,
@@ -334,16 +408,7 @@ namespace TokenHubPanel
             // Footer: account bar only when ready (logged-out footer is permanently hidden per design)
             AccountFooter.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
 
-            // Progress bars
-            if (isConfiguring)
-                ConfiguringProgress.IsIndeterminate = true;
-            else
-                ConfiguringProgress.IsIndeterminate = false;
-
-            if (isLogin && _onbStep == OnbStep.AuthPending)
-                AuthPendingProgress.IsIndeterminate = true;
-            else
-                AuthPendingProgress.IsIndeterminate = false;
+            // Loading indicators — visibility handled by parent panel
         }
 
         private void StartConfigTimerIfNeeded()
@@ -441,7 +506,11 @@ namespace TokenHubPanel
         private void ShowNotificationPanel()
         {
             if (_notificationVisible)
+            {
+                // Already visible — just ensure panel is showing (body was swapped by caller)
+                NotificationPanel.Visibility = Visibility.Visible;
                 return;
+            }
 
             _notificationVisible = true;
 
@@ -740,6 +809,18 @@ namespace TokenHubPanel
             dialog.ShowDialog();
         }
 
+        public void OpenInstallDialog()
+        {
+            var dialog = new InstallDialog();
+            dialog.ShowDialog();
+        }
+
+        public void OpenUninstallDialog()
+        {
+            var dialog = new UninstallDialog();
+            dialog.ShowDialog();
+        }
+
         private void ShowToast(string message)
         {
             _toastTimer?.Stop();
@@ -958,6 +1039,8 @@ namespace TokenHubPanel
                 AppMenuPopup.IsOpen = false;
             if (AccountMenuPopup.IsOpen)
                 AccountMenuPopup.IsOpen = false;
+            if (TrayMenuPopup.IsOpen)
+                CloseTrayMenu();
         }
 
         private void NotificationPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

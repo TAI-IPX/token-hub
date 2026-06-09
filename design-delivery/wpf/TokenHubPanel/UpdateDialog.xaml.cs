@@ -10,11 +10,18 @@ namespace TokenHubPanel
         public string UpdateDescription { get; set; } = "v0.1.1";
         private DispatcherTimer? _progressTimer;
         private double _progress;
+        private double _progressMaxWidth = 512;
 
         public UpdateDialog()
         {
             InitializeComponent();
             DataContext = this;
+            Closing += (_, _) => _progressTimer?.Stop();
+        }
+
+        private void ProgressGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _progressMaxWidth = e.NewSize.Width;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -28,9 +35,13 @@ namespace TokenHubPanel
             WindowState = WindowState.Minimized;
         }
 
+        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            _progressTimer?.Stop();
             Close();
         }
 
@@ -54,14 +65,17 @@ namespace TokenHubPanel
                 {
                     _progress = 100;
                     _progressTimer?.Stop();
-                    ProgressText.Text = "更新完成，重启后生效";
-                    // Auto-close after a moment
-                    var closeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
-                    closeTimer.Tick += (_, _) => { closeTimer.Stop(); Close(); };
-                    closeTimer.Start();
+                    // Switch to complete state
+                    ProgressPanel.Visibility = Visibility.Collapsed;
+                    CompleteButton.Visibility = Visibility.Visible;
+                    TitleText.Text = "更新完成";
+                    DescText.Text = $"Token Hub 已更新至 {UpdateDescription}，现在可以继续使用。";
                 }
-                ProgressText.Text = $"正在更新 {_progress:F0}%";
-                ProgressTrack.Width = 348 * (_progress / 100.0);
+                else
+                {
+                    ProgressText.Text = $"正在更新 {_progress:F0}%";
+                    ProgressTrack.Width = _progressMaxWidth * (_progress / 100.0);
+                }
             };
             _progressTimer.Start();
         }

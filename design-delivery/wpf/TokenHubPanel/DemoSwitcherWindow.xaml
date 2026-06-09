@@ -68,6 +68,12 @@
                 <Button Content="弹更新窗口"
                         Style="{StaticResource DemoStateButtonStyle}"
                         Click="ShowUpdateDialog_Click" />
+                <Button Content="安装流程"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="ShowInstallDialog_Click" />
+                <Button Content="卸载流程"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="ShowUninstallDialog_Click" />
             </WrapPanel>
         </StackPanel>
     </Border>

@@ -210,10 +210,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#D0FFFFFF" />
+                            <Setter TargetName="bd" Property="Background" Value="#1A000000" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#E0E0E8" />
+                            <Setter TargetName="bd" Property="Background" Value="#26000000" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsLowBalance}" Value="True">
                             <Setter TargetName="bd" Property="Background" Value="#005FB8" />

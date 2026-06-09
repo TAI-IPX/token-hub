@@ -33,5 +33,15 @@ namespace TokenHubPanel
         {
             _mainWindow.OpenUpdateDialog();
         }
+
+        private void ShowInstallDialog_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenInstallDialog();
+        }
+
+        private void ShowUninstallDialog_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenUninstallDialog();
+        }
     }
 }

@@ -214,7 +214,7 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="bd" Property="Background" Value="#D0FFFFFF" />
+                                                    <Setter TargetName="bd" Property="Background" Value="#1A000000" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -336,29 +336,36 @@
                                     <DockPanel LastChildFill="True">
 
                                         <!-- Progress bar docked to bottom -->
-                                        <ProgressBar x:Name="ConfiguringProgress"
-                                                     DockPanel.Dock="Bottom"
-                                                     Height="3"
-                                                     Margin="0,16,0,0"
-                                                     IsIndeterminate="True"
-                                                     Foreground="{StaticResource AccentBrush}" />
+                                        <Grid DockPanel.Dock="Bottom" Height="4" Margin="0,16,0,0" ClipToBounds="True">
+                                            <Border Background="#0A000000" CornerRadius="2" />
+                                            <Border x:Name="ConfiguringTrack"
+                                                    Width="100"
+                                                    HorizontalAlignment="Left"
+                                                    Background="{StaticResource AccentBrush}"
+                                                    CornerRadius="2"
+                                                    RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <TranslateTransform x:Name="ConfiguringSlide" />
+                                                </Border.RenderTransform>
+                                            </Border>
+                                        </Grid>
 
                                         <!-- InfoBlock vertically centered -->
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="正在完成服务配置"
-                                                       FontSize="24"
+                                                       FontSize="18"
                                                        FontWeight="Bold"
-                                                       Foreground="#E01B1B1F"
-                                                       Margin="0,0,0,16" />
+                                                       Foreground="#E0000000"
+                                                       Margin="0,0,0,8" />
                                             <TextBlock Text="正在创建 Token Hub 访问凭证并接入本机服务，请稍候"
-                                                       FontSize="14"
-                                                       LineHeight="22"
-                                                       Foreground="#731B1B1F"
+                                                       FontSize="13"
+                                                       LineHeight="20"
+                                                       Foreground="#99000000"
                                                        TextWrapping="Wrap"
-                                                       Margin="0,0,0,16" />
-                                            <TextBlock FontSize="14"
-                                                       LineHeight="22"
-                                                       Foreground="#731B1B1F">
+                                                       Margin="0,0,0,10" />
+                                            <TextBlock FontSize="13"
+                                                       LineHeight="20"
+                                                       Foreground="#99000000">
                                                 <Run Text="• 联想账号认证完成" /><LineBreak />
                                                 <Run Text="• 正在创建访问凭证" /><LineBreak />
                                                 <Run Text="• 正在启用多模型服务" />
@@ -377,21 +384,39 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,40,0,0">
+                                        <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,20,0,0">
+                                            <!-- Logo -->
+                                            <Image Source="Assets/login-hero.png"
+                                                   Width="52" Height="52"
+                                                   HorizontalAlignment="Left"
+                                                   Margin="0,0,0,20" />
+                                            <!-- Title -->
                                             <TextBlock Text="等待登录确认"
-                                                       FontSize="24" FontWeight="Bold" Foreground="#E01B1B1F" />
-                                            <TextBlock FontSize="14" Foreground="#731B1B1F" Margin="0,16,0,24" TextWrapping="Wrap">
-                                                <Run Text="请在联想账号登录窗口中完成认证" />
+                                                       FontSize="18" FontWeight="Bold" Foreground="#E0000000"
+                                                       Margin="0,0,0,12" />
+                                            <!-- Description -->
+                                            <TextBlock FontSize="13" Foreground="#99000000" Margin="0,0,0,24"
+                                                       LineHeight="20" TextWrapping="Wrap">
+                                                <Run Text="已打开联想账号登录窗口，请在浏览器中完成手机号验证。" />
                                                 <LineBreak />
-                                                <Run Text="登录成功后，将自动继续配置" />
+                                                <Run Text="登录成功后，Token Hub 将自动完成服务配置。" />
+                                                <LineBreak />
+                                                <Run Text="过程中请勿关闭本窗口。" />
                                             </TextBlock>
                                         </StackPanel>
-                                        <ProgressBar x:Name="AuthPendingProgress"
-                                                     Grid.Row="1"
-                                                     Height="3"
-                                                     Margin="0,0,0,16"
-                                                     IsIndeterminate="True"
-                                                     Foreground="{StaticResource AccentBrush}" />
+                                        <Grid Grid.Row="1" Height="4" Margin="0,0,0,16" ClipToBounds="True">
+                                            <Border Background="#0A000000" CornerRadius="2" />
+                                            <Border x:Name="AuthPendingTrack"
+                                                    Width="100"
+                                                    HorizontalAlignment="Left"
+                                                    Background="{StaticResource AccentBrush}"
+                                                    CornerRadius="2"
+                                                    RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <TranslateTransform x:Name="AuthPendingSlide" />
+                                                </Border.RenderTransform>
+                                            </Border>
+                                        </Grid>
                                     </Grid>
                                 </Border>
 
@@ -407,12 +432,12 @@
                                         </Grid.RowDefinitions>
                                         <StackPanel Grid.Row="0" Margin="0,8,0,0">
                                             <TextBlock Text="自动完成服务配置"
-                                                       FontSize="24" FontWeight="Bold" Foreground="#E01B1B1F" Margin="0,0,0,12" />
+                                                       FontSize="18" FontWeight="Bold" Foreground="#E0000000" Margin="0,0,0,12" />
                                             <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。"
-                                                       FontSize="14" Foreground="#731B1B1F" TextWrapping="Wrap" Margin="0,0,0,12" />
-                                            <TextBlock Text="✓ 自动完成必要设置" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
-                                            <TextBlock Text="✓ 自动为应用选择合适的模型" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
-                                            <TextBlock Text="✓ 配置完成后即可使用" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                                       FontSize="13" Foreground="#99000000" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                            <TextBlock Text="• 自动完成必要设置" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
+                                            <TextBlock Text="• 自动为应用选择合适的模型" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
+                                            <TextBlock Text="• 配置完成后即可使用" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
                                         </StackPanel>
                                         <Button Grid.Row="1" Content="开始配置"
                                                 Style="{StaticResource OnboardingButtonStyle}"
@@ -432,12 +457,12 @@
                                         </Grid.RowDefinitions>
                                         <StackPanel Grid.Row="0" Margin="0,8,0,0">
                                             <TextBlock Text="自动完成服务配置"
-                                                       FontSize="24" FontWeight="Bold" Foreground="#E01B1B1F" Margin="0,0,0,12" />
+                                                       FontSize="18" FontWeight="Bold" Foreground="#E0000000" Margin="0,0,0,12" />
                                             <TextBlock Text="Token Hub 将自动创建访问凭证并完成本机接入。所有应用共用一套多模型服务，无需手动复制或修改密钥。"
-                                                       FontSize="14" Foreground="#731B1B1F" TextWrapping="Wrap" Margin="0,0,0,12" />
-                                            <TextBlock Text="✓ 一套凭证，全局接入" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
-                                            <TextBlock Text="✓ 自动匹配推荐模型" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
-                                            <TextBlock Text="✓ 初始化完成后立即可用" FontSize="14" Foreground="#731B1B1F" Margin="0,2,0,0" />
+                                                       FontSize="13" Foreground="#99000000" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                            <TextBlock Text="• 一套凭证，全局接入" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
+                                            <TextBlock Text="• 自动匹配推荐模型" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
+                                            <TextBlock Text="• 初始化完成后立即可用" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
                                         </StackPanel>
                                         <Button Grid.Row="1" Content="自动配置"
                                                 Style="{StaticResource OnboardingButtonStyle}"
@@ -1187,30 +1212,6 @@
                                         </Grid>
                                     </Border>
 
-                                    <!-- 接管前二次确认 -->
-                                    <Border Height="64"
-                                            Padding="16,0"
-                                            BorderBrush="#A4D9DEE8"
-                                            BorderThickness="0,0,0,1">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                                <TextBlock Text="接管前二次确认" FontSize="14" FontWeight="Bold" Foreground="#E01B1B1F" />
-                                                <TextBlock Text="开启智能匹配前确认是否由 Token Hub 管理应用配置"
-                                                           FontSize="12" Foreground="#991B1B1F" Margin="0,4,0,0"
-                                                           TextWrapping="Wrap" />
-                                            </StackPanel>
-                                            <ToggleButton Grid.Column="1"
-                                                          Style="{StaticResource WindowsNativeSwitchStyle}"
-                                                          IsChecked="True"
-                                                          VerticalAlignment="Center"
-                                                          ToolTip="接管前二次确认" />
-                                        </Grid>
-                                    </Border>
-
                                     <!-- 版本号 -->
                                     <Border Height="64" Padding="16,0">
                                         <Grid>
@@ -1473,7 +1474,7 @@
                             MouseEnter="TrayMenuItem_MouseEnter"
                             MouseLeave="TrayMenuItem_MouseLeave">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image Source="Assets/tray-icon@3x.png" Width="16" Height="16" Margin="0,0,10,0" />
+                            <Image Source="Assets/icon-action@3x.png" Width="16" Height="16" Margin="0,0,10,0" />
                             <TextBlock Text="刷新应用" FontSize="12" Foreground="#E4000000" VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>

@@ -85,7 +85,7 @@
     <SolidColorBrush x:Key="FooterBgBrush" Color="#F6F8FC" />
 
     <!-- Dimensions -->
-    <sys:Double x:Key="PanelWidth">440</sys:Double>
+    <sys:Double x:Key="PanelWidth">360</sys:Double>
     <sys:Double x:Key="PanelHeightNormal">384</sys:Double>
     <sys:Double x:Key="PanelHeightCompact">318</sys:Double>
     <sys:Double x:Key="TitleBarHeight">48</sys:Double>

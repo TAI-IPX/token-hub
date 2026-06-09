@@ -382,6 +382,36 @@
     </Style>
 
     <!-- Secondary page title bar icon button -->
+    <!-- Win11 titlebar icon button: 40x40, rounded hover -->
+    <Style x:Key="Win11TitleBarIconButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="HoverBorder"
+                            CornerRadius="4"
+                            Background="Transparent">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="HoverBorder" Property="Background" Value="#0A000000" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="HoverBorder" Property="Background" Value="#14000000" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="SecondaryTitleIconButtonStyle" TargetType="Button">
         <Setter Property="Width" Value="20" />
         <Setter Property="Height" Value="20" />

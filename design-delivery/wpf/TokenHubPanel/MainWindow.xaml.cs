@@ -127,7 +127,7 @@ namespace TokenHubPanel
             var state = _vm.CurrentState;
             var isDiscovery = state == DemoState.AutoDiscovery || state == DemoState.ManualDiscovery;
 
-            PanelBorder.Width = isDiscovery ? 364 : 440;
+            PanelBorder.Width = isDiscovery ? 364 : 360;
             PanelBorder.Height = isDiscovery
                 ? double.NaN
                 : _vm.PanelHeight;

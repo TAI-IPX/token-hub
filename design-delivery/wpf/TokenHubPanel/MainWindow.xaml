@@ -60,7 +60,7 @@
         <!-- The Tray Panel -->
         <!-- Outer: shadow + border only, no ClipToBounds (clipping kills shadow) -->
         <Border x:Name="PanelBorder"
-                    Width="440"
+                    Width="360"
                     Height="384"
                     Margin="12,12,12,20"
                     CornerRadius="8"
@@ -68,9 +68,9 @@
                     BorderThickness="1"
                     UseLayoutRounding="True"
                     SnapsToDevicePixels="True"
-                    Effect="{StaticResource PanelShadow}">
+                    Effect="{StaticResource NotificationShadow}">
                 <Border.Background>
-                    <SolidColorBrush Color="#F0F8FBFF" />
+                    <SolidColorBrush Color="#FAF9FBFF" />
                 </Border.Background>
 
                 <!-- Inner: clips all child content to the same 8px radius -->
@@ -90,7 +90,7 @@
                             Grid.Row="0"
                             Height="48"
                             Background="#70F6F8FC"
-                            Padding="16,0">
+                            Padding="4,0,4,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -101,21 +101,33 @@
                             <!-- Left: Logo + Title + Dropdown -->
                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Image Source="Assets/panel-logo@3x.png"
-                                       Width="24" Height="24"
-                                       Margin="0,0,8,0" />
+                                       Width="40" Height="40"
+                                       Margin="0,0,4,0" />
                                 <TextBlock Text="联想 TokenHub"
                                            FontSize="14"
-                                           FontWeight="Bold"
+                                           FontWeight="Regular"
                                            Foreground="#FF1B1B1F"
                                            VerticalAlignment="Center" />
                                 <Button x:Name="AppMenuButton"
                                         Width="16"
                                         Height="16"
-                                        Margin="8,0,0,0"
+                                        Margin="4,0,0,0"
                                         Background="Transparent"
                                         BorderThickness="0"
                                         Cursor="Hand"
                                         Click="AppMenuButton_Click">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
                                     <Image Source="Assets/panel-dropdown@3x.png"
                                            Width="16"
                                            Height="16" />
@@ -200,22 +212,22 @@
                                     </Button.Template>
                                 </Button>
                                 <!-- Settings gear (hidden when not logged in) -->
-                                <Button Width="20"
-                                        Height="20"
-                                        Margin="0,0,12,0"
+                                <Button Width="40"
+                                        Height="40"
+                                        Margin="0"
                                         Visibility="{Binding SettingsButtonVisibility}"
-                                        Style="{StaticResource SecondaryTitleIconButtonStyle}"
+                                        Style="{StaticResource Win11TitleBarIconButtonStyle}"
                                         Click="SettingsButton_Click"
                                         ToolTip="设置">
-                                    <Image Source="Assets/panel-settings@3x.png" Width="20" Height="20"/>
+                                    <Image Source="Assets/panel-settings@3x.png" Width="40" Height="40"/>
                                 </Button>
                                 <!-- Close -->
-                                <Button Width="20"
-                                        Height="20"
-                                        Style="{StaticResource SecondaryTitleIconButtonStyle}"
+                                <Button Width="40"
+                                        Height="40"
+                                        Style="{StaticResource Win11TitleBarIconButtonStyle}"
                                         Click="CloseButton_Click"
                                         ToolTip="关闭">
-                                    <Image Source="Assets/panel-close@3x.png" Width="20" Height="20"/>
+                                    <Image Source="Assets/panel-close@3x.png" Width="40" Height="40"/>
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -521,6 +533,18 @@
                                                             Cursor="Hand"
                                                             Click="RefreshApps_Click"
                                                             ToolTip="重新检测应用">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
                                                         <Image x:Name="RefreshIcon"
                                                                Source="Assets/icon-action@3x.png"
                                                                Width="16" Height="16"
@@ -713,6 +737,18 @@
                                             VerticalAlignment="Center"
                                             Margin="0,0,12,0"
                                             Click="MoreButton_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bd" Property="Background" Value="#0A000000" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
                                         <Image Source="Assets/icon-more@3x.png"
                                                Width="20"
                                                Height="20" />
@@ -810,7 +846,7 @@
                             <!-- Detail Header -->
                             <Border Grid.Row="0"
                                     Height="48"
-                                    Padding="16,0"
+                                    Padding="4,0,4,0"
                                     Background="#70F6F8FC"
                                     BorderBrush="#14000000"
                                     BorderThickness="0,0,0,1">
@@ -822,31 +858,31 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Button Grid.Column="0"
-                                            Style="{StaticResource SecondaryTitleIconButtonStyle}"
-                                            Margin="0,0,8,0"
+                                            Width="40"
+                                            Height="40"
+                                            Margin="0,0,4,0"
+                                            Style="{StaticResource Win11TitleBarIconButtonStyle}"
                                             Click="BackToHome_Click">
-                                        <Path Data="M8.8 4.4 3.7 9.5a.7.7 0 0 0 0 1l5.1 5.1 1-1-3.9-3.9h10.4V9.3H5.9l3.9-3.9z"
-                                              Fill="#E61B1B1F"
-                                              Stretch="Uniform"
-                                              Width="16"
-                                              Height="16" />
+                                        <Image Source="Assets/panel-back@3x.png"
+                                               Width="40"
+                                               Height="40" />
                                     </Button>
 
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding DetailToolName}"
                                                FontSize="14"
-                                               FontWeight="Bold"
+                                               FontWeight="Regular"
                                                Foreground="#FF1B1B1F"
                                                VerticalAlignment="Center" />
 
                                     <Button Grid.Column="2"
-                                            Style="{StaticResource SecondaryTitleIconButtonStyle}"
-                                            Width="20"
-                                            Height="20"
+                                            Width="40"
+                                            Height="40"
+                                            Style="{StaticResource Win11TitleBarIconButtonStyle}"
                                             Click="CloseButton_Click">
                                         <Image Source="Assets/panel-close@3x.png"
-                                               Width="20"
-                                               Height="20" />
+                                               Width="40"
+                                               Height="40" />
                                     </Button>
                                 </Grid>
                             </Border>
@@ -864,7 +900,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="models:ModelInfo">
                                             <Border Height="80"
-                                                    Padding="20,8"
+                                                    Padding="16,8,0,8"
                                                     Background="Transparent"
                                                     CornerRadius="4"
                                                     Cursor="Hand"
@@ -908,7 +944,7 @@
 
                                                     <!-- Model Info -->
                                                     <StackPanel Grid.Column="1"
-                                                                Margin="20,0,0,0"
+                                                                Margin="16,0,0,0"
                                                                 VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Name}"
                                                                    FontSize="14"
@@ -917,6 +953,7 @@
                                                         <TextBlock Margin="0,4,0,0"
                                                                    FontSize="12"
                                                                    Foreground="#991B1B1F"
+                                                                   TextTrimming="CharacterEllipsis"
                                                                    TextWrapping="NoWrap">
                                                             <Run Text="输入" />
                                                             <Run Text="{Binding InputPrice}" />
@@ -935,12 +972,16 @@
                                                             </ItemsControl.ItemsPanel>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <TextBlock Text="{Binding}"
-                                                                               Height="16"
-                                                                               FontSize="10"
-                                                                               Foreground="#FFF59E0B"
-                                                                               VerticalAlignment="Center"
-                                                                               Margin="0,0,8,0" />
+                                                                    <Border Height="Auto"
+                                                                            Padding="3,4"
+                                                                            CornerRadius="2"
+                                                                            Background="#CFE3F3"
+                                                                            Margin="0,0,4,0">
+                                                                        <TextBlock Text="{Binding}"
+                                                                                   FontSize="10"
+                                                                                   Foreground="#FF0F6CBD"
+                                                                                   VerticalAlignment="Center" />
+                                                                    </Border>
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
@@ -950,8 +991,8 @@
                                                             Height="22"
                                                             CornerRadius="4"
                                                             Padding="8,0"
-                                                            Margin="10,0,0,0"
-                                                            Background="{StaticResource AccentTagBgBrush}"
+                                                            Margin="16,0,0,0"
+                                                            Background="Transparent"
                                                             VerticalAlignment="Center"
                                                             Visibility="Collapsed">
                                                         <TextBlock x:Name="ModelBadgeText"
@@ -979,7 +1020,7 @@
                             <!-- Settings Header -->
                             <Border Grid.Row="0"
                                     Height="48"
-                                    Padding="16,0"
+                                    Padding="4,0,4,0"
                                     Background="#70F6F8FC"
                                     BorderBrush="#14000000"
                                     BorderThickness="0,0,0,1">
@@ -991,31 +1032,31 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Button Grid.Column="0"
-                                            Style="{StaticResource SecondaryTitleIconButtonStyle}"
-                                            Margin="0,0,8,0"
+                                            Width="40"
+                                            Height="40"
+                                            Margin="0,0,4,0"
+                                            Style="{StaticResource Win11TitleBarIconButtonStyle}"
                                             Click="BackToHome_Click">
-                                        <Path Data="M8.8 4.4 3.7 9.5a.7.7 0 0 0 0 1l5.1 5.1 1-1-3.9-3.9h10.4V9.3H5.9l3.9-3.9z"
-                                              Fill="#E61B1B1F"
-                                              Stretch="Uniform"
-                                              Width="16"
-                                              Height="16" />
+                                        <Image Source="Assets/panel-back@3x.png"
+                                               Width="40"
+                                               Height="40" />
                                     </Button>
 
                                     <TextBlock Grid.Column="1"
                                                Text="设置"
                                                FontSize="14"
-                                               FontWeight="Bold"
+                                               FontWeight="Regular"
                                                Foreground="#FF1B1B1F"
                                                VerticalAlignment="Center" />
 
                                     <Button Grid.Column="2"
-                                            Style="{StaticResource SecondaryTitleIconButtonStyle}"
-                                            Width="20"
-                                            Height="20"
+                                            Width="40"
+                                            Height="40"
+                                            Style="{StaticResource Win11TitleBarIconButtonStyle}"
                                             Click="CloseButton_Click">
                                         <Image Source="Assets/panel-close@3x.png"
-                                               Width="20"
-                                               Height="20" />
+                                               Width="40"
+                                               Height="40" />
                                     </Button>
                                 </Grid>
                             </Border>
@@ -1248,30 +1289,30 @@
                                                Margin="0,4,0,0"
                                                TextWrapping="Wrap" />
                                     <WrapPanel Margin="0,8,0,0">
-                                        <Border Height="18"
-                                                Padding="6,0"
-                                                CornerRadius="4"
-                                                Background="#1A0F6CBD"
+                                        <Border Height="17"
+                                                Padding="3,4"
+                                                CornerRadius="2"
+                                                Background="#CFE3F3"
                                                 Margin="0,0,4,0">
                                             <TextBlock Text="文本生成"
                                                        FontSize="10"
                                                        Foreground="#FF0F6CBD"
                                                        VerticalAlignment="Center" />
                                         </Border>
-                                        <Border Height="18"
-                                                Padding="6,0"
-                                                CornerRadius="4"
-                                                Background="#1A0F6CBD"
+                                        <Border Height="17"
+                                                Padding="3,4"
+                                                CornerRadius="2"
+                                                Background="#CFE3F3"
                                                 Margin="0,0,4,0">
                                             <TextBlock Text="轻量快速"
                                                        FontSize="10"
                                                        Foreground="#FF0F6CBD"
                                                        VerticalAlignment="Center" />
                                         </Border>
-                                        <Border Height="18"
-                                                Padding="6,0"
-                                                CornerRadius="4"
-                                                Background="#1A0F6CBD">
+                                        <Border Height="17"
+                                                Padding="3,4"
+                                                CornerRadius="2"
+                                                Background="#CFE3F3">
                                             <TextBlock Text="DeepSeek"
                                                        FontSize="10"
                                                        Foreground="#FF0F6CBD"

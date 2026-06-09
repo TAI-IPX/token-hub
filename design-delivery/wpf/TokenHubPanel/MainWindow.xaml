@@ -10,6 +10,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="Manual"
+        ShowInTaskbar="False"
         SizeChanged="Window_SizeChanged"
         AllowsTransparency="True"
         Background="Transparent"
@@ -161,7 +162,7 @@
                                 <Button Visibility="{Binding NewVersionBadgeVisibility}"
                                         Height="22"
                                         Padding="8,0"
-                                        Margin="0,0,12,0"
+                                        Margin="0"
                                         BorderThickness="0"
                                         Cursor="Hand"
                                         Click="SettingsButton_Click"
@@ -460,13 +461,13 @@
                                             Visibility="Collapsed"
                                             VerticalAlignment="Top"
                                             Panel.ZIndex="50"
-                                            Margin="60,4,16,0"
+                                            Margin="16,4,16,0"
                                             CornerRadius="8"
-                                            Background="#F7F9FBFF"
-                                            BorderBrush="#14000000"
+                                            Background="#FAF9FBFF"
+                                            BorderBrush="#0F000000"
                                             BorderThickness="1"
-                                            Padding="14,11"
-                                            Effect="{StaticResource MenuShadow}">
+                                            Padding="16"
+                                            Effect="{StaticResource NotificationShadow}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />

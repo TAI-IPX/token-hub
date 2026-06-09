@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using TokenHubPanel.Models;
 using TokenHubPanel.ViewModels;
+using WinForms = System.Windows.Forms;
 
 namespace TokenHubPanel
 {
@@ -17,6 +18,7 @@ namespace TokenHubPanel
     {
         private readonly MainViewModel _vm;
         private DemoSwitcherWindow? _demoSwitcher;
+        private WinForms.NotifyIcon? _trayIcon;
         private DispatcherTimer? _configTimer;
         private DispatcherTimer? _toastTimer;
         private bool _syncingDemoState;
@@ -36,6 +38,21 @@ namespace TokenHubPanel
             SubscribeViewModelEvents();
             InitializeUI();
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Minimize to tray instead of closing
+            e.Cancel = true;
+            Hide();
+        }
+
+        public void ExitApplication()
+        {
+            _trayIcon?.Dispose();
+            Closing -= MainWindow_Closing;
+            Close();
         }
 
         private void SubscribeViewModelEvents()
@@ -75,8 +92,52 @@ namespace TokenHubPanel
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            CreateTrayIcon();
             PositionNearTray();
             ShowDemoSwitcher();
+        }
+
+        private void CreateTrayIcon()
+        {
+            _trayIcon = new WinForms.NotifyIcon
+            {
+                Icon = System.Drawing.Icon.ExtractAssociatedIcon(
+                    System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TokenHubPanel.exe")),
+                Text = "联想 TokenHub",
+                Visible = true
+            };
+            _trayIcon.MouseClick += (s, e) =>
+            {
+                if (e.Button == WinForms.MouseButtons.Left)
+                {
+                    Show();
+                    Activate();
+                    PositionNearTray();
+                }
+            };
+            // Win11-style context menu via WinForms ContextMenuStrip
+            var menu = new WinForms.ContextMenuStrip();
+            menu.RenderMode = WinForms.ToolStripRenderMode.System;
+            menu.Items.Add("数据看板", null, (s, e) => OpenWebLink("dashboard"));
+            menu.Items.Add("使用日志", null, (s, e) => OpenWebLink("logs"));
+            menu.Items.Add("密钥管理", null, (s, e) => OpenWebLink("keys"));
+            menu.Items.Add("模型广场", null, (s, e) => OpenWebLink("marketplace"));
+            menu.Items.Add(new WinForms.ToolStripSeparator());
+            var checkUpdate = menu.Items.Add("检查更新");
+            checkUpdate.Click += (s, e) => { Dispatcher.Invoke(() => { Show(); Activate(); _vm.CurrentPage = ViewModels.PanelPage.Settings; }); };
+            menu.Items.Add(new WinForms.ToolStripSeparator());
+            var exit = menu.Items.Add("退出");
+            exit.Click += (s, e) => Dispatcher.Invoke(ExitApplication);
+            _trayIcon.ContextMenuStrip = menu;
+        }
+
+        private void OpenWebLink(string key)
+        {
+            if (WebLinks.TryGetValue(key, out var url))
+            {
+                try { Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true }); }
+                catch { /* ignore */ }
+            }
         }
 
         private void PositionNearTray()

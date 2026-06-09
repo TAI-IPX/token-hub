@@ -339,7 +339,13 @@ namespace TokenHubPanel
         private void StartLoadingAnimation()
         {
             var isConfiguring = _vm.CurrentState == DemoState.Configuring || _onbStep == OnbStep.AuthPending;
-            if (!isConfiguring) return;
+            if (!isConfiguring)
+            {
+                // Stop any running slide animations when leaving loading states
+                ConfiguringSlide.BeginAnimation(TranslateTransform.XProperty, null);
+                AuthPendingSlide.BeginAnimation(TranslateTransform.XProperty, null);
+                return;
+            }
 
             StartIndeterminateSlide(ConfiguringSlide, 360 - 100);
             StartIndeterminateSlide(AuthPendingSlide, 360 - 100);
@@ -738,11 +744,14 @@ namespace TokenHubPanel
             // Login → auth-pending (waiting for confirmation) → auto-complete after 3s
             _onbStep = OnbStep.AuthPending;
             UpdatePanelStateVisibility();
+            StartLoadingAnimation(); // kick off AuthPendingSlide
             _configTimer?.Stop();
             _configTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
             _configTimer.Tick += (s, ev) =>
             {
                 _configTimer?.Stop();
+                // Stop sliding animation before switching state
+                AuthPendingSlide.BeginAnimation(TranslateTransform.XProperty, null);
                 _onbStep = OnbStep.Login;
                 _vm.SetState(DemoState.SmartOff);
             };

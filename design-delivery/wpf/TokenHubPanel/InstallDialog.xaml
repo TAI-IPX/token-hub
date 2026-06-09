@@ -327,7 +327,7 @@
                             Visibility="Visible"
                             VerticalAlignment="Top"
                             HorizontalAlignment="Center"
-                            Margin="24,72,24,0">
+                            Margin="0,40,0,0">
                     <Image Source="Assets/install-hero-icon@3x.png"
                            Width="48"
                            Height="48"
@@ -337,7 +337,7 @@
                                Text="联想 TokenHub"
                                FontSize="20"
                                FontWeight="SemiBold"
-                               Foreground="#E5000000"
+                               Foreground="#E0000000"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,8" />
                     <TextBlock x:Name="StatusDescription"

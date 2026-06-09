@@ -37,20 +37,14 @@ namespace TokenHubPanel
         private void CustomInstallButton_Click(object sender, RoutedEventArgs e)
         {
             _customInstallExpanded = !_customInstallExpanded;
-            var left = Left;
-            var top = Top;
+            double savedTop = Top;
 
             CustomPanel.Visibility = _customInstallExpanded ? Visibility.Visible : Visibility.Collapsed;
             WindowFrame.Height = _customInstallExpanded ? 484 : 400;
             CustomChevron.Text = _customInstallExpanded ? "\uE70E" : "\uE972";
 
-            Left = left;
-            Top = top;
-            Dispatcher.BeginInvoke(() =>
-            {
-                Left = left;
-                Top = top;
-            }, DispatcherPriority.Loaded);
+            UpdateLayout();
+            Top = savedTop;
         }
 
         private void InstallButton_Click(object sender, RoutedEventArgs e)

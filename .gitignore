@@ -4,6 +4,12 @@
 *.tsbuildinfo
 .playwright-mcp/
 *.png
+!token-hub-demo/assets/
+!token-hub-demo/assets/**/*.png
+!design-delivery/visual-demo/assets/
+!design-delivery/visual-demo/assets/**/*.png
+!design-delivery/wpf/TokenHubPanel/Assets/
+!design-delivery/wpf/TokenHubPanel/Assets/**/*.png
 screenshot*.png
 
 # cc-switch-main build artifacts (safety net)
@@ -16,3 +22,4 @@ release/
 .github
 /.idea
 /.vscode
+.figma-to-code-skills/

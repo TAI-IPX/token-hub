@@ -16,12 +16,17 @@ const state = {
   authPending: false,
   configuring: false,
   discoveryNotice: null,
+  detectingApps: false,
   balance: 128.5,
   balanceStatus: "normal",
   rechargeAmount: 50,
   rechargeView: "amount",
   rechargeOrderId: "lenovo_75f4bae6_121",
+  currentVersion: "v0.1.0",
+  latestVersion: "v0.1.1",
+  updateAvailable: false,
   apiReady: savedSession.apiReady || false,
+  installedTools: true,
   selections: {
     openclaw: "deepseek-v4-flash",
     "claude-code": "deepseek-v4-pro",
@@ -30,7 +35,7 @@ const state = {
     hermes: "kimi-k2.6",
   },
   management: {
-    openclaw: "external",
+    openclaw: "token-hub",
     "claude-code": "token-hub",
     qclaw: "token-hub",
     workbuddy: "token-hub",
@@ -39,7 +44,7 @@ const state = {
 };
 
 const tools = [
-  { id: "openclaw", name: "OpenClaw", mark: "OC", externalModel: "gpt-4.1", externalVendor: "OpenAI Compatible", externalPrices: ["¥18.00", "¥72.00", "¥4.50"], externalTags: ["文本生成", "OpenAI 兼容"], models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
+  { id: "openclaw", name: "OpenClaw", mark: "OC", models: ["deepseek-v4-flash", "deepseek-v4-pro", "qwen3.6-plus"] },
   { id: "claude-code", name: "Claude Code", mark: "CC", models: ["deepseek-v4-pro", "glm-5.1", "qwen3.6-max-preview"] },
   { id: "qclaw", name: "QClaw", mark: "QC", isNew: true, models: ["deepseek-v4-flash", "qwen3.6-flash", "kimi-k2.6"] },
   { id: "workbuddy", name: "WorkBuddy", mark: "WB", models: ["qwen3.6-plus", "kimi-k2.6", "MiniMax-M2.5"] },
@@ -86,9 +91,17 @@ const refreshToast = document.querySelector("#refresh-toast");
 const authWindow = document.querySelector("#auth-window");
 const rechargeWindow = document.querySelector("#recharge-window");
 const rechargeContent = document.querySelector("#recharge-content");
+const updateWindow = document.querySelector("#update-window");
+const updateContent = document.querySelector("#update-content");
+const titleUpdateButton = document.querySelector("#title-update-button");
+const settingsUpdateCurrent = document.querySelector("#settings-update-current");
+const settingsUpdateButton = document.querySelector("#settings-update-button");
 const appMenuButton = document.querySelector(".app-menu-button");
 const appMenu = document.querySelector("#app-menu");
 const trayContextMenu = document.querySelector("#tray-context-menu");
+const smartConfirm = document.querySelector("#smart-confirm");
+const smartModeSection = document.querySelector(".smart-mode");
+const appListSection = document.querySelector(".section-block");
 
 function saveSession() {
   localStorage.setItem("tokenHubTraySession", JSON.stringify({
@@ -99,16 +112,38 @@ function saveSession() {
 }
 
 function renderTools() {
+  smartModeSection.hidden = !state.installedTools;
+  appListSection.classList.toggle("empty", !state.installedTools);
+  if (!state.installedTools) {
+    toolList.innerHTML = `
+      <section class="empty-tools">
+        <span class="setup-icon${state.detectingApps ? " progress" : ""}">${state.detectingApps ? "↻" : "✦"}</span>
+        <div>
+          <h3>${state.detectingApps ? "正在检测应用" : "未检测到可配置的应用"}</h3>
+          <p>${state.detectingApps ? "正在查找本机已安装的 OpenClaw、Hermes 和 Claude Code。" : "当前支持 OpenClaw、Hermes 和 Claude Code"}</p>
+        </div>
+        ${state.detectingApps ? `
+          <div class="progress-track"><i></i></div>
+          <div class="onboarding-notes">
+            <span>· 正在扫描已安装应用</span>
+            <span>· 正在检查本机配置</span>
+          </div>
+        ` : `
+          <button class="setup-primary" data-refresh-apps="true">重新检测应用</button>
+        `}
+      </section>
+    `;
+    return;
+  }
   toolList.innerHTML = tools.map((tool) => {
     const model = models[state.selections[tool.id]];
-    const external = state.management[tool.id] === "external";
     const unconfigured = state.management[tool.id] === "unconfigured";
     return `
       <button class="tool-row" data-open-tool="${tool.id}">
         <span class="tool-mark">${tool.mark}</span>
         <span class="tool-copy">
-          <strong>${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}${external ? `<em class="external"><span>⚠</span>外部配置</em>` : ""}</strong>
-          <small>${external ? tool.externalModel : unconfigured ? "待选择模型" : model.name}</small>
+          <strong>${tool.name}${tool.isNew ? `<em class="new">新发现</em>` : ""}</strong>
+          <small>${unconfigured ? "待选择模型" : model.name}</small>
         </span>
         <span class="chevron">›</span>
       </button>
@@ -152,17 +187,17 @@ function renderOnboarding() {
       `
       : !state.onboardingStarted
         ? `
-          <span class="setup-icon">✦</span>
+          <img class="onboarding-hero" src="./assets/login-hero.png" alt="" />
           <div class="onboarding-copy">
             <h2>自动完成服务配置</h2>
             <p>只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。</p>
             <div class="onboarding-notes">
-              <span>✓ 自动完成必要设置</span>
-              <span>✓ 自动为应用选择合适的模型</span>
-              <span>✓ 配置完成后即可使用</span>
+              <span>• 自动完成必要设置</span>
+              <span>• 自动为应用选择合适的模型</span>
+              <span>• 配置完成后即可使用</span>
             </div>
           </div>
-          <button class="setup-primary" data-start-onboarding="true">开始配置</button>
+          <button class="setup-primary" data-start-onboarding="true">登录并自动配置</button>
         `
       : state.loggedIn
     ? `
@@ -308,6 +343,85 @@ function closeRechargeWindow() {
   rechargeWindow.hidden = true;
 }
 
+function renderUpdateState() {
+  if (titleUpdateButton) {
+    titleUpdateButton.hidden = !state.apiReady || !state.updateAvailable;
+  }
+  if (settingsUpdateCurrent) {
+    settingsUpdateCurrent.textContent = state.updateAvailable
+      ? `发现新版本 ${state.latestVersion}，当前版本 ${state.currentVersion}`
+      : `当前版本 ${state.currentVersion}，已是最新版本`;
+  }
+  if (settingsUpdateButton) {
+    settingsUpdateButton.textContent = state.updateAvailable ? "立即更新" : "检查更新";
+  }
+}
+
+function renderUpdateContent(status = "available") {
+  const success = status === "success";
+  const updating = status === "updating";
+  updateContent.innerHTML = `
+    <section class="update-card${success ? " success" : ""}${updating ? " updating" : ""}">
+      <header class="update-masthead">
+        <img src="./assets/logo.png" alt="" />
+        <strong>联想 Token Hub</strong>
+      </header>
+      <span class="update-icon${success ? " success" : ""}${updating ? " updating" : ""}" aria-hidden="true">${success ? "✓" : "↻"}</span>
+      <div>
+        <h2>${success ? "更新完成" : updating ? "正在更新" : "发现新版本"}</h2>
+        <p>${success
+          ? `Token Hub 已更新至 ${state.currentVersion}，现在可以继续使用。`
+          : updating
+            ? "正在下载并应用更新，请稍候。"
+          : `Token Hub ${state.latestVersion} 可用，建议更新以获得最新适配和体验优化。`}</p>
+      </div>
+      ${success ? `
+        <footer>
+          <button class="primary" data-close-update="true">完成</button>
+        </footer>
+      ` : updating ? `
+        <div class="update-progress" aria-label="更新进度"><i></i></div>
+      ` : `
+        <ul>
+          <li>优化模型匹配体验</li>
+          <li>提升应用检测稳定性</li>
+          <li>更新 Token Mall 服务入口</li>
+        </ul>
+        <footer>
+          <button data-close-update="true">稍后</button>
+          <button class="primary" data-install-update="true">立即更新</button>
+        </footer>
+      `}
+    </section>
+  `;
+}
+
+function openUpdateWindow({ notifyIfCurrent = false } = {}) {
+  if (!state.updateAvailable) {
+    renderUpdateState();
+    if (notifyIfCurrent) showRefreshToast("当前已是最新版本");
+    return;
+  }
+  renderUpdateContent("available");
+  updateWindow.hidden = false;
+  trayContextMenu.hidden = true;
+}
+
+function closeUpdateWindow() {
+  updateWindow.hidden = true;
+}
+
+function installUpdate() {
+  renderUpdateContent("updating");
+  clearTimeout(installUpdate.timer);
+  installUpdate.timer = setTimeout(() => {
+    state.currentVersion = state.latestVersion;
+    state.updateAvailable = false;
+    renderUpdateState();
+    renderUpdateContent("success");
+  }, 900);
+}
+
 function startConfiguration() {
   state.configuring = true;
   state.onboardingStarted = true;
@@ -321,6 +435,7 @@ function startConfiguration() {
     renderTools();
     renderAccount();
     renderOnboarding();
+    renderUpdateState();
     syncSmartToggle();
     syncAppMenuState();
     setActiveDemoState("smart-off");
@@ -342,7 +457,6 @@ function renderAccount() {
           <button class="account-more" data-account-menu="true" aria-label="账户更多操作" aria-expanded="false">⋮</button>
           <div class="account-menu" hidden>
             <button data-web-link="account">我的账户</button>
-            <button data-web-link="orders">订单历史</button>
             <button class="danger" data-logout="true">登出</button>
           </div>
         </div>
@@ -417,30 +531,12 @@ function openTool(toolId) {
     renderTools();
   }
   document.querySelector("#detail-tool-name").textContent = tool.name;
-  const external = state.management[toolId] === "external";
   const unconfigured = state.management[toolId] === "unconfigured";
-  const hasExternalConfig = Boolean(tool.externalModel);
-  const externalLocked = state.smartMode && !external;
-  const externalRadio = !external && !externalLocked
-    ? `<button class="radio radio-action" data-use-external-config="${toolId}" aria-label="切换到外部配置"><i></i></button>`
-    : `<span class="radio"><i></i></span>`;
-  const externalItem = hasExternalConfig
-    ? `
-      <div class="model-row external-current${external ? " selected" : ""}${externalLocked ? " external-muted" : ""}">
-        ${externalRadio}
-        <span class="model-copy">
-          <strong class="model-title-line">${tool.externalModel} <i><span>⚠</span>外部配置</i></strong>
-          <small>不由 Token Hub 管理</small>
-        </span>
-        ${externalLocked ? `<span class="external-info" tabindex="0" aria-label="智能匹配开启中，关闭后可切回外部配置。" data-tip="智能匹配开启中，关闭后可切回外部配置。">i</span>` : `<button class="inline-action" ${external ? `data-adopt-token-hub="${toolId}"` : `data-use-external-config="${toolId}"`}>${external ? "切换到 Token Hub" : "切换到外部配置"}</button>`}
-      </div>
-    `
-    : "";
-  modelList.innerHTML = `${externalItem}${tool.models.map((modelId) => {
+  modelList.innerHTML = tool.models.map((modelId) => {
     const model = models[modelId];
-    const active = !external && !unconfigured && state.selections[toolId] === modelId;
+    const active = !unconfigured && state.selections[toolId] === modelId;
     return `
-      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !external && !unconfigured ? "disabled" : ""}>
+      <button class="model-row${active ? " selected" : ""}" data-select-model="${modelId}" ${state.smartMode && !unconfigured ? "disabled" : ""}>
         <span class="radio"><i></i></span>
         <span class="model-copy">
           <strong>${model.name}</strong>
@@ -450,7 +546,7 @@ function openTool(toolId) {
         ${active ? `<em>使用中</em>` : ""}
       </button>
     `;
-  }).join("")}`;
+  }).join("");
   notification.classList.remove("show");
   openPanel();
   showPage("models");
@@ -465,33 +561,12 @@ function openAppFromNotification() {
 function renderNotification() {
   const matchedModel = models[state.selections.qclaw];
   const isAuto = state.discoveryNotice === "auto";
-  const externalOpenClaw = state.discoveryNotice === "external";
   notification.classList.toggle("clickable", isAuto);
-  notification.innerHTML = externalOpenClaw
+  notification.innerHTML = isAuto
     ? `
       <header>
         <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
-          <span>联想 Token Hub</span>
-        </div>
-        <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
-      </header>
-      <div class="notification-content">
-        <span class="tool-mark">OC</span>
-        <div>
-          <strong>OpenClaw 正在使用外部模型</strong>
-          <p>Token Hub 不会自动修改现有配置。切换后可使用智能模型匹配。</p>
-        </div>
-      </div>
-      <div class="notification-actions">
-        <button class="primary" data-open-tool="openclaw">查看配置</button>
-      </div>
-    `
-    : isAuto
-    ? `
-      <header>
-        <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <img src="./assets/logo.png" alt="" />
           <span>联想 Token Hub</span>
         </div>
         <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
@@ -511,7 +586,7 @@ function renderNotification() {
     : `
       <header>
         <div class="notification-brand">
-          <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+          <img src="./assets/logo.png" alt="" />
           <span>联想 Token Hub</span>
         </div>
         <button data-dismiss-notification="true" aria-label="关闭通知">×</button>
@@ -546,6 +621,7 @@ function renderAll() {
   renderTools();
   renderAccount();
   renderOnboarding();
+  renderUpdateState();
   syncAppMenuState();
   syncSmartToggle();
 }
@@ -586,10 +662,16 @@ function resetDemoBaseline() {
   state.smartMode = false;
   state.balance = 128.5;
   state.balanceStatus = "normal";
+  state.currentVersion = "v0.1.0";
+  state.latestVersion = "v0.1.1";
+  state.updateAvailable = false;
+  state.installedTools = true;
+  state.detectingApps = false;
   state.activeTool = null;
   state.discoveryNotice = null;
   authWindow.hidden = true;
   rechargeWindow.hidden = true;
+  smartConfirm.hidden = true;
   notification.classList.remove("show");
   setAllManagement("token-hub");
   tools.forEach((tool) => {
@@ -619,6 +701,7 @@ function enableSmartMatchAndAdoptAll() {
     tool.isNew = false;
   });
   state.smartMode = true;
+  smartConfirm.hidden = true;
   syncSmartToggle();
   renderTools();
   if (state.activeTool && isPageActive("models")) openTool(state.activeTool);
@@ -662,19 +745,22 @@ function setDemoState(mode) {
     });
   }
 
-  if (mode === "external-config" || mode === "external-discovery") {
-    state.management.openclaw = "external";
-    tools.forEach((tool) => {
-      tool.isNew = false;
-    });
-  }
-
   if (mode === "low-balance") {
     state.balance = 0.8;
     state.balanceStatus = "empty";
     tools.forEach((tool) => {
       tool.isNew = false;
     });
+  }
+
+  if (mode === "no-apps") {
+    state.installedTools = false;
+    state.detectingApps = false;
+    state.smartMode = false;
+  }
+
+  if (mode === "update-available") {
+    state.updateAvailable = true;
   }
 
   if (mode === "unconfigured") {
@@ -692,12 +778,6 @@ function setDemoState(mode) {
     tools.find((tool) => tool.id === "qclaw").isNew = true;
     closePanel();
     setDiscoveryNotice("auto");
-    return;
-  }
-
-  if (mode === "external-discovery") {
-    closePanel();
-    setDiscoveryNotice("external");
     return;
   }
 
@@ -735,6 +815,12 @@ function syncAppMenuState() {
 }
 
 document.addEventListener("click", (event) => {
+  const updateTarget = event.target.closest("[data-check-update]");
+  if (updateTarget) {
+    openUpdateWindow({ notifyIfCurrent: updateTarget.dataset.checkUpdate === "settings" });
+    return;
+  }
+
   const menuTarget = event.target.closest("[data-app-menu]");
   if (menuTarget) {
     if (!state.loggedIn) {
@@ -794,6 +880,18 @@ document.addEventListener("click", (event) => {
       }
       return;
     }
+    smartConfirm.hidden = false;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.cancelSmartConfirm) {
+    smartConfirm.hidden = true;
+    syncSmartToggle();
+    return;
+  }
+
+  if (target.dataset.confirmSmartMatch) {
     enableSmartMatchAndAdoptAll();
     if (state.discoveryNotice) {
       state.discoveryNotice = "auto";
@@ -811,29 +909,11 @@ document.addEventListener("click", (event) => {
 
   if (target.dataset.selectModel) {
     const modelId = target.dataset.selectModel;
-    const adopted = state.management[state.activeTool] === "external";
     const configured = state.management[state.activeTool] === "unconfigured";
-    if (adopted) state.management[state.activeTool] = "token-hub";
     if (configured) state.management[state.activeTool] = "token-hub";
     state.selections[state.activeTool] = modelId;
     renderTools();
     openTool(state.activeTool);
-  }
-
-  if (target.dataset.adoptTokenHub) {
-    const toolId = target.dataset.adoptTokenHub;
-    const tool = tools.find((item) => item.id === toolId);
-    state.management[toolId] = "token-hub";
-    state.selections[toolId] = tool.models[0];
-    renderTools();
-    openTool(toolId);
-  }
-
-  if (target.dataset.useExternalConfig) {
-    const toolId = target.dataset.useExternalConfig;
-    state.management[toolId] = "external";
-    renderTools();
-    openTool(toolId);
   }
 
   if (target.dataset.configureHub) {
@@ -851,6 +931,16 @@ document.addEventListener("click", (event) => {
   }
 
   if (target.dataset.refreshApps) {
+    if (!state.installedTools) {
+      state.detectingApps = true;
+      renderTools();
+      setTimeout(() => {
+        state.detectingApps = false;
+        renderTools();
+        showRefreshToast("暂未检测到可配置应用");
+      }, 1100);
+      return;
+    }
     target.classList.add("spinning");
     setTimeout(() => {
       target.classList.remove("spinning");
@@ -891,6 +981,7 @@ document.addEventListener("click", (event) => {
     syncAppMenuState();
     renderAccount();
     renderOnboarding();
+    renderUpdateState();
     setActiveDemoState("login-required");
   }
   if (target.dataset.closeAuth) {
@@ -898,6 +989,15 @@ document.addEventListener("click", (event) => {
   }
   if (target.dataset.closeRecharge) {
     closeRechargeWindow();
+  }
+  if (target.dataset.closeUpdate) {
+    closeUpdateWindow();
+  }
+  if (target.dataset.checkUpdate) {
+    openUpdateWindow();
+  }
+  if (target.dataset.installUpdate) {
+    installUpdate();
   }
   if (target.dataset.recharge) {
     openRechargeWindow();

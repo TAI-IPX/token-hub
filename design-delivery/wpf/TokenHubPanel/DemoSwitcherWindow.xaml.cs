@@ -28,5 +28,20 @@ namespace TokenHubPanel
             if (sender is Button { Tag: string tag } && int.TryParse(tag, out var idx))
                 _mainWindow.SetDemoStateByIndex(idx);
         }
+
+        private void ShowUpdateDialog_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenUpdateDialog();
+        }
+
+        private void ShowInstallDialog_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenInstallDialog();
+        }
+
+        private void ShowUninstallDialog_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenUninstallDialog();
+        }
     }
 }

@@ -1,0 +1,231 @@
+<Window x:Class="TokenHubPanel.UninstallDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="联想 TokenHub"
+        FontFamily="Microsoft YaHei"
+        FontSize="14"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        Background="Transparent"
+        SizeToContent="WidthAndHeight"
+        Topmost="True"
+        MouseDown="Window_MouseDown">
+    <Window.Resources>
+        <DropShadowEffect x:Key="UninstallWindowShadow"
+                          BlurRadius="21"
+                          ShadowDepth="2"
+                          Direction="270"
+                          Color="#000000"
+                          Opacity="0.22" />
+
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="4" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#0A000000" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="200" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="#005FB8"
+                                BorderBrush="#14FFFFFF"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#0067C0" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#004C99" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="200" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Foreground" Value="#E5000000" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="#B3FFFFFF"
+                                BorderBrush="#10000000"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E6FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Width="560"
+            Height="400"
+            CornerRadius="7"
+            Background="#F3F3F3"
+            BorderBrush="#66757575"
+            BorderThickness="1"
+            Effect="{StaticResource UninstallWindowShadow}"
+            Margin="32">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Height="48" Padding="12,0,8,0" Background="Transparent">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="Assets/install-title-icon@3x.png"
+                               Width="24"
+                               Height="24"
+                               Margin="0,0,8,0" />
+                        <TextBlock Text="联想 TokenHub"
+                                   FontSize="12"
+                                   Foreground="#E5000000"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="MinimizeButton_Click">
+                            <TextBlock Text="&#xE921;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="10"
+                                       Foreground="#E5000000" />
+                        </Button>
+                        <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
+                            <TextBlock Text="&#xE8BB;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="10"
+                                       Foreground="#E5000000" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <StackPanel x:Name="StatusPanel"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Center"
+                            Margin="0,40,0,0">
+                    <Image Source="Assets/install-hero-icon@3x.png"
+                           Width="48"
+                           Height="48"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20" />
+                    <TextBlock x:Name="StatusTitle"
+                               Text="联想 TokenHub"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="#E0000000"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,8" />
+                    <TextBlock x:Name="StatusDescription"
+                               Text="一键切换，多身份随心掌控"
+                               FontSize="14"
+                               Foreground="#99000000"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               MaxWidth="390" />
+                </StackPanel>
+
+                <StackPanel x:Name="DefaultButtonsPanel"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,0,80">
+                    <Button Content="我再想想"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="CloseButton_Click" />
+                    <Button Content="卸载"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="10,0,0,0"
+                            Click="UninstallButton_Click" />
+                </StackPanel>
+
+                <StackPanel x:Name="ProgressPanel"
+                            Visibility="Collapsed"
+                            Margin="24,0,24,24"
+                            VerticalAlignment="Bottom">
+                    <TextBlock x:Name="ProgressText"
+                               Text="正在卸载 0%"
+                               FontSize="14"
+                               Foreground="#99000000"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Margin="0,0,0,4" />
+                    <Grid Height="32" ClipToBounds="True" SizeChanged="ProgressGrid_SizeChanged">
+                        <Border Height="3"
+                                CornerRadius="2"
+                                Background="#0A000000"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Stretch" />
+                        <Border x:Name="ProgressTrack"
+                                Height="3"
+                                CornerRadius="2"
+                                Background="#005FB8"
+                                Width="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <Button x:Name="CompleteButton"
+                        Content="完成"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,0,80"
+                        Visibility="Collapsed"
+                        Click="CloseButton_Click" />
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

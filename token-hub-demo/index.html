@@ -27,12 +27,12 @@
           <button data-demo-state="login-required">首次使用 - 未登录</button>
           <button data-demo-state="smart-off">正常使用 - 智能匹配关</button>
           <button data-demo-state="smart-on">正常使用 - 智能匹配开</button>
+          <button data-demo-state="no-apps">登录后 - 未检测到应用</button>
           <button data-demo-state="unconfigured">待选择模型 - 多应用未配置</button>
-          <button data-demo-state="external-config">外部配置 - 部分应用不由 Token Hub 管理</button>
           <button data-demo-state="low-balance">额度不足 - 引导充值</button>
+          <button data-demo-state="update-available">发现新版本</button>
           <button data-demo-state="auto-discovery">通知 - 智能匹配开，发现新应用</button>
           <button data-demo-state="manual-discovery">通知 - 智能匹配关，发现新应用</button>
-          <button data-demo-state="external-discovery">通知 - 发现外部配置</button>
         </div>
       </div>
     </main>
@@ -54,6 +54,7 @@
             </nav>
           </div>
           <div class="panel-actions">
+            <button class="title-update-button" id="title-update-button" data-check-update="true" hidden>发现新版本</button>
             <button class="icon-button settings-button" data-settings="true" aria-label="设置" title="设置">⚙</button>
             <button class="icon-button" data-close-panel="true" aria-label="关闭">×</button>
           </div>
@@ -68,10 +69,17 @@
                 <span class="feature-icon compact">✦</span>
                 <div>
                   <strong>智能模型匹配</strong>
-                  <p>开启后，应用将使用 Token Hub 提供的推荐模型。</p>
+                  <p>使用 Token Hub 提供的推荐模型</p>
                 </div>
               </div>
               <button class="toggle" data-smart-toggle="true" aria-label="智能模型匹配"></button>
+            </div>
+            <div class="smart-inline-confirm" id="smart-confirm" hidden>
+              <p>开启后，已检测应用将使用 Token Hub 推荐模型。</p>
+              <div>
+                <button data-cancel-smart-confirm="true">取消</button>
+                <button class="primary" data-confirm-smart-match="true">开启</button>
+              </div>
             </div>
           </section>
 
@@ -113,6 +121,7 @@
           <div class="setting-row"><div><strong>开机自启</strong><small>登录 Windows 后自动运行</small></div><button class="toggle active" aria-label="开机自启"></button></div>
           <div class="setting-row"><div><strong>系统通知</strong><small>发现新应用和切换异常时提醒</small></div><button class="toggle active" aria-label="系统通知"></button></div>
           <div class="setting-row"><div><strong>自动检测新应用</strong><small>安装应用后自动加入列表</small></div><button class="toggle active" aria-label="自动检测新应用"></button></div>
+          <div class="setting-row"><div><strong>软件更新</strong><small id="settings-update-current">当前版本 v0.1.0</small></div><button class="setting-action" id="settings-update-button" data-check-update="settings">检查更新</button></div>
         </section>
       </div>
       <div class="refresh-toast" id="refresh-toast" aria-live="polite"></div>
@@ -160,6 +169,32 @@
       <main class="recharge-webview" id="recharge-content"></main>
     </section>
 
+    <section class="auth-window update-window" id="update-window" hidden aria-label="软件更新">
+      <button class="window-close update-window-close" data-close-update="true" aria-label="关闭">×</button>
+      <main class="update-webview" id="update-content">
+        <section class="update-card">
+          <header class="update-masthead">
+            <img src="https://pr1-greenteacdn.lenovo.com.cn/config/202605/1780061482103_svgviewer-output%205.png" alt="" />
+            <strong>联想 Token Hub</strong>
+          </header>
+          <span class="update-icon" aria-hidden="true">↻</span>
+          <div>
+            <h2>发现新版本</h2>
+            <p>Token Hub v0.1.1 可用，建议更新以获得最新适配和体验优化。</p>
+          </div>
+          <ul>
+            <li>优化模型匹配体验</li>
+            <li>提升应用检测稳定性</li>
+            <li>更新 Token Mall 服务入口</li>
+          </ul>
+          <footer>
+            <button data-close-update="true">稍后</button>
+            <button class="primary" data-install-update="true">立即更新</button>
+          </footer>
+        </section>
+      </main>
+    </section>
+
     <footer class="taskbar" aria-label="Windows 任务栏">
       <div class="taskbar-center">
         <button class="windows-start" aria-label="开始"><span></span><span></span><span></span><span></span></button>
@@ -180,9 +215,11 @@
     </footer>
 
     <div class="tray-context-menu" id="tray-context-menu" hidden role="menu" aria-label="联想 Token Hub 托盘菜单">
+      <button data-open-main="true" role="menuitem">打开主界面</button>
+      <button data-settings="true" role="menuitem">设置</button>
       <button data-exit-app="true" role="menuitem">退出应用</button>
     </div>
 
-    <script src="./app.js?v=smart-direct-20260604"></script>
+    <script src="./app.js?v=software-update-20260605"></script>
   </body>
 </html>

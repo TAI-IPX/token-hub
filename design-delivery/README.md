@@ -128,7 +128,7 @@ https://www.figma.com/design/brmnTFUvvtOb0lMkOcIJS1/联想Token?node-id=355-7022
 
 | 版本 | 日期 | 内容 |
 |------|------|------|
-| v0.6.0 | 2026-06-10 | Hermes 应用 + Logo、工具列表精简为 3 个、InstallDialog 去自定义安装、CheckBox 对齐修复、共享 Anim 动画重构、登录配图更新为联想品牌 logo、新增 WORKFLOW.md |
+| v0.6.0 | 2026-06-10 | Hermes 应用 + Logo、工具精简为 3 个(OpenClaw/Claude Code/Hermes)、InstallDialog 去自定义安装、CheckBox 居中对齐、共享 Anim 动画重构、登录配图更新为联想 logo、检查更新按钮固定 72px + 转圈 loading、BalanceBadge 圆角修复、新增 WORKFLOW.md |
 | v0.5.0 | 2026-06-09 | UpdateDialog 三态弹窗、进度条动画修复、AuthPending loading、Install/Uninstall 弹窗、场景切换修复、字色/间距统一、设置页精简、弹窗崩溃修复、面板底色全局统一 |
 | v0.4.0 | 2026-06 | 面板样式重构、UpdateDialog 初版 |
 | v0.3.0 | 2026-05 | 系统托盘图标 + Win11 原生右键菜单、智能确认弹窗优化 |

@@ -363,8 +363,8 @@ namespace TokenHubPanel.ViewModels
             AllModels.First(m => m.Id == "glm-5.1").Tags.Add("深度思考");
             AllModels.First(m => m.Id == "glm-5.1").Tags.Add("文本生成");
 
-            // Define tools
-            var tool1 = new AppTool { Id = "openclaw", Name = "Open Claw", IconPath = "Assets/app-openclaw@3x.png", Mark = "OC" };
+            // Define tools — OpenClaw, Claude Code, Hermes
+            var tool1 = new AppTool { Id = "openclaw", Name = "OpenClaw", IconPath = "Assets/app-openclaw@3x.png", Mark = "OC" };
             tool1.ModelIds.Add("deepseek-v4-flash");
             tool1.ModelIds.Add("deepseek-v4-pro");
             tool1.ModelIds.Add("qwen3.6-plus");
@@ -373,47 +373,27 @@ namespace TokenHubPanel.ViewModels
             tool1.ModelIds.Add("MiniMax-M2.5");
             Tools.Add(tool1);
 
-            var tool2 = new AppTool { Id = "qclaw", Name = "Q Claw", IconPath = "Assets/app-qclaw@3x.png", Mark = "QC" };
-            tool2.ModelIds.Add("deepseek-v4-flash");
-            tool2.ModelIds.Add("qwen3.6-flash");
-            tool2.ModelIds.Add("kimi-k2.6");
-            tool2.ModelIds.Add("qwen3.6-plus");
+            var tool2 = new AppTool { Id = "claude-code", Name = "Claude Code", IconPath = "Assets/app-claude@3x.png", Mark = "CC" };
+            tool2.ModelIds.Add("deepseek-v4-pro");
             tool2.ModelIds.Add("glm-5.1");
-            tool2.ModelIds.Add("MiniMax-M2.5");
+            tool2.ModelIds.Add("qwen3.6-max-preview");
+            tool2.ModelIds.Add("deepseek-v4-flash");
+            tool2.ModelIds.Add("kimi-k2.6");
+            tool2.ModelIds.Add("glm-5");
             Tools.Add(tool2);
 
-            var tool3 = new AppTool { Id = "claude-code", Name = "Claude Code", IconPath = "Assets/app-claude@3x.png", Mark = "CC" };
-            tool3.ModelIds.Add("deepseek-v4-pro");
-            tool3.ModelIds.Add("glm-5.1");
-            tool3.ModelIds.Add("qwen3.6-max-preview");
-            tool3.ModelIds.Add("deepseek-v4-flash");
+            var tool3 = new AppTool { Id = "hermes", Name = "Hermes", IconPath = "Assets/app-hermes@3x.png", Mark = "HM" };
             tool3.ModelIds.Add("kimi-k2.6");
+            tool3.ModelIds.Add("deepseek-v4-pro");
             tool3.ModelIds.Add("glm-5");
+            tool3.ModelIds.Add("deepseek-v4-flash");
+            tool3.ModelIds.Add("qwen3.6-plus");
+            tool3.ModelIds.Add("MiniMax-M2.5");
             Tools.Add(tool3);
-
-            var tool4 = new AppTool { Id = "workbuddy", Name = "OpenClaw", IconPath = "Assets/app-openclaw2@3x.png", Mark = "WB" };
-            tool4.ModelIds.Add("qwen3.6-plus");
-            tool4.ModelIds.Add("kimi-k2.6");
-            tool4.ModelIds.Add("MiniMax-M2.5");
-            tool4.ModelIds.Add("deepseek-v4-flash");
-            tool4.ModelIds.Add("qwen3.6-flash");
-            tool4.ModelIds.Add("glm-5");
-            Tools.Add(tool4);
-
-            var tool5 = new AppTool { Id = "hermes", Name = "Hermes", IconPath = "Assets/app-openclaw2@3x.png", Mark = "HM" };
-            tool5.ModelIds.Add("kimi-k2.6");
-            tool5.ModelIds.Add("deepseek-v4-pro");
-            tool5.ModelIds.Add("glm-5");
-            tool5.ModelIds.Add("deepseek-v4-flash");
-            tool5.ModelIds.Add("qwen3.6-plus");
-            tool5.ModelIds.Add("MiniMax-M2.5");
-            Tools.Add(tool5);
 
             // Default selections
             Selections["openclaw"] = "deepseek-v4-flash";
             Selections["claude-code"] = "deepseek-v4-pro";
-            Selections["qclaw"] = "deepseek-v4-flash";
-            Selections["workbuddy"] = "qwen3.6-plus";
             Selections["hermes"] = "kimi-k2.6";
 
             // Default management
@@ -605,13 +585,13 @@ namespace TokenHubPanel.ViewModels
                     IsSmartMode = true;
                     Balance = 128.5;
                     ResetSelections();
-                    DiscoveryToolName = "QClaw";
+                    DiscoveryToolName = "Hermes";
                     DiscoveryModelName = "DeepSeek V4 Flash";
                     DiscoveryTags.Clear();
                     DiscoveryTags.Add("文本生成");
                     DiscoveryTags.Add("轻量快速");
                     DiscoveryTags.Add("DeepSeek");
-                    Tools.First(t => t.Id == "qclaw").IsNew = true;
+                    Tools.First(t => t.Id == "hermes").IsNew = true;
                     break;
 
                 case DemoState.ManualDiscovery:
@@ -619,9 +599,9 @@ namespace TokenHubPanel.ViewModels
                     IsSmartMode = false;
                     Balance = 128.5;
                     ResetSelections();
-                    DiscoveryToolName = "QClaw";
-                    DiscoveryModelName = "DeepSeek V4 Flash";
-                    Tools.First(t => t.Id == "qclaw").IsNew = true;
+                    DiscoveryToolName = "Hermes";
+                    DiscoveryModelName = "DeepSeek V4 Pro";
+                    Tools.First(t => t.Id == "hermes").IsNew = true;
                     break;
 
                 case DemoState.NewVersion:
@@ -652,8 +632,6 @@ namespace TokenHubPanel.ViewModels
                 Management[tool.Id] = "token-hub";
             Selections["openclaw"] = "deepseek-v4-flash";
             Selections["claude-code"] = "deepseek-v4-pro";
-            Selections["qclaw"] = "deepseek-v4-flash";
-            Selections["workbuddy"] = "qwen3.6-plus";
             Selections["hermes"] = "kimi-k2.6";
             foreach (var tool in Tools)
                 tool.IsNew = false;

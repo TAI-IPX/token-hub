@@ -868,7 +868,7 @@ namespace TokenHubPanel
 
         private void GoToToolFromNotification_Click(object sender, RoutedEventArgs e)
         {
-            _vm.GoToToolCommand.Execute("qclaw");
+            _vm.GoToToolCommand.Execute("hermes");
         }
 
         private void RechargeButton_Click(object sender, RoutedEventArgs e)
@@ -1068,7 +1068,7 @@ namespace TokenHubPanel
             {
                 if (_vm.IsManualDiscovery)
                     CloseNotificationPanel(
-                        afterClose: () => _vm.GoToToolCommand.Execute("qclaw"),
+                        afterClose: () => _vm.GoToToolCommand.Execute("hermes"),
                         dismissNotification: false);
                 else
                     CloseNotificationPanel(dismissNotification: false);

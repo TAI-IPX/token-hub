@@ -475,13 +475,24 @@ namespace TokenHubPanel
         private void UpdatePageVisibility()
         {
             var page = _vm.CurrentPage;
-            SetPanelVisible(HomePage,     page == PanelPage.Home);
-            SetPanelVisible(ModelsPage,   page == PanelPage.Models);
-            SetPanelVisible(SettingsPage, page == PanelPage.Settings);
+            // Win11 drill-in: secondary pages enter from the right, returning Home enters from the left
+            double fromX = page == PanelPage.Home ? -32 : 32;
+            SetPageVisible(HomePage,     page == PanelPage.Home,     fromX);
+            SetPageVisible(ModelsPage,   page == PanelPage.Models,   fromX);
+            SetPageVisible(SettingsPage, page == PanelPage.Settings, fromX);
             UpdateTitleBarVisibility();
 
             if (page == PanelPage.Models)
                 Dispatcher.BeginInvoke((Action)SyncCurrentModelSelection, DispatcherPriority.Loaded);
+        }
+
+        // Page navigation: fade + horizontal drill-in slide for the page becoming visible.
+        private static void SetPageVisible(FrameworkElement el, bool visible, double fromX)
+        {
+            bool wasVisible = el.Visibility == Visibility.Visible;
+            el.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            if (visible && !wasVisible)
+                Anim.SlideFadeIn(el, fromX);
         }
 
         private void UpdateTitleBarVisibility()
@@ -818,14 +829,32 @@ namespace TokenHubPanel
         {
             if (sender is not Button btn) return;
             btn.IsEnabled = false;
-            var original = btn.Content;
-            btn.Content = "检查中…";
+
+            // Find named elements in template
+            var text = btn.Template.FindName("UpdateBtnText", btn) as TextBlock;
+            var spinner = btn.Template.FindName("UpdateBtnSpinner", btn) as TextBlock;
+            var rotate = btn.Template.FindName("CheckUpdateSpinner", btn) as RotateTransform;
+
+            if (text != null) text.Visibility = Visibility.Collapsed;
+            if (spinner != null) spinner.Visibility = Visibility.Visible;
+            if (rotate != null)
+            {
+                rotate.Angle = 0;
+                var spinAnim = new DoubleAnimation(0, 360, TimeSpan.FromSeconds(1))
+                {
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+                rotate.BeginAnimation(RotateTransform.AngleProperty, spinAnim);
+            }
+
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
             timer.Tick += (s, args) =>
             {
                 timer.Stop();
                 btn.IsEnabled = true;
-                btn.Content = original;
+                if (text != null) text.Visibility = Visibility.Visible;
+                if (spinner != null) spinner.Visibility = Visibility.Collapsed;
+                if (rotate != null) rotate.BeginAnimation(RotateTransform.AngleProperty, null);
                 ShowToast("当前已是最新版本");
             };
             timer.Start();

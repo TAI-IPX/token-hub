@@ -1038,8 +1038,8 @@
                                                             </ItemsControl.ItemsPanel>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Border Height="Auto"
-                                                                            Padding="3,4"
+                                                                    <Border Height="18"
+                                                                            Padding="5,0"
                                                                             CornerRadius="2"
                                                                             Background="#CFE3F3"
                                                                             Margin="0,0,4,0">

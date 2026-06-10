@@ -18,6 +18,7 @@ namespace TokenHubPanel
         {
             InitializeComponent();
             UpdateAmountDisplays();
+            Loaded += (_, _) => Anim.FadeIn((FrameworkElement)Content);
         }
 
         private void UpdateAmountDisplays()
@@ -45,10 +46,13 @@ namespace TokenHubPanel
 
         private void ShowView(UIElement view)
         {
+            bool wasVisible = view.Visibility == Visibility.Visible;
             AmountView.Visibility = Visibility.Collapsed;
             ConfirmView.Visibility = Visibility.Collapsed;
             PayView.Visibility = Visibility.Collapsed;
             view.Visibility = Visibility.Visible;
+            if (!wasVisible && view is FrameworkElement fe)
+                Anim.FadeIn(fe);
         }
 
         private void AmountCard_Click(object sender, RoutedEventArgs e)
@@ -77,16 +81,23 @@ namespace TokenHubPanel
         {
             TabQr.Tag = "active";
             TabDetail.Tag = "";
-            QrBox.Visibility = Visibility.Visible;
-            DetailBox.Visibility = Visibility.Collapsed;
+            SwitchBox(show: QrBox, hide: DetailBox);
         }
 
         private void TabDetail_Click(object sender, RoutedEventArgs e)
         {
             TabQr.Tag = "";
             TabDetail.Tag = "active";
-            QrBox.Visibility = Visibility.Collapsed;
-            DetailBox.Visibility = Visibility.Visible;
+            SwitchBox(show: DetailBox, hide: QrBox);
+        }
+
+        private static void SwitchBox(FrameworkElement show, FrameworkElement hide)
+        {
+            bool wasVisible = show.Visibility == Visibility.Visible;
+            hide.Visibility = Visibility.Collapsed;
+            show.Visibility = Visibility.Visible;
+            if (!wasVisible)
+                Anim.FadeIn(show);
         }
 
         private void CompletePay_Click(object sender, RoutedEventArgs e)

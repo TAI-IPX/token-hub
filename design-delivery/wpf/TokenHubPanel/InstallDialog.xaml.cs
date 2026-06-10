@@ -14,7 +14,7 @@ namespace TokenHubPanel
         public InstallDialog()
         {
             InitializeComponent();
-            Loaded += (_, _) => Anim.PopIn((FrameworkElement)Content);
+            Loaded += (_, _) => Anim.FadeIn((FrameworkElement)Content);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -41,8 +41,8 @@ namespace TokenHubPanel
             ProgressPanel.Visibility = Visibility.Visible;
             CompleteButton.Visibility = Visibility.Collapsed;
             WindowFrame.Height = 400;
-            Anim.FadeSlideIn(StatusPanel);
-            Anim.FadeSlideIn(ProgressPanel);
+            Anim.FadeIn(StatusPanel);
+            Anim.FadeIn(ProgressPanel);
 
             _progress = 0;
             ProgressTrack.Width = 0;
@@ -63,7 +63,7 @@ namespace TokenHubPanel
                 _progressTimer?.Stop();
                 ProgressPanel.Visibility = Visibility.Collapsed;
                 CompleteButton.Visibility = Visibility.Visible;
-                Anim.FadeSlideIn(CompleteButton);
+                Anim.FadeIn(CompleteButton);
                 StatusTitle.Text = "安装完成";
                 StatusDescription.Text = "TokenHub 已安装完成，可从系统托盘启动。";
             };

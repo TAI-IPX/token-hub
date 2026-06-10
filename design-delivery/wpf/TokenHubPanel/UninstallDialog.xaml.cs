@@ -14,6 +14,7 @@ namespace TokenHubPanel
         public UninstallDialog()
         {
             InitializeComponent();
+            Loaded += (_, _) => Anim.FadeIn((FrameworkElement)Content);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -37,6 +38,7 @@ namespace TokenHubPanel
         {
             DefaultButtonsPanel.Visibility = Visibility.Collapsed;
             ProgressPanel.Visibility = Visibility.Visible;
+            Anim.FadeIn(ProgressPanel);
             CompleteButton.Visibility = Visibility.Collapsed;
             StatusTitle.Text = "联想 TokenHub";
             StatusDescription.Text = "一键切换，多身份随心掌控";
@@ -58,6 +60,7 @@ namespace TokenHubPanel
                 _progressTimer?.Stop();
                 ProgressPanel.Visibility = Visibility.Collapsed;
                 CompleteButton.Visibility = Visibility.Visible;
+                Anim.FadeIn(CompleteButton);
                 StatusTitle.Text = "卸载完成";
                 StatusDescription.Text = "TokenHub 已从此设备移除。";
             };

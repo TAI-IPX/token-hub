@@ -166,6 +166,10 @@
     <Thickness x:Key="NotificationTagPadding">4,3</Thickness>
     <Thickness x:Key="NotificationTagMargin">0,0,8,0</Thickness>
 
+    <!-- Motion: hover/press durations for XAML storyboards (code-behind scale lives in Anim.cs) -->
+    <Duration x:Key="MotionHover">0:0:0.12</Duration>
+    <Duration x:Key="MotionPress">0:0:0.06</Duration>
+
     <!-- Font -->
     <FontFamily x:Key="DefaultFont">Microsoft YaHei</FontFamily>
     <sys:Double x:Key="DefaultFontSize">14</sys:Double>

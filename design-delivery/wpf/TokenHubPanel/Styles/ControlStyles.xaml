@@ -394,18 +394,50 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="HoverBorder"
-                            CornerRadius="4"
-                            Background="Transparent">
+                            CornerRadius="4">
+                        <Border.Background>
+                            <SolidColorBrush x:Name="Win11IconBg" Color="#00000000"/>
+                        </Border.Background>
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="HoverBorder" Property="Background" Value="#0A000000" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="HoverBorder" Property="Background" Value="#14000000" />
-                        </Trigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="Win11IconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#0A000000" Duration="{StaticResource MotionHover}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="Win11IconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#00000000" Duration="{StaticResource MotionHover}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="Win11IconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#14000000" Duration="{StaticResource MotionPress}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="Win11IconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#0A000000" Duration="{StaticResource MotionPress}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -424,18 +456,50 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="SecondaryTitleIconBorder"
                             CornerRadius="4"
-                            Background="Transparent"
                             SnapsToDevicePixels="True">
+                        <Border.Background>
+                            <SolidColorBrush x:Name="SecIconBg" Color="#00000000"/>
+                        </Border.Background>
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="SecondaryTitleIconBorder" Property="Background" Value="#0D000000" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="SecondaryTitleIconBorder" Property="Background" Value="#14000000" />
-                        </Trigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="SecIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#0D000000" Duration="{StaticResource MotionHover}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="SecIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#00000000" Duration="{StaticResource MotionHover}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="SecIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#14000000" Duration="{StaticResource MotionPress}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="SecIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#0D000000" Duration="{StaticResource MotionPress}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -656,7 +720,22 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Opacity" Value="1" />
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1" Duration="{StaticResource MotionHover}"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0" Duration="0:0:0.25"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -786,23 +865,54 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="NotificationIconButtonBackground"
-                            Background="Transparent"
                             CornerRadius="4"
                             SnapsToDevicePixels="True">
+                        <Border.Background>
+                            <SolidColorBrush x:Name="NotifIconBg" Color="#00000000"/>
+                        </Border.Background>
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="NotificationIconButtonBackground"
-                                    Property="Background"
-                                    Value="{StaticResource NotificationIconButtonHoverBrush}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="NotificationIconButtonBackground"
-                                    Property="Background"
-                                    Value="{StaticResource NotificationIconButtonPressedBrush}" />
-                        </Trigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="NotifIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="{StaticResource NotificationIconButtonHoverColor}"
+                                                    Duration="{StaticResource MotionHover}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="NotifIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="#00000000" Duration="{StaticResource MotionHover}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="NotifIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="{StaticResource NotificationIconButtonPressedColor}"
+                                                    Duration="{StaticResource MotionPress}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="NotifIconBg"
+                                                    Storyboard.TargetProperty="Color"
+                                                    To="{StaticResource NotificationIconButtonHoverColor}"
+                                                    Duration="{StaticResource MotionPress}"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

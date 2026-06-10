@@ -91,11 +91,51 @@ namespace TokenHubPanel
             Closing += MainWindow_Closing;
         }
 
+        // Token guards the fade-out: a re-show during the fade invalidates the pending Hide().
+        private int _panelHideToken;
+        private bool _panelHiding;
+
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Minimize to tray instead of closing
+            // Minimize to tray instead of closing — fade the panel out first
             e.Cancel = true;
-            Hide();
+            if (_panelHiding)
+                return;
+            if (!IsVisible || PanelBorder.Visibility != Visibility.Visible)
+            {
+                Hide();
+                return;
+            }
+
+            _panelHiding = true;
+            int token = ++_panelHideToken;
+            var fade = new DoubleAnimation(PanelBorder.Opacity, 0, Anim.Exit);
+            fade.Completed += (_, _) =>
+            {
+                if (token != _panelHideToken)
+                    return; // superseded by a re-show
+                _panelHiding = false;
+                Hide();
+                PanelBorder.BeginAnimation(OpacityProperty, null);
+                PanelBorder.Opacity = 1;
+            };
+            PanelBorder.BeginAnimation(OpacityProperty, fade);
+        }
+
+        /// <summary>Show the panel with a tray-flyout entrance (rise + fade). No-op when already visible.</summary>
+        private void ShowPanelWithEntrance()
+        {
+            _panelHideToken++; // cancel any in-flight hide
+            bool needEntrance = !IsVisible || _panelHiding;
+            _panelHiding = false;
+            Show();
+            Activate();
+            PositionNearTray();
+            if (!needEntrance)
+                return;
+            PanelBorder.BeginAnimation(OpacityProperty, null);
+            PanelBorder.Opacity = 1;
+            Anim.FadeIn(PanelBorder, Anim.Enter);
         }
 
         public void ExitApplication()
@@ -144,6 +184,7 @@ namespace TokenHubPanel
         {
             CreateTrayIcon();
             PositionNearTray();
+            Anim.FadeIn(PanelBorder, Anim.Enter);
             ShowDemoSwitcher();
         }
 
@@ -174,9 +215,7 @@ namespace TokenHubPanel
             {
                 if (e.Button == WinForms.MouseButtons.Left)
                 {
-                    Show();
-                    Activate();
-                    PositionNearTray();
+                    ShowPanelWithEntrance();
                 }
             };
             // Figma 632:641 — WPF Popup context menu (stylable)
@@ -257,8 +296,7 @@ namespace TokenHubPanel
         private void TrayMenuSettings_Click(object sender, MouseButtonEventArgs e)
         {
             CloseTrayMenu();
-            Show();
-            Activate();
+            ShowPanelWithEntrance();
             _vm.CurrentPage = ViewModels.PanelPage.Settings;
         }
 
@@ -403,13 +441,13 @@ namespace TokenHubPanel
             UpdateTitleBarVisibility();
             ContentHost.Visibility = isDiscovering ? Visibility.Collapsed : Visibility.Visible;
 
-            // Onboarding sub-panels (only when in Login state)
-            LoginPanel.Visibility = (isLogin && _onbStep == OnbStep.Login) ? Visibility.Visible : Visibility.Collapsed;
-            AuthPendingPanel.Visibility = (isLogin && _onbStep == OnbStep.AuthPending) ? Visibility.Visible : Visibility.Collapsed;
-            FirstRunPanel.Visibility = (isLogin && _onbStep == OnbStep.FirstRun) ? Visibility.Visible : Visibility.Collapsed;
-            ReadyToConfigPanel.Visibility = (isLogin && _onbStep == OnbStep.ReadyToConfig) ? Visibility.Visible : Visibility.Collapsed;
-            ConfiguringPanel.Visibility = isConfiguring ? Visibility.Visible : Visibility.Collapsed;
-            ReadyContent.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
+            // Onboarding sub-panels (only when in Login state) — newly shown panel fades/slides in
+            SetPanelVisible(LoginPanel, isLogin && _onbStep == OnbStep.Login);
+            SetPanelVisible(AuthPendingPanel, isLogin && _onbStep == OnbStep.AuthPending);
+            SetPanelVisible(FirstRunPanel, isLogin && _onbStep == OnbStep.FirstRun);
+            SetPanelVisible(ReadyToConfigPanel, isLogin && _onbStep == OnbStep.ReadyToConfig);
+            SetPanelVisible(ConfiguringPanel, isConfiguring);
+            SetPanelVisible(ReadyContent, isReady);
 
             // Footer: account bar only when ready (logged-out footer is permanently hidden per design)
             AccountFooter.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
@@ -437,19 +475,10 @@ namespace TokenHubPanel
         private void UpdatePageVisibility()
         {
             var page = _vm.CurrentPage;
-            HomePage.Visibility     = page == PanelPage.Home     ? Visibility.Visible : Visibility.Collapsed;
-            ModelsPage.Visibility   = page == PanelPage.Models   ? Visibility.Visible : Visibility.Collapsed;
-            SettingsPage.Visibility = page == PanelPage.Settings ? Visibility.Visible : Visibility.Collapsed;
+            SetPanelVisible(HomePage,     page == PanelPage.Home);
+            SetPanelVisible(ModelsPage,   page == PanelPage.Models);
+            SetPanelVisible(SettingsPage, page == PanelPage.Settings);
             UpdateTitleBarVisibility();
-
-            UIElement? target = page switch
-            {
-                PanelPage.Home     => HomePage,
-                PanelPage.Models   => ModelsPage,
-                PanelPage.Settings => SettingsPage,
-                _                  => null
-            };
-            if (target != null) FadePage(target);
 
             if (page == PanelPage.Models)
                 Dispatcher.BeginInvoke((Action)SyncCurrentModelSelection, DispatcherPriority.Loaded);
@@ -463,11 +492,14 @@ namespace TokenHubPanel
                     : Visibility.Collapsed;
         }
 
-        private static void FadePage(UIElement target)
+        // Cross-fade helper for mutually exclusive content panels: the panel becoming
+        // visible fades in; panels being hidden collapse instantly (no overlap).
+        private static void SetPanelVisible(FrameworkElement el, bool visible)
         {
-            target.Opacity = 0;
-            target.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(160)));
+            bool wasVisible = el.Visibility == Visibility.Visible;
+            el.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            if (visible && !wasVisible)
+                Anim.FadeIn(el);
         }
 
         private void AnimateSmartConfirm(bool show)

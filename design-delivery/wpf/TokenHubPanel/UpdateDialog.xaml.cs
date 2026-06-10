@@ -17,6 +17,7 @@ namespace TokenHubPanel
             InitializeComponent();
             DataContext = this;
             Closing += (_, _) => _progressTimer?.Stop();
+            Loaded += (_, _) => Anim.FadeIn((FrameworkElement)Content);
         }
 
         private void ProgressGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -55,6 +56,7 @@ namespace TokenHubPanel
             // Switch to updating state
             ButtonsPanel.Visibility = Visibility.Collapsed;
             ProgressPanel.Visibility = Visibility.Visible;
+            Anim.FadeIn(ProgressPanel);
 
             _progress = 0;
             _progressTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(80) };
@@ -68,6 +70,7 @@ namespace TokenHubPanel
                     // Switch to complete state
                     ProgressPanel.Visibility = Visibility.Collapsed;
                     CompleteButton.Visibility = Visibility.Visible;
+                    Anim.FadeIn(CompleteButton);
                     TitleText.Text = "更新完成";
                     DescText.Text = $"Token Hub 已更新至 {UpdateDescription}，现在可以继续使用。";
                 }

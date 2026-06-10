@@ -118,7 +118,7 @@
                                     BorderBrush="#005FB8"
                                     BorderThickness="1"
                                     Margin="2,0,0,0"
-                                    VerticalAlignment="Top">
+                                    VerticalAlignment="Center">
                                     <TextBlock x:Name="CheckGlyph"
                                                Text="&#xE73E;"
                                            FontFamily="Segoe MDL2 Assets"
@@ -229,6 +229,7 @@
                                        TextWrapping="Wrap"
                                        LineHeight="18"
                                        FontSize="12"
+                                       VerticalAlignment="Center"
                                        Foreground="#E5000000">
                                 <Run Text="阅读并同意 联想 TokenHub " />
                                 <Run Text="隐私政策、服务协议、儿童个人信息保护规则"

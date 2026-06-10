@@ -23,3 +23,6 @@ release/
 /.idea
 /.vscode
 .figma-to-code-skills/
+.claude/
+obj/
+bin/

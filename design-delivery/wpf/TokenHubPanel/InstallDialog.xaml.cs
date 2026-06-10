@@ -8,13 +8,13 @@ namespace TokenHubPanel
     public partial class InstallDialog : Window
     {
         private DispatcherTimer? _progressTimer;
-        private bool _customInstallExpanded;
         private double _progress;
         private double _progressMaxWidth;
 
         public InstallDialog()
         {
             InitializeComponent();
+            Loaded += (_, _) => Anim.PopIn((FrameworkElement)Content);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -34,44 +34,15 @@ namespace TokenHubPanel
             Close();
         }
 
-        private void CustomInstallButton_Click(object sender, RoutedEventArgs e)
-        {
-            _customInstallExpanded = !_customInstallExpanded;
-            double savedTop = Top;
-
-            CustomPanel.Visibility = _customInstallExpanded ? Visibility.Visible : Visibility.Collapsed;
-            WindowFrame.Height = _customInstallExpanded ? 484 : 400;
-            CustomChevron.Text = _customInstallExpanded ? "\uE70E" : "\uE972";
-
-            UpdateLayout();
-            Top = savedTop;
-        }
-
-        private void CustomInstallButton_MouseEnter(object sender, MouseEventArgs e)
-        {
-            CustomToggleText.Foreground = Brush("#005FB8");
-            CustomChevron.Foreground = Brush("#005FB8");
-        }
-
-        private void CustomInstallButton_MouseLeave(object sender, MouseEventArgs e)
-        {
-            CustomToggleText.Foreground = Brush("#99000000");
-            CustomChevron.Foreground = Brush("#99000000");
-        }
-
-        private static System.Windows.Media.Brush Brush(string hex) =>
-            (System.Windows.Media.Brush)(new System.Windows.Media.BrushConverter().ConvertFromString(hex)
-                ?? System.Windows.Media.Brushes.Transparent);
-
         private void InstallButton_Click(object sender, RoutedEventArgs e)
         {
             IntroPanel.Visibility = Visibility.Collapsed;
-            CustomPanel.Visibility = Visibility.Collapsed;
-            _customInstallExpanded = false;
             StatusPanel.Visibility = Visibility.Visible;
             ProgressPanel.Visibility = Visibility.Visible;
             CompleteButton.Visibility = Visibility.Collapsed;
             WindowFrame.Height = 400;
+            Anim.FadeSlideIn(StatusPanel);
+            Anim.FadeSlideIn(ProgressPanel);
 
             _progress = 0;
             ProgressTrack.Width = 0;
@@ -92,6 +63,7 @@ namespace TokenHubPanel
                 _progressTimer?.Stop();
                 ProgressPanel.Visibility = Visibility.Collapsed;
                 CompleteButton.Visibility = Visibility.Visible;
+                Anim.FadeSlideIn(CompleteButton);
                 StatusTitle.Text = "安装完成";
                 StatusDescription.Text = "TokenHub 已安装完成，可从系统托盘启动。";
             };

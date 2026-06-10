@@ -220,116 +220,24 @@
                                 HorizontalAlignment="Center"
                                 Click="InstallButton_Click" />
 
-                        <Grid Margin="0,24,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Column="0"
-                                      IsChecked="True"
+                        <StackPanel Orientation="Horizontal" Margin="0,24,0,0" VerticalAlignment="Center">
+                            <CheckBox IsChecked="True"
                                       Width="22"
                                       Height="22"
-                                      VerticalAlignment="Top"
-                                      Margin="0,1,0,0"
                                       Style="{StaticResource Win11CheckBoxStyle}" />
-
-                            <TextBlock Grid.Column="1"
-                                       Margin="16,0,0,0"
+                            <TextBlock Margin="16,0,0,0"
                                        TextWrapping="Wrap"
                                        LineHeight="18"
                                        FontSize="12"
-                                       Foreground="#E5000000"
-                                       VerticalAlignment="Top">
+                                       Foreground="#E5000000">
                                 <Run Text="阅读并同意 联想 TokenHub " />
                                 <Run Text="隐私政策、服务协议、儿童个人信息保护规则"
                                      Foreground="#003E92" />
                             </TextBlock>
-
-                            <Button Grid.Column="2"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Cursor="Hand"
-                                    Padding="6,0,0,0"
-                                    VerticalAlignment="Top"
-                                    Click="CustomInstallButton_Click"
-                                    MouseEnter="CustomInstallButton_MouseEnter"
-                                    MouseLeave="CustomInstallButton_MouseLeave">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="Transparent" Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock x:Name="CustomToggleText"
-                                               Text="自定义安装"
-                                               FontSize="12"
-                                               Foreground="#99000000"
-                                               VerticalAlignment="Center" />
-                                    <TextBlock x:Name="CustomChevron"
-                                               Text="&#xE972;"
-                                               FontFamily="Segoe MDL2 Assets"
-                                               FontSize="10"
-                                               Foreground="#99000000"
-                                               Margin="4,1,0,0"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                        </Grid>
+                        </StackPanel>
 
                     </StackPanel>
                 </Grid>
-
-                <StackPanel x:Name="CustomPanel"
-                            Visibility="Collapsed"
-                            Margin="24,352,24,0"
-                            VerticalAlignment="Top">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="安装位置"
-                                   FontSize="12"
-                                   Foreground="#99000000"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,8,0" />
-                        <Border Grid.Column="1"
-                                Height="32"
-                                Background="#B3FFFFFF"
-                                BorderBrush="#10000000"
-                                BorderThickness="1"
-                                CornerRadius="4">
-                            <TextBlock Text="C:\Program Files\Lenovo"
-                                       FontSize="14"
-                                       Foreground="#99000000"
-                                       VerticalAlignment="Center"
-                                       Margin="12,0" />
-                        </Border>
-                        <Button Grid.Column="2"
-                                Content="浏览"
-                                Style="{StaticResource SecondaryInstallButtonStyle}"
-                                Width="72"
-                                Margin="8,0,0,0" />
-                    </Grid>
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,8,0,0">
-                        <TextBlock Text="所需磁盘空间：616MB"
-                                   FontSize="14"
-                                   Foreground="#E5000000"
-                                   Margin="0,0,16,0" />
-                        <TextBlock Text="剩余空间：12.74GB"
-                                   FontSize="14"
-                                   Foreground="#99000000" />
-                    </StackPanel>
-                </StackPanel>
 
                 <StackPanel x:Name="StatusPanel"
                             Visibility="Visible"

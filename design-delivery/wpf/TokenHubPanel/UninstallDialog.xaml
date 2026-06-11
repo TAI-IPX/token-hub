@@ -14,11 +14,11 @@
         MouseDown="Window_MouseDown">
     <Window.Resources>
         <DropShadowEffect x:Key="UninstallWindowShadow"
-                          BlurRadius="21"
-                          ShadowDepth="2"
+                          BlurRadius="24"
+                          ShadowDepth="4"
                           Direction="270"
                           Color="#000000"
-                          Opacity="0.22" />
+                          Opacity="0.24" />
 
         <Style x:Key="CaptionButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="32" />
@@ -29,7 +29,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" CornerRadius="4" Background="Transparent">
+                        <Border x:Name="Bd" CornerRadius="16" Background="Transparent">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -56,7 +56,7 @@
                                 Background="#005FB8"
                                 BorderBrush="#14FFFFFF"
                                 BorderThickness="1"
-                                CornerRadius="4">
+                                CornerRadius="16">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -86,7 +86,7 @@
                                 Background="#B3FFFFFF"
                                 BorderBrush="#10000000"
                                 BorderThickness="1"
-                                CornerRadius="4">
+                                CornerRadius="16">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>

@@ -14,11 +14,11 @@
         MouseDown="Window_MouseDown">
     <Window.Resources>
         <DropShadowEffect x:Key="UpdateWindowShadow1"
-                          BlurRadius="21"
-                          ShadowDepth="2"
+                          BlurRadius="24"
+                          ShadowDepth="4"
                           Direction="270"
                           Color="#000000"
-                          Opacity="0.22" />
+                          Opacity="0.24" />
     </Window.Resources>
 
     <Border Width="560" Height="400"
@@ -63,7 +63,7 @@
                                 Cursor="Hand" Click="MinimizeButton_Click">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                    <Border x:Name="bd" CornerRadius="16" Background="Transparent">
                                         <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Foreground="#E5000000"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -82,7 +82,7 @@
                                 Cursor="Hand" Click="CloseButton_Click">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="bd" CornerRadius="4" Background="Transparent">
+                                    <Border x:Name="bd" CornerRadius="16" Background="Transparent">
                                         <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Foreground="#E5000000"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -109,7 +109,7 @@
                 <!-- Update Info -->
                 <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,40,0,0">
                     <!-- Icon from Figma -->
-                    <Image Source="Assets/dialog-update-icon@3x.png"
+                    <Image Source="Assets/install-hero-icon@3x.png"
                            Width="48" Height="48"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,20" />
@@ -156,7 +156,7 @@
                                         Background="#005FB8"
                                         BorderBrush="#14FFFFFF"
                                         BorderThickness="1"
-                                        CornerRadius="4">
+                                        CornerRadius="16">
                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -182,7 +182,7 @@
                                         Background="#E6F0F0F0"
                                         BorderBrush="#1A000000"
                                         BorderThickness="1"
-                                        CornerRadius="4">
+                                        CornerRadius="16">
                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -243,7 +243,7 @@
                                     Background="#005FB8"
                                     BorderBrush="#14FFFFFF"
                                     BorderThickness="1"
-                                    CornerRadius="4">
+                                    CornerRadius="16">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                             <ControlTemplate.Triggers>

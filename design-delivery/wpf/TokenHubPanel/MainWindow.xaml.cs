@@ -433,8 +433,8 @@ namespace TokenHubPanel
                 return;
             }
 
-            StartIndeterminateSlide(ConfiguringSlide, 360 - 100);
-            StartIndeterminateSlide(AuthPendingSlide, 360 - 100);
+            StartIndeterminateSlide(ConfiguringSlide, 224);
+            StartIndeterminateSlide(AuthPendingSlide, 224);
         }
 
         private void StartIndeterminateSlide(TranslateTransform? transform, double range)
@@ -466,16 +466,11 @@ namespace TokenHubPanel
                 ? double.NaN
                 : _vm.PanelHeight;
             PanelBorder.BorderThickness = isDiscovery ? new Thickness(0) : new Thickness(1);
-            PanelBorder.Background = isDiscovery
-                ? Brushes.Transparent
-                : BrushFromHex("#FFE8F2FA");
+            // Background is an ImageBrush from XAML — don't override with solid color
             PanelBorder.Effect = isDiscovery ? null : (System.Windows.Media.Effects.Effect)FindResource("PanelShadow");
 
-            // Ensure InnerClipBorder doesn't paint its solid background through the transparent PanelBorder,
-            // and disable hit-testing on PanelBorder so it can't block NotificationPanel clicks.
-            InnerClipBorder.Background = isDiscovery
-                ? Brushes.Transparent
-                : new SolidColorBrush(Color.FromRgb(0xE8, 0xF2, 0xFA));
+            // Inner clip border stays transparent so the panel background image shows through
+            InnerClipBorder.Background = Brushes.Transparent;
             PanelBorder.IsHitTestVisible = !isDiscovery;
         }
 
@@ -496,6 +491,13 @@ namespace TokenHubPanel
             SetPanelVisible(ReadyToConfigPanel, isLogin && _onbStep == OnbStep.ReadyToConfig);
             SetPanelVisible(ConfiguringPanel, isConfiguring);
             SetPanelVisible(ReadyContent, isReady);
+
+            // Hide scanning panel when leaving NoApp state
+            if (!_vm.NoApps)
+            {
+                ScanSlide.BeginAnimation(TranslateTransform.XProperty, null);
+                ScanningPanel.SetCurrentValue(VisibilityProperty, Visibility.Collapsed);
+            }
 
             // Footer: account bar only when ready (logged-out footer is permanently hidden per design)
             AccountFooter.Visibility = isReady ? Visibility.Visible : Visibility.Collapsed;
@@ -1006,28 +1008,39 @@ namespace TokenHubPanel
 
         private void RefreshApps_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm.NoApps)
+            {
+                // Show scanning state, animate progress bar, then transition
+                NoAppsPanel.SetCurrentValue(VisibilityProperty, Visibility.Collapsed);
+                ScanningPanel.SetCurrentValue(VisibilityProperty, Visibility.Visible);
+                StartIndeterminateSlide(ScanSlide, 224);
+
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    ScanSlide.BeginAnimation(TranslateTransform.XProperty, null);
+                    ScanningPanel.SetCurrentValue(VisibilityProperty, Visibility.Collapsed);
+                    NoAppsPanel.SetCurrentValue(VisibilityProperty, Visibility.Visible);
+                    ShowToast("未发现新的可配置应用");
+                };
+                timer.Start();
+                return;
+            }
+
             var spinAnim = new DoubleAnimation(0, 360, TimeSpan.FromSeconds(0.65))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
             RefreshRotate.BeginAnimation(RotateTransform.AngleProperty, spinAnim);
 
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.65) };
-            timer.Tick += (s, args) =>
+            var timer2 = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.65) };
+            timer2.Tick += (s, args) =>
             {
-                timer.Stop();
-                if (_vm.NoApps)
-                {
-                    _vm.NoApps = false;
-                    UpdateToolListModelNames();
-                    ShowToast("检测到 5 个可配置应用");
-                }
-                else
-                {
-                    ShowToast("应用列表已刷新");
-                }
+                timer2.Stop();
+                ShowToast("应用列表已刷新");
             };
-            timer.Start();
+            timer2.Start();
         }
 
         private void ModelItem_Click(object sender, MouseButtonEventArgs e)
@@ -1039,6 +1052,27 @@ namespace TokenHubPanel
             {
                 _vm.SelectModelCommand.Execute(modelId);
                 UpdateModelRadioSelection(modelId);
+                AnimateSweep(border);
+            }
+        }
+
+        private void AnimateSweep(Border rowBorder)
+        {
+            var child = VisualTreeHelper.GetChild(rowBorder, 0);
+            if (child is Grid outerGrid)
+            {
+                var sweep = outerGrid.FindName("ModelSweep") as Border;
+                if (sweep != null)
+                {
+                    sweep.Visibility = Visibility.Visible;
+                    sweep.Opacity = 1;
+                    var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(600))
+                    {
+                        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                    };
+                    fadeOut.Completed += (_, _) => sweep.Visibility = Visibility.Hidden;
+                    sweep.BeginAnimation(OpacityProperty, fadeOut);
+                }
             }
         }
 
@@ -1046,6 +1080,24 @@ namespace TokenHubPanel
         {
             if (sender is Border border && border.Tag is string modelId && _vm.SelectedToolId != null)
                 SetRadioVisualInTemplate(border, modelId == _vm.GetSelectedModelId(_vm.SelectedToolId));
+
+            if (sender is Border row)
+            {
+                row.MouseEnter += ModelRow_MouseEnter;
+                row.MouseLeave += ModelRow_MouseLeave;
+            }
+        }
+
+        private void ModelRow_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Border row && !_vm.IsSmartMode)
+                row.Background = BrushFromHex("#0A000000");
+        }
+
+        private void ModelRow_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Border row)
+                row.Background = Brushes.Transparent;
         }
 
         private void SyncCurrentModelSelection()

@@ -14,7 +14,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="4"
+                    <Border CornerRadius="16"
                             BorderThickness="1"
                             BorderBrush="#45FFFFFF"
                             Padding="{TemplateBinding Padding}"
@@ -67,7 +67,7 @@
                 <ControlTemplate TargetType="Button">
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4"
+                            CornerRadius="16"
                             Padding="{TemplateBinding Padding}"
                             SnapsToDevicePixels="True">
                         <Border.Background>
@@ -130,7 +130,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="4"
+                    <Border CornerRadius="16"
                             BorderThickness="1"
                             BorderBrush="#1A000000"
                             Padding="{TemplateBinding Padding}"
@@ -146,7 +146,7 @@
                                 <Storyboard>
                                     <ColorAnimation Storyboard.TargetName="SecBg"
                                                     Storyboard.TargetProperty="Color"
-                                                    To="#EEF1F6" Duration="0:0:0.12"/>
+                                                    To="#F5F5F5" Duration="0:0:0.12"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -164,7 +164,7 @@
                                 <Storyboard>
                                     <ColorAnimation Storyboard.TargetName="SecBg"
                                                     Storyboard.TargetProperty="Color"
-                                                    To="#DEE2E9" Duration="0:0:0.06"/>
+                                                    To="#EBEBEB" Duration="0:0:0.06"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -173,7 +173,7 @@
                                 <Storyboard>
                                     <ColorAnimation Storyboard.TargetName="SecBg"
                                                     Storyboard.TargetProperty="Color"
-                                                    To="#EEF1F6" Duration="0:0:0.06"/>
+                                                    To="#F5F5F5" Duration="0:0:0.06"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -187,9 +187,9 @@
     <Style x:Key="RechargeButtonStyle" TargetType="Button">
         <Setter Property="Height" Value="28" />
         <Setter Property="Foreground" Value="#E5000000" />
-        <Setter Property="Background" Value="#B8FFFFFF" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="#B3FFFFFF" />
+        <Setter Property="BorderBrush" Value="#1A000000" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Padding" Value="12,4" />
@@ -210,15 +210,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#1A000000" />
+                            <Setter TargetName="bd" Property="Background" Value="#0A000000" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#26000000" />
+                            <Setter TargetName="bd" Property="Background" Value="#14000000" />
                         </Trigger>
-                        <DataTrigger Binding="{Binding IsLowBalance}" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#005FB8" />
-                            <Setter Property="Foreground" Value="White" />
-                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -518,7 +514,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="4" SnapsToDevicePixels="True">
+                    <Border CornerRadius="0" SnapsToDevicePixels="True">
                         <Border.Background>
                             <SolidColorBrush x:Name="ToolBg" Color="#00000000"/>
                         </Border.Background>
@@ -582,13 +578,29 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="4" SnapsToDevicePixels="True">
+                    <Border CornerRadius="0" SnapsToDevicePixels="True">
                         <Border.Background>
                             <SolidColorBrush x:Name="ModelBg" Color="#00000000"/>
                         </Border.Background>
-                        <ContentPresenter HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Center"
-                                          Margin="{TemplateBinding Padding}" />
+                        <Grid>
+                            <ContentPresenter HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                            <!-- Sweep shine overlay -->
+                            <Border x:Name="SweepOverlay"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Visibility="Hidden"
+                                    Opacity="0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                        <GradientStop Offset="0" Color="#00FFFFFF" />
+                                        <GradientStop Offset="0.5" Color="#0DFFFFFF" />
+                                        <GradientStop Offset="1" Color="#00FFFFFF" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">
@@ -596,7 +608,7 @@
                                 <Storyboard>
                                     <ColorAnimation Storyboard.TargetName="ModelBg"
                                                     Storyboard.TargetProperty="Color"
-                                                    To="#08000000" Duration="0:0:0.12"/>
+                                                    To="#0A000000" Duration="0:0:0.12"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -606,24 +618,6 @@
                                     <ColorAnimation Storyboard.TargetName="ModelBg"
                                                     Storyboard.TargetProperty="Color"
                                                     To="#00000000" Duration="0:0:0.12"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="ModelBg"
-                                                    Storyboard.TargetProperty="Color"
-                                                    To="#0D000000" Duration="0:0:0.06"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="ModelBg"
-                                                    Storyboard.TargetProperty="Color"
-                                                    To="#08000000" Duration="0:0:0.06"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -834,7 +828,7 @@
     <!-- Flyout menu container (Windows 11 Fluent) -->
     <Style x:Key="FlyoutMenuBorderStyle" TargetType="Border">
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Background" Value="#E8F2FA" />
+        <Setter Property="Background" Value="White" />
         <Setter Property="BorderBrush" Value="#14000000" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="4" />

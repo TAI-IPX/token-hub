@@ -492,7 +492,6 @@ namespace TokenHubPanel.ViewModels
                     Selections[SelectedToolId] = modelId;
                     if (Management[SelectedToolId] == "unconfigured")
                         Management[SelectedToolId] = "token-hub";
-                    RefreshToolList();
                     OnPropertyChanged(nameof(CurrentModels));
                 }
             });

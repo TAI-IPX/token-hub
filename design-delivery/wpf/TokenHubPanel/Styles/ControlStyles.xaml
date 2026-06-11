@@ -748,7 +748,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Grid>
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <ScaleTransform x:Name="RadioScale" ScaleX="1" ScaleY="1" />
+                        </Grid.RenderTransform>
                         <Ellipse x:Name="OuterCircle"
                                  Width="20" Height="20"
                                  Stroke="#9B000000"
@@ -767,6 +770,43 @@
                             <Setter TargetName="InnerBullet" Property="Fill" Value="White" />
                             <Setter TargetName="InnerBullet" Property="Stroke" Value="#0F000000" />
                             <Setter TargetName="InnerBullet" Property="StrokeThickness" Value="1" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RadioScale"
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         From="0.8" To="1.15" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="RadioScale"
+                                                         Storyboard.TargetProperty="ScaleY"
+                                                         From="0.8" To="1.15" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <!-- Settle back to 1.0 -->
+                                        <DoubleAnimation Storyboard.TargetName="RadioScale"
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         From="1.15" To="1.0" Duration="0:0:0.12"
+                                                         BeginTime="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="RadioScale"
+                                                         Storyboard.TargetProperty="ScaleY"
+                                                         From="1.15" To="1.0" Duration="0:0:0.12"
+                                                         BeginTime="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -184,8 +184,56 @@ namespace TokenHubPanel
         {
             CreateTrayIcon();
             PositionNearTray();
-            Anim.FadeIn(PanelBorder, Anim.Enter);
+            // Panel entrance: scale + fade from tray origin
+            PanelBorder.RenderTransformOrigin = new Point(1, 1);
+            var st = new ScaleTransform(0.92, 0.92);
+            PanelBorder.RenderTransform = st;
+            PanelBorder.Opacity = 0;
+            st.BeginAnimation(ScaleTransform.ScaleXProperty,
+                new DoubleAnimation(0.92, 1.0, Anim.Enter) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+            st.BeginAnimation(ScaleTransform.ScaleYProperty,
+                new DoubleAnimation(0.92, 1.0, Anim.Enter) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+            PanelBorder.BeginAnimation(OpacityProperty,
+                new DoubleAnimation(0, 1, Anim.Enter) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+            // Breathing float on onboarding illustration
+            if (FindName("OnboardingIllustration") is FrameworkElement illus)
+                Anim.BreathingFloat(illus);
             ShowDemoSwitcher();
+            // Staggered entrance for tool list
+            ToolListControl.Loaded += ToolList_Loaded;
+            ModelListControl.Loaded += ModelList_Loaded;
+        }
+
+        private void ToolList_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToolListControl.Loaded -= ToolList_Loaded;
+            ToolListControl.ItemContainerGenerator.StatusChanged += (s, args) =>
+            {
+                if (System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated !=
+                    ToolListControl.ItemContainerGenerator.Status) return;
+                int idx = 0;
+                foreach (var item in _vm.Tools)
+                {
+                    var container = ToolListControl.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
+                    if (container != null) Anim.StaggerFadeIn(container, idx++);
+                }
+            };
+        }
+
+        private void ModelList_Loaded(object sender, RoutedEventArgs e)
+        {
+            ModelListControl.Loaded -= ModelList_Loaded;
+            ModelListControl.ItemContainerGenerator.StatusChanged += (s, args) =>
+            {
+                if (System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated !=
+                    ModelListControl.ItemContainerGenerator.Status) return;
+                int idx = 0;
+                foreach (var item in _vm.CurrentModels)
+                {
+                    var container = ModelListControl.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
+                    if (container != null) Anim.StaggerFadeIn(container, idx++);
+                }
+            };
         }
 
         private void CreateTrayIcon()
@@ -624,6 +672,15 @@ namespace TokenHubPanel
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
             };
 
+            // Slide out downwards
+            var slideY = new DoubleAnimation(0, 20, TimeSpan.FromMilliseconds(180))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+            };
+            var nt = new TranslateTransform();
+            NotificationPanel.RenderTransform = nt;
+            nt.BeginAnimation(TranslateTransform.YProperty, slideY);
+
             fadeOut.Completed += (_, _) =>
             {
                 NotificationPanel.Visibility = Visibility.Collapsed;
@@ -655,12 +712,16 @@ namespace TokenHubPanel
 
             if (visible)
             {
+                bool wasHidden = BalanceBadge.Visibility != Visibility.Visible;
                 BalanceBadgeText.Text = _vm.BalanceBadgeText;
                 string bgColor = _vm.BalanceBadgeBrush;
                 BalanceBadge.Background = BrushFromHex(bgColor);
 
                 string fgColor = _vm.Balance < 1 ? "#B42318" : "#8A5700";
                 BalanceBadgeText.Foreground = BrushFromHex(fgColor);
+
+                if (wasHidden && IsLoaded)
+                    Anim.Pulse(BalanceBadge);
             }
         }
 
@@ -1068,9 +1129,36 @@ namespace TokenHubPanel
             AppMenuPopup.IsOpen = !AppMenuPopup.IsOpen;
         }
 
+        private void AppMenuPopup_Opened(object sender, EventArgs e)
+        {
+            if (AppMenuPopup.Child is FrameworkElement child)
+            {
+                child.RenderTransformOrigin = new Point(0.5, 0);
+                Anim.ScaleIn(child, 0.96);
+            }
+        }
+
         private void MoreButton_Click(object sender, RoutedEventArgs e)
         {
             AccountMenuPopup.IsOpen = !AccountMenuPopup.IsOpen;
+        }
+
+        private void AccountMenuPopup_Opened(object sender, EventArgs e)
+        {
+            if (AccountMenuPopup.Child is FrameworkElement child)
+            {
+                child.RenderTransformOrigin = new Point(1, 0);
+                Anim.ScaleIn(child, 0.96);
+            }
+        }
+
+        private void TrayMenuPopup_Opened(object sender, EventArgs e)
+        {
+            if (TrayMenuPopup.Child is FrameworkElement child)
+            {
+                child.RenderTransformOrigin = new Point(1, 1);
+                Anim.ScaleIn(child, 0.96);
+            }
         }
 
         private static readonly System.Collections.Generic.Dictionary<string, string> WebLinks = new()

@@ -142,7 +142,8 @@
                                        HorizontalOffset="-12"
                                        StaysOpen="False"
                                        AllowsTransparency="True"
-                                       PopupAnimation="Fade">
+                                       PopupAnimation="Fade"
+                                       Opened="AppMenuPopup_Opened">
                                     <Border Style="{StaticResource FlyoutMenuBorderStyle}" Width="200" Margin="8">
                                         <StackPanel>
                                             <Button Content="数据看板" Style="{StaticResource FlyoutMenuItemStyle}" Tag="dashboard" Click="WebLink_Click" />
@@ -815,7 +816,8 @@
                                            VerticalOffset="-4"
                                            StaysOpen="False"
                                            AllowsTransparency="True"
-                                           PopupAnimation="Fade">
+                                           PopupAnimation="Fade"
+                                           Opened="AccountMenuPopup_Opened">
                                         <Border Style="{StaticResource FlyoutMenuBorderStyle}" Width="140" Margin="8">
                                             <StackPanel>
                                                 <Button Content="我的账户" Style="{StaticResource FlyoutMenuItemStyle}" Tag="account" Click="WebLink_Click" />
@@ -1473,7 +1475,8 @@
                Placement="Absolute"
                StaysOpen="False"
                AllowsTransparency="True"
-               PopupAnimation="Fade">
+               PopupAnimation="Fade"
+               Opened="TrayMenuPopup_Opened">
             <Border Width="156"
                     CornerRadius="7"
                     Background="#E8F2FA"

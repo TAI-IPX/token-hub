@@ -198,7 +198,7 @@ namespace TokenHubPanel.ViewModels
         public bool ShowFooter => IsReady;
         public bool ShowAccountBar => IsReady;
 
-        public int PanelHeight => 384;
+        public int PanelHeight => 400;
 
         // === New Version & No-App State ===
         private bool _newVersionAvailable;

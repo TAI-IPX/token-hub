@@ -62,7 +62,7 @@
         <!-- Outer: image background + separate border for crisp rendering -->
         <Border x:Name="PanelBorder"
                     Width="360"
-                    Height="384"
+                    Height="400"
                     Margin="12,12,12,20"
                     CornerRadius="8"
                     BorderBrush="#0F000000"
@@ -856,9 +856,9 @@
                                                        Foreground="#FF1B1B1F"
                                                        VerticalAlignment="Center" />
                                             <Border x:Name="BalanceBadge"
-                                                    Height="16"
+                                                    Height="18"
                                                     CornerRadius="2"
-                                                    Padding="5,0"
+                                                    Padding="5,1,5,0"
                                                     Margin="6,0,0,0"
                                                     Visibility="Collapsed"
                                                     Background="#FFF0C2"
@@ -867,7 +867,13 @@
                                                            FontSize="10"
                                                            FontWeight="Medium"
                                                            Foreground="#8A5700"
-                                                           VerticalAlignment="Center" />
+                                                           VerticalAlignment="Center"
+                                                           TextOptions.TextFormattingMode="Display"
+                                                           RenderTransformOrigin="0.5,0.5">
+                                                    <TextBlock.RenderTransform>
+                                                        <TranslateTransform Y="-0.5" />
+                                                    </TextBlock.RenderTransform>
+                                                </TextBlock>
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="{Binding BalanceText}"

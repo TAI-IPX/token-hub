@@ -2,7 +2,7 @@
 
 本目录为 Token Hub 托盘面板的 **Figma 视觉还原交付物**，与 `token-hub-demo/` 中的产品原型相互独立。
 
-> **当前版本**: v0.7.0 | **构建状态**: 0 错误 0 警告 (.NET 8.0, Windows 11 ARM64)
+> **当前版本**: v0.7.1 | **构建状态**: 0 错误 0 警告 (.NET 8.0, Windows 11 ARM64)
 
 ## 目录结构
 
@@ -128,6 +128,7 @@ https://www.figma.com/design/brmnTFUvvtOb0lMkOcIJS1/联想Token?node-id=355-7022
 
 | 版本 | 日期 | 内容 |
 |------|------|------|
+| v0.7.1 | 2026-06-12 | 面板高度 384→400、BalanceBadge 中文小字垂直居中修复(Height 18 + Padding top 1px + Display 渲染 + Y:-0.5)、头像 VerticalAlignment 居中、清理 11 个旧图标资产 |
 | v0.7.0 | 2026-06-11 | 阴影统一三档(12-4-0.12/16-8-0.16/24-4-0.24)、按钮全改 pill 圆角、菜单/二级返回/应用列表 hover 小圆角、模型列表 hover+扫光、无应用检测中 loading、智能匹配弹窗白底、所有弹窗菜单白底、Login/AuthPending/Configuring 配图+对勾统一、OpenClaw 图标更新、返回图标更新、面板背景图、余额标签对齐、复选框 18×18 细圆角 |
 | v0.6.0 | 2026-06-10 | Hermes 应用 + Logo、工具精简为 3 个(OpenClaw/Claude Code/Hermes)、InstallDialog 去自定义安装、CheckBox 居中对齐、共享 Anim 动画重构、登录配图更新为联想 logo、检查更新按钮固定 72px + 转圈 loading、BalanceBadge 圆角修复、新增 WORKFLOW.md |
 | v0.5.0 | 2026-06-09 | UpdateDialog 三态弹窗、进度条动画修复、AuthPending loading、Install/Uninstall 弹窗、场景切换修复、字色/间距统一、设置页精简、弹窗崩溃修复、面板底色全局统一 |

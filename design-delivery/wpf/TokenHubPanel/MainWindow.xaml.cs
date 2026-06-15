@@ -689,8 +689,9 @@ namespace TokenHubPanel
             {
                 NotificationPanel.Visibility = Visibility.Collapsed;
                 NotificationPanel.Opacity = 1;
-                // Release held animation clock (FillBehavior.HoldEnd from click scale) so
-                // ScaleX/Y local assignment is honoured next time ShowNotificationPanel runs.
+                // Restore the ScaleTransform as RenderTransform (was replaced by TranslateTransform above)
+                // so NotificationScale click animations work on subsequent notifications.
+                NotificationPanel.RenderTransform = NotificationScale;
                 NotificationScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
                 NotificationScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
                 NotificationScale.ScaleX = 1;
@@ -1275,7 +1276,7 @@ namespace TokenHubPanel
                         afterClose: () => _vm.GoToToolCommand.Execute("hermes"),
                         dismissNotification: false);
                 else
-                    CloseNotificationPanel(dismissNotification: false);
+                    CloseNotificationPanel();
             };
 
             NotificationScale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleX);

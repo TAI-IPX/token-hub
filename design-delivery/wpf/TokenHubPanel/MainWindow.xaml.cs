@@ -485,10 +485,12 @@ namespace TokenHubPanel
             ContentHost.Visibility = isDiscovering ? Visibility.Collapsed : Visibility.Visible;
 
             // Onboarding sub-panels (only when in Login state) — newly shown panel fades/slides in
-            SetPanelVisible(LoginPanel, isLogin && _onbStep == OnbStep.Login);
-            SetPanelVisible(AuthPendingPanel, isLogin && _onbStep == OnbStep.AuthPending);
-            SetPanelVisible(FirstRunPanel, isLogin && _onbStep == OnbStep.FirstRun);
-            SetPanelVisible(ReadyToConfigPanel, isLogin && _onbStep == OnbStep.ReadyToConfig);
+            var isLoginFailed = _vm.CurrentState == DemoState.LoginFailed;
+            SetPanelVisible(LoginFailedPanel, isLoginFailed);
+            SetPanelVisible(LoginPanel, !isLoginFailed && isLogin && _onbStep == OnbStep.Login);
+            SetPanelVisible(AuthPendingPanel, !isLoginFailed && isLogin && _onbStep == OnbStep.AuthPending);
+            SetPanelVisible(FirstRunPanel, !isLoginFailed && isLogin && _onbStep == OnbStep.FirstRun);
+            SetPanelVisible(ReadyToConfigPanel, !isLoginFailed && isLogin && _onbStep == OnbStep.ReadyToConfig);
             SetPanelVisible(ConfiguringPanel, isConfiguring);
             SetPanelVisible(ReadyContent, isReady);
 
@@ -789,15 +791,16 @@ namespace TokenHubPanel
             var state = idx switch
             {
                 0 => DemoState.Login,
-                1 => DemoState.Configuring,
-                2 => DemoState.SmartOff,
-                3 => DemoState.SmartOn,
-                4 => DemoState.Unconfigured,
-                5 => DemoState.LowBalance,
-                6 => DemoState.AutoDiscovery,
-                7 => DemoState.ManualDiscovery,
-                8 => DemoState.NewVersion,
-                9 => DemoState.NoApp,
+                1 => DemoState.LoginFailed,
+                2 => DemoState.Configuring,
+                3 => DemoState.SmartOff,
+                4 => DemoState.SmartOn,
+                5 => DemoState.Unconfigured,
+                6 => DemoState.LowBalance,
+                7 => DemoState.AutoDiscovery,
+                8 => DemoState.ManualDiscovery,
+                9 => DemoState.NewVersion,
+                10 => DemoState.NoApp,
                 _ => DemoState.SmartOff
             };
             _vm.SetState(state);

@@ -45,6 +45,7 @@
                               Foreground="White"
                               BorderBrush="#61FFFFFF">
                         <ComboBoxItem Content="首次使用 - 未登录" />
+                        <ComboBoxItem Content="首次使用 - 登陆失败" />
                         <ComboBoxItem Content="首次使用 - 配置中" />
                         <ComboBoxItem Content="正常使用 - 智能匹配关" />
                         <ComboBoxItem Content="正常使用 - 智能匹配开" />
@@ -284,22 +285,18 @@
                                                 <Image Source="Assets/login-hero.png"
                                                        Width="56" Height="56" />
                                             </Border>
-                                            <!-- Title: 16px Bold -->
-                                            <TextBlock Text="自动完成服务配置"
-                                                       FontSize="16"
-                                                       FontWeight="Bold"
+                                            <!-- Title: 20px Regular (Figma 407:459) -->
+                                            <TextBlock Text="只需一步，自动完成服务配置"
+                                                       FontSize="20"
                                                        Foreground="#E0000000"
-                                                       Margin="0,0,0,12" />
-                                            <!-- Description: 12px, line 22px -->
-                                            <TextBlock FontSize="12"
-                                                       LineHeight="22"
-                                                       Foreground="#73000000"
+                                                       Margin="0,0,0,6" />
+                                            <!-- Subtitle: 12px, line 19px, #333 (Figma 407:459) -->
+                                            <TextBlock Text="让 AI 应用无缝接入 Token Hub 模型服务"
+                                                       FontSize="12"
+                                                       LineHeight="19"
+                                                       Foreground="#FF333333"
                                                        TextWrapping="Wrap"
-                                                       Margin="0,0,0,12">
-                                                <Run Text="登录联想账号后，自动为已安装的 AI 应用" />
-                                                <LineBreak />
-                                                <Run Text="完成模型配置。" />
-                                            </TextBlock>
+                                                       Margin="0,0,0,18" />
                                             <!-- Checkmark items: 18×18 icon + 8px gap + text, 8px between items -->
                                             <StackPanel>
                                                 <!-- Item 1 -->
@@ -331,6 +328,50 @@
                                                                FontSize="12"
                                                                Foreground="#73000000"
                                                                VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+
+                                <!-- LOGIN FAILED STATE — Figma 810:677 -->
+                                <Border x:Name="LoginFailedPanel"
+                                        Padding="16"
+                                        Background="Transparent"
+                                        Visibility="Collapsed">
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Bottom"
+                                                Content="重新登陆"
+                                                Margin="0,32,0,0"
+                                                Style="{StaticResource OnboardingButtonStyle}"
+                                                Click="LoginButton_Click" />
+                                        <StackPanel VerticalAlignment="Top" Margin="8,0,0,0">
+                                            <Border Width="56" Height="56" CornerRadius="28" Background="White"
+                                                    HorizontalAlignment="Left" Margin="0,0,0,20">
+                                                <Image Source="Assets/login-hero.png" Width="56" Height="56" />
+                                            </Border>
+                                            <TextBlock Text="账号登陆失败，请重试"
+                                                       FontSize="20"
+                                                       Foreground="#E0000000"
+                                                       Margin="0,0,0,6" />
+                                            <TextBlock Text="只需一步，自动完成服务配置"
+                                                       FontSize="12"
+                                                       LineHeight="19"
+                                                       Foreground="#FF333333"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,18" />
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="自动完成必要设置" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="自动为应用选择合适的模型" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="配置完成后即可使用" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </StackPanel>
                                         </StackPanel>
@@ -370,16 +411,15 @@
                                                        Width="56" Height="56" />
                                             </Border>
                                             <TextBlock Text="正在完成服务配置"
-                                                       FontSize="16"
-                                                       FontWeight="Bold"
+                                                       FontSize="20"
                                                        Foreground="#E0000000"
-                                                       Margin="0,0,0,12" />
-                                            <TextBlock Text="正在创建 Token Hub 访问凭证并接入本机服务，请稍候"
+                                                       Margin="0,0,0,6" />
+                                            <TextBlock Text="正在创建 Token Hub 访问凭证并接入本机服务"
                                                        FontSize="12"
-                                                       LineHeight="22"
-                                                       Foreground="#73000000"
+                                                       LineHeight="19"
+                                                       Foreground="#FF333333"
                                                        TextWrapping="Wrap"
-                                                       Margin="0,0,0,12" />
+                                                       Margin="0,0,0,16" />
                                             <StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                                     <Image Source="Assets/icon-check@3x.png"
@@ -435,11 +475,11 @@
                                             </Border>
                                             <!-- Title -->
                                             <TextBlock Text="等待登录确认"
-                                                       FontSize="16" FontWeight="Bold" Foreground="#E0000000"
-                                                       Margin="0,0,0,12" />
+                                                       FontSize="20" Foreground="#E0000000"
+                                                       Margin="0,0,0,6" />
                                             <!-- Description -->
-                                            <TextBlock FontSize="12" Foreground="#73000000" Margin="0,0,0,24"
-                                                       LineHeight="22" TextWrapping="Wrap">
+                                            <TextBlock FontSize="12" Foreground="#FF333333" Margin="0,0,0,16"
+                                                       LineHeight="19" TextWrapping="Wrap">
                                                 <Run Text="已打开联想账号登录窗口，请在浏览器中完成手机号验证。" />
                                                 <LineBreak />
                                                 <Run Text="登录成功后，Token Hub 将自动完成服务配置。" />
@@ -473,14 +513,29 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <StackPanel Grid.Row="0" Margin="0,8,0,0">
+                                        <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="8,0,0,0">
+                                            <Border Width="56" Height="56" CornerRadius="28" Background="White"
+                                                    HorizontalAlignment="Left" Margin="0,0,0,20">
+                                                <Image Source="Assets/login-hero.png" Width="56" Height="56" />
+                                            </Border>
                                             <TextBlock Text="自动完成服务配置"
-                                                       FontSize="18" FontWeight="Bold" Foreground="#E0000000" Margin="0,0,0,12" />
-                                            <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。无需填写复杂信息，也不用手动修改应用设置。"
-                                                       FontSize="13" Foreground="#99000000" TextWrapping="Wrap" Margin="0,0,0,10" />
-                                            <TextBlock Text="• 自动完成必要设置" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
-                                            <TextBlock Text="• 自动为应用选择合适的模型" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
-                                            <TextBlock Text="• 配置完成后即可使用" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
+                                                       FontSize="20" Foreground="#E0000000" Margin="0,0,0,6" />
+                                            <TextBlock Text="只需简单几步，即可让已安装的 AI 应用使用 Token Hub 提供的模型服务。"
+                                                       FontSize="12" LineHeight="19" Foreground="#FF333333" TextWrapping="Wrap" Margin="0,0,0,16" />
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="自动完成必要设置" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="自动为应用选择合适的模型" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="配置完成后即可使用" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </StackPanel>
                                         </StackPanel>
                                         <Button Grid.Row="1" Content="开始配置"
                                                 Style="{StaticResource OnboardingButtonStyle}"
@@ -498,14 +553,29 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <StackPanel Grid.Row="0" Margin="0,8,0,0">
+                                        <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="8,0,0,0">
+                                            <Border Width="56" Height="56" CornerRadius="28" Background="White"
+                                                    HorizontalAlignment="Left" Margin="0,0,0,20">
+                                                <Image Source="Assets/login-hero.png" Width="56" Height="56" />
+                                            </Border>
                                             <TextBlock Text="自动完成服务配置"
-                                                       FontSize="18" FontWeight="Bold" Foreground="#E0000000" Margin="0,0,0,12" />
-                                            <TextBlock Text="Token Hub 将自动创建访问凭证并完成本机接入。所有应用共用一套多模型服务，无需手动复制或修改密钥。"
-                                                       FontSize="13" Foreground="#99000000" TextWrapping="Wrap" Margin="0,0,0,10" />
-                                            <TextBlock Text="• 一套凭证，全局接入" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
-                                            <TextBlock Text="• 自动匹配推荐模型" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
-                                            <TextBlock Text="• 初始化完成后立即可用" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
+                                                       FontSize="20" Foreground="#E0000000" Margin="0,0,0,6" />
+                                            <TextBlock Text="Token Hub 将自动创建访问凭证并完成本机接入。"
+                                                       FontSize="12" LineHeight="19" Foreground="#FF333333" TextWrapping="Wrap" Margin="0,0,0,16" />
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="一套凭证，全局接入" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="自动匹配推荐模型" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="Assets/icon-check@3x.png" Width="18" Height="18" Margin="0,0,8,0" />
+                                                    <TextBlock Text="初始化完成后立即可用" FontSize="12" Foreground="#73000000" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </StackPanel>
                                         </StackPanel>
                                         <Button Grid.Row="1" Content="自动配置"
                                                 Style="{StaticResource OnboardingButtonStyle}"

@@ -12,6 +12,7 @@ namespace TokenHubPanel.ViewModels
     public enum DemoState
     {
         Login,
+        LoginFailed,
         Configuring,
         SmartOff,
         SmartOn,
@@ -172,7 +173,8 @@ namespace TokenHubPanel.ViewModels
         public System.Collections.Generic.Dictionary<string, string> Management { get; } = new();
 
         // === Computed Properties ===
-        public bool IsLogin => CurrentState == DemoState.Login;
+        public bool IsLogin => CurrentState == DemoState.Login || CurrentState == DemoState.LoginFailed;
+        public bool IsLoginFailed => CurrentState == DemoState.LoginFailed;
         public bool IsConfiguring => CurrentState == DemoState.Configuring;
         public bool IsReady => CurrentState == DemoState.SmartOff || CurrentState == DemoState.SmartOn
             || CurrentState == DemoState.Unconfigured || CurrentState == DemoState.LowBalance
@@ -189,7 +191,7 @@ namespace TokenHubPanel.ViewModels
         {
             get
             {
-                return CurrentState != DemoState.Login;
+                return CurrentState != DemoState.Login && CurrentState != DemoState.LoginFailed;
             }
         }
 
@@ -531,6 +533,13 @@ namespace TokenHubPanel.ViewModels
             {
                 case DemoState.Login:
                     CurrentState = DemoState.Login;
+                    IsSmartMode = false;
+                    Balance = 128.5;
+                    ResetSelections();
+                    break;
+
+                case DemoState.LoginFailed:
+                    CurrentState = DemoState.LoginFailed;
                     IsSmartMode = false;
                     Balance = 128.5;
                     ResetSelections();

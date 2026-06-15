@@ -24,6 +24,7 @@ namespace TokenHubPanel
         private DispatcherTimer? _trayMenuOutsideClickTimer;
         private bool _syncingDemoState;
         private bool _notificationVisible;
+        private int _notificationToken;
         private bool _trayMenuAwaitingButtonRelease;
 
         // Onboarding sub-step (only meaningful while CurrentState == Login)
@@ -606,6 +607,9 @@ namespace TokenHubPanel
 
         private void ShowNotificationPanel()
         {
+            // Invalidate any pending CloseNotificationPanel fade completion
+            _notificationToken++;
+
             if (_notificationVisible)
             {
                 // Already visible — just ensure panel is showing (body was swapped by caller)
@@ -618,12 +622,21 @@ namespace TokenHubPanel
             // Hide main panel — notification is standalone
             PanelBorder.Visibility = Visibility.Collapsed;
 
-            NotificationPanel.Visibility = Visibility.Visible;
-            // Clear any held animation clock left by previous click so local values take effect
+            // Stop any stale fade-out animation from a previous close that hasn't completed yet
+            NotificationPanel.BeginAnimation(OpacityProperty, null);
+            // Restore ScaleTransform if it was replaced by a previous close
+            if (!ReferenceEquals(NotificationPanel.RenderTransform, NotificationScale))
+            {
+                // Stop any slide animation on the stale TranslateTransform
+                if (NotificationPanel.RenderTransform is TranslateTransform staleTT)
+                    staleTT.BeginAnimation(TranslateTransform.YProperty, null);
+                NotificationPanel.RenderTransform = NotificationScale;
+            }
             NotificationScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
             NotificationScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
             NotificationScale.ScaleX = 1;
             NotificationScale.ScaleY = 1;
+            NotificationPanel.Visibility = Visibility.Visible;
             NotificationPanel.Opacity = 0;
 
             Show();
@@ -664,6 +677,10 @@ namespace TokenHubPanel
             // that calls UpdateNotificationVisibility → CloseNotificationPanel again before fade ends.
             _notificationVisible = false;
 
+            // Capture token to guard against a new ShowNotificationPanel call that occurs
+            // before this fade completes (e.g. rapid scene switching in DemoSwitcher).
+            int closeToken = ++_notificationToken;
+
             // Stop any in-progress entrance slide
             if (_slideRenderHandler != null)
             {
@@ -687,6 +704,11 @@ namespace TokenHubPanel
 
             fadeOut.Completed += (_, _) =>
             {
+                // If a new notification was shown (or another close started) while
+                // we were fading, bail out — the newer call owns the final state.
+                if (closeToken != _notificationToken)
+                    return;
+
                 NotificationPanel.Visibility = Visibility.Collapsed;
                 NotificationPanel.Opacity = 1;
                 // Restore the ScaleTransform as RenderTransform (was replaced by TranslateTransform above)
@@ -1295,7 +1317,10 @@ namespace TokenHubPanel
             {
                 if (source is Button)
                     return true;
-                source = VisualTreeHelper.GetParent(source);
+                // Run, Bold, etc. are ContentElements, not Visuals — use LogicalTreeHelper for those
+                source = (source is Visual)
+                    ? VisualTreeHelper.GetParent(source)
+                    : LogicalTreeHelper.GetParent(source);
             }
             return false;
         }

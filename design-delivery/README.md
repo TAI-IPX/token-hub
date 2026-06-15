@@ -2,7 +2,7 @@
 
 本目录为 Token Hub 托盘面板的 **Figma 视觉还原交付物**，与 `token-hub-demo/` 中的产品原型相互独立。
 
-> **当前版本**: v0.7.1 | **构建状态**: 0 错误 0 警告 (.NET 8.0, Windows 11 ARM64)
+> **当前版本**: v0.7.2 | **构建状态**: 0 错误 0 警告 (.NET 8.0, Windows 11 ARM64)
 
 ## 目录结构
 
@@ -73,6 +73,7 @@ dotnet run
 | 11 | 模型设置页 | 440×384 | ✅ | ✅ |
 | 12 | 发现新版本 | 440×384 | ✅ | ✅ |
 | 13 | 未检测到可配置应用 | 440×384 | ✅ | ✅ |
+| 14 | 登陆失败 | 440×384 | — | ✅ |
 
 ## 交互与弹窗覆盖
 
@@ -128,6 +129,7 @@ https://www.figma.com/design/brmnTFUvvtOb0lMkOcIJS1/联想Token?node-id=355-7022
 
 | 版本 | 日期 | 内容 |
 |------|------|------|
+| v0.7.2 | 2026-06-15 | 新增登陆失败场景(Figma 810:677)、onboarding 文案/字色/间距按 Figma 407:459+759:813 更新(标题20px Regular、副标题#333 line19、间距6/18px)、FirstRun/ReadyToConfig 面板同步配图+对勾 |
 | v0.7.1 | 2026-06-12 | 面板高度 384→400、BalanceBadge 中文小字垂直居中修复(Height 18 + Padding top 1px + Display 渲染 + Y:-0.5)、头像 VerticalAlignment 居中、清理 11 个旧图标资产 |
 | v0.7.0 | 2026-06-11 | 阴影统一三档(12-4-0.12/16-8-0.16/24-4-0.24)、按钮全改 pill 圆角、菜单/二级返回/应用列表 hover 小圆角、模型列表 hover+扫光、无应用检测中 loading、智能匹配弹窗白底、所有弹窗菜单白底、Login/AuthPending/Configuring 配图+对勾统一、OpenClaw 图标更新、返回图标更新、面板背景图、余额标签对齐、复选框 18×18 细圆角 |
 | v0.6.0 | 2026-06-10 | Hermes 应用 + Logo、工具精简为 3 个(OpenClaw/Claude Code/Hermes)、InstallDialog 去自定义安装、CheckBox 居中对齐、共享 Anim 动画重构、登录配图更新为联想 logo、检查更新按钮固定 72px + 转圈 loading、BalanceBadge 圆角修复、新增 WORKFLOW.md |
@@ -140,7 +142,7 @@ https://www.figma.com/design/brmnTFUvvtOb0lMkOcIJS1/联想Token?node-id=355-7022
 
 WPF 项目已在 Windows 11 ARM64 VM 上通过 `.NET 8.0` 编译验证（0 错误 0 警告）。
 
-- ✅ 全部 13 种场景在 Windows 上运行验证
+- ✅ 全部 14 种场景在 Windows 上运行验证
 - ✅ UpdateDialog / InstallDialog / UninstallDialog 弹窗正常
 - ✅ 数据绑定路径、布局像素效果已对照 Figma 微调
 - ✅ 自定义 ThinScrollBarStyle 正常工作

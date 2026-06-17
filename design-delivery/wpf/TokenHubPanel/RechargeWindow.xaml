@@ -107,7 +107,7 @@
                         <TextBlock Text="充值" FontSize="12" FontWeight="Medium" Foreground="#1B1B1F" VerticalAlignment="Center" />
                     </StackPanel>
                     <Button Grid.Column="2" Width="46" Height="40" Background="Transparent" BorderThickness="0"
-                            Cursor="Hand" Click="Close_Click" Content="&#x00D7;" FontSize="16" Foreground="#3F4650">
+                            Cursor="Hand" Click="Close_Click" Content="&#x00D7;" FontSize="16" Foreground="#15181D">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="CloseBg" Background="{TemplateBinding Background}" CornerRadius="0,9,0,0">
@@ -140,7 +140,7 @@
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="充值" FontSize="22" FontWeight="Bold" Foreground="#15181D" />
-                                    <TextBlock Text="选择金额和支付方式" FontSize="13" Foreground="#5E626A" Margin="0,2,0,0" />
+                                    <TextBlock Text="选择金额和支付方式" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
                                 </StackPanel>
                             </StackPanel>
                             <Button Content="订单历史" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -157,7 +157,7 @@
                         </Grid>
 
                         <!-- Amount grid -->
-                        <TextBlock Text="金额" FontSize="13" FontWeight="Bold" Foreground="#5B626C" Margin="0,20,0,10" />
+                        <TextBlock Text="金额" FontSize="13" FontWeight="Bold" Foreground="#99000000" Margin="0,20,0,10" />
                         <UniformGrid x:Name="AmountGrid" Columns="3" Rows="2">
                             <Button Content="10元" Tag="" Style="{StaticResource AmountCardStyle}" Margin="0,0,10,10" Click="AmountCard_Click" />
                             <Button Content="20元" Tag="" Style="{StaticResource AmountCardStyle}" Margin="0,0,10,10" Click="AmountCard_Click" />
@@ -168,7 +168,7 @@
                         </UniformGrid>
 
                         <!-- Custom amount -->
-                        <TextBlock Text="自定义金额" FontSize="13" FontWeight="Bold" Foreground="#5B626C" Margin="0,20,0,10" />
+                        <TextBlock Text="自定义金额" FontSize="13" FontWeight="Bold" Foreground="#99000000" Margin="0,20,0,10" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -181,14 +181,14 @@
                             </Border>
                             <Border Grid.Column="1" Height="38" BorderBrush="#DFE3E8" BorderThickness="1" CornerRadius="8" Padding="12,0">
                                 <Grid>
-                                    <TextBlock Text="待支付金额：" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBlock Text="待支付金额：" FontSize="12" Foreground="#99000000" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                     <TextBlock x:Name="AmountTotalText" Text="¥50.00" FontSize="13" FontWeight="Bold" Foreground="#15181D" VerticalAlignment="Center" HorizontalAlignment="Right" />
                                 </Grid>
                             </Border>
                         </Grid>
 
                         <!-- Payment method -->
-                        <TextBlock Text="付款方式" FontSize="13" FontWeight="Bold" Foreground="#5B626C" Margin="0,20,0,10" />
+                        <TextBlock Text="付款方式" FontSize="13" FontWeight="Bold" Foreground="#99000000" Margin="0,20,0,10" />
                         <Border Width="330" Height="38" HorizontalAlignment="Left" BorderBrush="#DFE3E8" BorderThickness="1" CornerRadius="8" Background="#F7F8FB" Padding="13,0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Text="&#xE1D0;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#EF1F1F" Margin="0,0,9,0" VerticalAlignment="Center" />
@@ -213,21 +213,21 @@
                             </Border>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="确认付款" FontSize="22" FontWeight="Bold" Foreground="#15181D" />
-                                <TextBlock Text="查看您的付款详情" FontSize="13" Foreground="#5E626A" Margin="0,2,0,0" />
+                                <TextBlock Text="查看您的付款详情" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Margin="0,26,0,0">
                             <Grid Margin="0,0,0,20">
-                                <TextBlock Text="充值金额" FontSize="16" Foreground="#5D646D" HorizontalAlignment="Left" />
-                                <TextBlock x:Name="ConfirmAmount1" Text="¥50.00" FontSize="22" FontWeight="Bold" Foreground="#101216" HorizontalAlignment="Right" />
+                                <TextBlock Text="充值金额" FontSize="16" Foreground="#99000000" HorizontalAlignment="Left" />
+                                <TextBlock x:Name="ConfirmAmount1" Text="¥50.00" FontSize="22" FontWeight="Bold" Foreground="#15181D" HorizontalAlignment="Right" />
                             </Grid>
                             <Grid Margin="0,0,0,20">
-                                <TextBlock Text="您支付" FontSize="16" Foreground="#5D646D" HorizontalAlignment="Left" />
-                                <TextBlock x:Name="ConfirmAmount2" Text="50.00" FontSize="22" FontWeight="Bold" Foreground="#101216" HorizontalAlignment="Right" />
+                                <TextBlock Text="您支付" FontSize="16" Foreground="#99000000" HorizontalAlignment="Left" />
+                                <TextBlock x:Name="ConfirmAmount2" Text="50.00" FontSize="22" FontWeight="Bold" Foreground="#15181D" HorizontalAlignment="Right" />
                             </Grid>
                             <Grid>
-                                <TextBlock Text="付款方式" FontSize="16" Foreground="#5D646D" HorizontalAlignment="Left" />
-                                <TextBlock Text="微信/支付宝" FontSize="16" Foreground="#101216" HorizontalAlignment="Right" />
+                                <TextBlock Text="付款方式" FontSize="16" Foreground="#99000000" HorizontalAlignment="Left" />
+                                <TextBlock Text="微信/支付宝" FontSize="16" Foreground="#15181D" HorizontalAlignment="Right" />
                             </Grid>
                         </StackPanel>
                         <Border BorderBrush="#E8EBEF" BorderThickness="0,1,0,0" Margin="0,28,0,0" Padding="0,16,0,0">
@@ -246,7 +246,7 @@
                             </Border>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="扫码支付" FontSize="22" FontWeight="Bold" Foreground="#15181D" />
-                                <TextBlock Text="请使用手机 app 完成支付" FontSize="13" Foreground="#5E626A" Margin="0,2,0,0" />
+                                <TextBlock Text="请使用手机 app 完成支付" FontSize="13" Foreground="#99000000" Margin="0,2,0,0" />
                             </StackPanel>
                         </StackPanel>
 
@@ -270,27 +270,27 @@
                                     <Border Width="184" Height="184" Background="{StaticResource FakeQrBrush}" BorderBrush="White" BorderThickness="12" CornerRadius="10"
                                             Effect="{StaticResource MenuShadow}" HorizontalAlignment="Center">
                                     </Border>
-                                    <TextBlock Text="等待支付..." FontSize="13" FontWeight="Bold" Foreground="#62666D" HorizontalAlignment="Center" Margin="0,13,0,0" />
-                                    <TextBlock Text="扫描 聚合码" FontSize="13" Foreground="#62666D" HorizontalAlignment="Center" Margin="0,3,0,0" />
-                                    <TextBlock Text="到期时间：2026/6/1 10:46:33" FontSize="13" Foreground="#62666D" HorizontalAlignment="Center" Margin="0,3,0,0" />
+                                    <TextBlock Text="等待支付..." FontSize="13" FontWeight="Bold" Foreground="#99000000" HorizontalAlignment="Center" Margin="0,13,0,0" />
+                                    <TextBlock Text="扫描 聚合码" FontSize="13" Foreground="#99000000" HorizontalAlignment="Center" Margin="0,3,0,0" />
+                                    <TextBlock Text="到期时间：2026/6/1 10:46:33" FontSize="13" Foreground="#99000000" HorizontalAlignment="Center" Margin="0,3,0,0" />
                                 </StackPanel>
                                 <!-- Detail -->
                                 <StackPanel x:Name="DetailBox" Visibility="Collapsed" VerticalAlignment="Center" Margin="24">
                                     <Grid Margin="0,0,0,18">
-                                        <TextBlock Text="金额" FontSize="15" Foreground="#62666D" HorizontalAlignment="Left" />
+                                        <TextBlock Text="金额" FontSize="15" Foreground="#99000000" HorizontalAlignment="Left" />
                                         <TextBlock x:Name="DetailAmount" Text="¥50.00" FontSize="18" FontWeight="Bold" Foreground="#D91E2B" HorizontalAlignment="Right" />
                                     </Grid>
                                     <Grid Margin="0,0,0,18">
-                                        <TextBlock Text="订单编号" FontSize="15" Foreground="#62666D" HorizontalAlignment="Left" />
-                                        <TextBlock x:Name="DetailOrderId" Text="lenovo_75f4bae6_121" FontSize="18" FontWeight="Bold" Foreground="#111111" HorizontalAlignment="Right" />
+                                        <TextBlock Text="订单编号" FontSize="15" Foreground="#99000000" HorizontalAlignment="Left" />
+                                        <TextBlock x:Name="DetailOrderId" Text="lenovo_75f4bae6_121" FontSize="18" FontWeight="Bold" Foreground="#15181D" HorizontalAlignment="Right" />
                                     </Grid>
                                     <Grid Margin="0,0,0,18">
-                                        <TextBlock Text="付款方式" FontSize="15" Foreground="#62666D" HorizontalAlignment="Left" />
-                                        <TextBlock Text="聚合码" FontSize="18" FontWeight="Bold" Foreground="#111111" HorizontalAlignment="Right" />
+                                        <TextBlock Text="付款方式" FontSize="15" Foreground="#99000000" HorizontalAlignment="Left" />
+                                        <TextBlock Text="聚合码" FontSize="18" FontWeight="Bold" Foreground="#15181D" HorizontalAlignment="Right" />
                                     </Grid>
                                     <Grid>
-                                        <TextBlock Text="到期时间" FontSize="15" Foreground="#62666D" HorizontalAlignment="Left" />
-                                        <TextBlock Text="2026/6/1 10:46:33" FontSize="18" FontWeight="Bold" Foreground="#111111" HorizontalAlignment="Right" />
+                                        <TextBlock Text="到期时间" FontSize="15" Foreground="#99000000" HorizontalAlignment="Left" />
+                                        <TextBlock Text="2026/6/1 10:46:33" FontSize="18" FontWeight="Bold" Foreground="#15181D" HorizontalAlignment="Right" />
                                     </Grid>
                                 </StackPanel>
                             </Grid>

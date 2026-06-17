@@ -129,7 +129,7 @@
                                Margin="0,0,8,0" />
                         <TextBlock Text="联想 TokenHub"
                                    FontSize="12"
-                                   Foreground="#E5000000"
+                                   Foreground="#E0000000"
                                    VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -138,13 +138,13 @@
                             <TextBlock Text="&#xE921;"
                                        FontFamily="Segoe MDL2 Assets"
                                        FontSize="10"
-                                       Foreground="#E5000000" />
+                                       Foreground="#E0000000" />
                         </Button>
                         <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
                             <TextBlock Text="&#xE8BB;"
                                        FontFamily="Segoe MDL2 Assets"
                                        FontSize="10"
-                                       Foreground="#E5000000" />
+                                       Foreground="#E0000000" />
                         </Button>
                     </StackPanel>
                 </Grid>

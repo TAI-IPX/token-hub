@@ -51,7 +51,7 @@
                         <TextBlock Text="联想 TokenHub"
                                    FontSize="12"
                                    FontWeight="Regular"
-                                   Foreground="#E51B1B1F"
+                                   Foreground="#E0000000"
                                    VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -65,7 +65,7 @@
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="bd" CornerRadius="16" Background="Transparent">
                                         <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets"
-                                                   FontSize="10" Foreground="#E5000000"
+                                                   FontSize="10" Foreground="#E0000000"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -84,7 +84,7 @@
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="bd" CornerRadius="16" Background="Transparent">
                                         <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets"
-                                                   FontSize="10" Foreground="#E5000000"
+                                                   FontSize="10" Foreground="#E0000000"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -171,7 +171,7 @@
                             Width="200"
                             Height="32"
                             FontSize="14"
-                            Foreground="#E5000000"
+                            Foreground="#E0000000"
                             BorderThickness="0"
                             Cursor="Hand"
                             Margin="8,0,0,0"

@@ -183,7 +183,7 @@
                                Margin="0,0,8,0" />
                         <TextBlock Text="联想 TokenHub"
                                    FontSize="12"
-                                   Foreground="#E5000000"
+                                   Foreground="#E0000000"
                                    VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -192,13 +192,13 @@
                             <TextBlock Text="&#xE921;"
                                        FontFamily="Segoe MDL2 Assets"
                                        FontSize="10"
-                                       Foreground="#E5000000" />
+                                       Foreground="#E0000000" />
                         </Button>
                         <Button Style="{StaticResource CaptionButtonStyle}" Click="CloseButton_Click">
                             <TextBlock Text="&#xE8BB;"
                                        FontFamily="Segoe MDL2 Assets"
                                        FontSize="10"
-                                       Foreground="#E5000000" />
+                                       Foreground="#E0000000" />
                         </Button>
                     </StackPanel>
                 </Grid>
@@ -230,7 +230,7 @@
                                        LineHeight="18"
                                        FontSize="12"
                                        VerticalAlignment="Center"
-                                       Foreground="#E5000000">
+                                       Foreground="#E0000000">
                                 <Run Text="阅读并同意 联想 TokenHub " />
                                 <Run Text="隐私政策、服务协议、儿童个人信息保护规则"
                                      Foreground="#003E92" />

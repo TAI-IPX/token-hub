@@ -968,7 +968,7 @@
                                         </StackPanel>
                                         <TextBlock Text="{Binding BalanceText}"
                                                    FontSize="12"
-                                                   Foreground="#66000000"
+                                                   Foreground="#73000000"
                                                    Margin="0,2,0,0" />
                                     </StackPanel>
 

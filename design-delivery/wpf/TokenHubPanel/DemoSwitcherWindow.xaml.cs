@@ -43,5 +43,15 @@ namespace TokenHubPanel
         {
             _mainWindow.OpenUninstallDialog();
         }
+
+        private void ShowUninstallFailed_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenUninstallFailedDialog();
+        }
+
+        private void ShowInstallFailed_Click(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.OpenInstallFailedDialog();
+        }
     }
 }

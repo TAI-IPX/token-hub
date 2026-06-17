@@ -225,6 +225,44 @@
                         Margin="0,0,0,80"
                         Visibility="Collapsed"
                         Click="CloseButton_Click" />
+
+                <!-- Failed state -->
+                <StackPanel x:Name="FailedPanel"
+                            Visibility="Collapsed"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Center"
+                            Margin="0,40,0,0">
+                    <Image Source="Assets/install-hero-icon@3x.png"
+                           Width="48" Height="48"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12" />
+                    <TextBlock Text="卸载失败"
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="#E0000000"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,12" />
+                    <TextBlock Text="删除程序失败：文件正在由另外进程使用，请稍后重试"
+                               FontSize="14"
+                               Foreground="#99000000"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               MaxWidth="390" />
+                </StackPanel>
+
+                <StackPanel x:Name="FailedButtonsPanel"
+                            Visibility="Collapsed"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,0,80">
+                    <Button Content="重新卸载"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="RetryUninstall_Click" />
+                    <Button Content="我知道了"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="10,0,0,0"
+                            Click="CloseButton_Click" />
+                </StackPanel>
             </Grid>
         </Grid>
     </Border>

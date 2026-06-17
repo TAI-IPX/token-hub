@@ -75,9 +75,15 @@
                 <Button Content="安装流程"
                         Style="{StaticResource DemoStateButtonStyle}"
                         Click="ShowInstallDialog_Click" />
+                <Button Content="安装失败"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="ShowInstallFailed_Click" />
                 <Button Content="卸载流程"
                         Style="{StaticResource DemoStateButtonStyle}"
                         Click="ShowUninstallDialog_Click" />
+                <Button Content="卸载失败"
+                        Style="{StaticResource DemoStateButtonStyle}"
+                        Click="ShowUninstallFailed_Click" />
             </WrapPanel>
         </StackPanel>
     </Border>

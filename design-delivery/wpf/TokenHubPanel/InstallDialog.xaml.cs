@@ -75,5 +75,24 @@ namespace TokenHubPanel
             _progressMaxWidth = e.NewSize.Width;
             ProgressTrack.Width = _progressMaxWidth * (_progress / 100.0);
         }
+
+        public void ShowFailed()
+        {
+            IntroPanel.Visibility = Visibility.Collapsed;
+            StatusPanel.Visibility = Visibility.Collapsed;
+            ProgressPanel.Visibility = Visibility.Collapsed;
+            CompleteButton.Visibility = Visibility.Collapsed;
+            FailedPanel.Visibility = Visibility.Visible;
+            FailedButtonsPanel.Visibility = Visibility.Visible;
+            Anim.FadeIn(FailedPanel);
+        }
+
+        private void RetryInstall_Click(object sender, RoutedEventArgs e)
+        {
+            FailedPanel.Visibility = Visibility.Collapsed;
+            FailedButtonsPanel.Visibility = Visibility.Collapsed;
+            StatusPanel.Visibility = Visibility.Visible;
+            InstallButton_Click(sender, e);
+        }
     }
 }

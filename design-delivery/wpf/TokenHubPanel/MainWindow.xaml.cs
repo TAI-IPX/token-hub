@@ -974,9 +974,23 @@ namespace TokenHubPanel
             dialog.ShowDialog();
         }
 
+        public void OpenInstallFailedDialog()
+        {
+            var dialog = new InstallDialog();
+            dialog.Loaded += (_, _) => dialog.ShowFailed();
+            dialog.ShowDialog();
+        }
+
         public void OpenUninstallDialog()
         {
             var dialog = new UninstallDialog();
+            dialog.ShowDialog();
+        }
+
+        public void OpenUninstallFailedDialog()
+        {
+            var dialog = new UninstallDialog();
+            dialog.Loaded += (_, _) => dialog.ShowFailed();
             dialog.ShowDialog();
         }
 
